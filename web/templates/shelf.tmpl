@@ -1,0 +1,47 @@
+﻿{{template "layout" .}}
+
+{{define "title"}}shelf - {{$.Site.Brand.Brand}}{{end}}
+
+{{define "content"}}
+<header class="page-hero shelf-hero">
+  <div class="reveal">
+    <div class="hero-eyebrow">
+      <span class="prompt">$</span>
+      <span class="cmd">{{.Shelf.EyebrowCmd}}</span>
+      <span class="blink"></span>
+    </div>
+    <h1>{{if .Shelf.TitleAccent}}{{SplitAccent .Shelf.Title .Shelf.TitleAccent}}{{else}}{{.Shelf.Title}}{{end}}</h1>
+    <p>{{.Shelf.Intro}}</p>
+    <div class="hero-meta">
+      {{range .Shelf.Meta}}<span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>{{end}}
+    </div>
+  </div>
+</header>
+
+<main class="shelf-wrap">
+  {{range .Shelf.Groups}}
+  <section class="shelf-group reveal">
+    <div class="shelf-group-head">
+      <span>{{.Eyebrow}}</span>
+      <h2>{{.Title}}</h2>
+      <p>{{.Desc}}</p>
+    </div>
+    <div class="shelf-grid">
+      {{range .Items}}
+      {{if .Href}}<a class="shelf-item" href="{{.Href}}" target="_blank" rel="noreferrer">{{else}}<div class="shelf-item">{{end}}
+        <div class="shelf-item-top">
+          <span class="shelf-meta">{{.Meta}}</span>
+          <span class="shelf-status">{{.Status}}</span>
+        </div>
+        <h3>{{.Title}}</h3>
+        <p>{{.Desc}}</p>
+        <div class="shelf-tags">{{range .Tags}}<span>{{.}}</span>{{end}}</div>
+      {{if .Href}}</a>{{else}}</div>{{end}}
+      {{end}}
+    </div>
+  </section>
+  {{else}}
+  <p class="empty-line shelf-empty">// shelf is empty. Add items from /admin/settings/shelf.</p>
+  {{end}}
+</main>
+{{end}}

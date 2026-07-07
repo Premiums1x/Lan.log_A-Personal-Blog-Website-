@@ -1,0 +1,72 @@
+﻿{{define "layout"}}<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{block "title" .}}{{.Site.Brand.Brand}}{{end}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="/static/site-icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+{{template "nav" .}}
+
+{{block "content" .}}{{end}}
+
+{{template "footer" .}}
+
+<script>
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav && nav.classList.toggle('is-scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>{{end}}
+
+{{define "nav"}}
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <span class="prompt">~/</span><span class="path">{{.Site.Brand.Brand}}</span><span class="cursor"></span>
+    </a>
+    <div class="nav-links">
+      {{range .Site.Nav.Links}}
+      <a href="{{.Href}}"{{if eq .Label $.Page}} class="active"{{end}}>{{.Label}}</a>
+      {{end}}
+      {{if .Site.Nav.CTALabel}}<a href="{{.Site.Nav.CTAHref}}" class="nav-cta">{{.Site.Nav.CTALabel}}</a>{{end}}
+    </div>
+    <button class="nav-burger">menu</button>
+  </div>
+</nav>
+{{end}}
+
+{{define "footer"}}
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><span class="prompt">~/</span>{{.Site.Brand.Brand}}</div>
+      <p class="footer-tag">{{.Site.Brand.FooterTag}}</p>
+    </div>
+    {{range .Site.Footer.Cols}}
+    <div class="footer-col">
+      <h4>{{.H}}</h4>
+      <ul>
+        {{range .Links}}<li><a href="{{.Href}}">{{.Label}}</a></li>{{end}}
+      </ul>
+    </div>
+    {{end}}
+  </div>
+  <div class="footer-bottom">
+    <span class="commit">© {{.Site.Brand.SinceYear}} — {{YearNow}} {{.Site.Brand.Brand}} · commit <span class="hash">{{.Site.Brand.CommitHash}}</span> · main</span>
+    <span>{{.Site.Brand.BuildBadge}}</span>
+  </div>
+</footer>
+{{end}}

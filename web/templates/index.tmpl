@@ -1,0 +1,95 @@
+{{template "layout" .}}
+
+{{define "content"}}
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="reveal">
+    <div class="hero-eyebrow">
+      <span class="prompt">$</span>
+      <span class="cmd">{{.Hero.EyebrowCmd}}</span>
+      <span class="blink"></span>
+    </div>
+    <h1 class="hero-title">
+      {{.Hero.Title}}<br>
+      {{if .Hero.TitleAccent}}记录那些<span class="accent">{{.Hero.TitleAccent}}</span>{{end}}{{.Hero.TitleTail}}
+    </h1>
+    <p class="hero-sub">{{.Hero.Sub}}</p>
+    <div class="hero-meta">
+      {{range .Hero.Meta}}
+      <span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="hero-corner">
+    {{range .Hero.Corner}}
+    <div class="row"><span class="label">{{.Label}}</span><span class="val">{{.Val}}</span></div>
+    {{end}}
+  </div>
+</header>
+
+{{if .Pinned}}
+<!-- ============ PINNED ============ -->
+<section class="pinned reveal">
+  <article class="pinned-card">
+    <a href="/posts/{{.Pinned.Slug}}" style="display:contents;">
+      <div class="pin-label">PINNED</div>
+      <h3>{{.Pinned.Title}}</h3>
+      <p class="lede">{{.Pinned.Excerpt}}</p>
+      <div class="pin-foot">
+        <span>{{FormatDate .Pinned.PublishedAt}}</span>
+        <span>·</span>
+        <span>{{range .Pinned.Tags}}#{{.Name}} {{end}}</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+  </article>
+</section>
+{{end}}
+
+<!-- ============ POSTS LIST ============ -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-head reveal">
+    <h2>recent posts</h2>
+    <a class="view-all" href="/archive">view all ({{.PostCount}}) →</a>
+  </div>
+
+  <div class="posts">
+    {{range .Posts}}
+    <a class="post-row reveal" href="/posts/{{.Slug}}">
+      <div class="post-meta">
+        <span class="hash">{{CommitShort .CommitHash}}</span>
+        <span class="date">{{FormatDate .PublishedAt}}</span>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">{{.Title}}</h3>
+        <div class="post-tags">
+          {{range .Tags}}<span class="post-tag">{{.Name}}</span>{{end}}
+        </div>
+      </div>
+      <div class="post-read">{{.ReadMinutes}} min read</div>
+    </a>
+    {{else}}
+    <p style="font-family:var(--font-mono);color:var(--muted);padding:2rem 0;">// 还没有发布的文章。去 /admin 写第一篇吧。</p>
+    {{end}}
+  </div>
+</section>
+
+<!-- ============ STACK ============ -->
+<section class="section" style="padding-top: 3rem;">
+  <div class="section-head reveal">
+    <h2>this site is built with</h2>
+  </div>
+  <div class="container">
+    <div class="stack reveal">
+      {{range .Stack.Cells}}
+      <div class="stack-cell">
+        <div class="ic">{{.Ic}}</div>
+        <h4>{{.Title}}</h4>
+        <p>{{.Desc}}</p>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</section>
+{{end}}

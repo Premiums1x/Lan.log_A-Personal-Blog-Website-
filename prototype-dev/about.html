@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>whoami — lancer.log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="prompt">~/</span><span class="path">lancer.log</span><span class="cursor"></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">posts</a>
+      <a href="about.html" class="active">about</a>
+      <a href="#">archive</a>
+      <a href="#">shelf</a>
+      <a href="#contact" class="nav-cta">subscribe</a>
+    </div>
+    <button class="nav-burger">menu</button>
+  </div>
+</nav>
+
+<!-- ============ ABOUT HERO ============ -->
+<header class="about-hero">
+  <div class="about-intro reveal">
+    <h1>一个写 <span class="accent">Go</span> 的<br>后端工程师，<br>夜里写字。</h1>
+    <p>白天写后端服务和分布式系统；夜里把那些不会写进 commit message、也发不到团队 Slack 里的话，整理成短文。这个博客是那一部分字句的归处。</p>
+    <p>这里的写作不追热点，也很少写"现在"。更多是过一段时间之后，那件事还值不值得再被想起——就像 <code>git blame</code> 跳过那些被无数次 rewrite 掉的中间状态，只看真正留下来的那一位作者。</p>
+    <div class="hero-meta" style="margin-top: 2.25rem;">
+      <span class="stat"><span class="dot"></span><span class="k">role</span><span class="v">backend engineer</span></span>
+      <span class="stat"><span class="k">langs</span><span class="v">go · ts · rust</span></span>
+      <span class="stat"><span class="k">based</span><span class="v">shanghai</span></span>
+      <span class="stat"><span class="k">since</span><span class="v">2020</span></span>
+    </div>
+  </div>
+
+  <aside class="about-side reveal">
+    <div class="term-head">
+      <span class="d"></span><span class="d"></span><span class="d"></span>
+      <span class="title">xu@blog: ~ — zsh</span>
+    </div>
+    <div class="line"><span class="p">$</span> <span class="k">whoami</span></div>
+    <div class="line">→ <span class="v">xu</span> <span class="c">// backend engineer</span></div>
+    <div class="line" style="margin-top:0.6rem;"><span class="p">$</span> <span class="k">cat</span> bio.yml</div>
+    <div class="line"><span class="k">name</span>: <span class="v">许</span></div>
+    <div class="line"><span class="k">role</span>: <span class="v">backend / infra</span></div>
+    <div class="line"><span class="k">stack</span>: <span class="v">go · ts · rust</span></div>
+    <div class="line"><span class="k">writes</span>: <span class="v">since 2020</span></div>
+    <div class="line"><span class="k">posts</span>: <span class="v">48</span></div>
+    <div class="line"><span class="k">based</span>: <span class="v">shanghai, cn</span></div>
+    <div class="line"><span class="k">hosting</span>: <span class="v">self · $5 vps</span></div>
+    <div class="line" style="margin-top:0.6rem;"><span class="p">$</span> <span class="k">uptime</span></div>
+    <div class="line">→ <span class="v">2,341 days</span> <span class="c">// still writing</span></div>
+  </aside>
+</header>
+
+<!-- ============ ABOUT BODY ============ -->
+<section class="about-body reveal">
+  <h2>关于这个博客</h2>
+  <p>「lancer.log」开始于 2020 年的春天。那段时间我刚开始独力维护一个线上服务，每天回家后脑子里全是别人说过的话、写过的代码、提过的需求，几乎没有一句是自己的。我开始写，最初的目的是想让语言回到自己身上——把一天里碎片化的感觉，重新组织成一段连贯的句子，像把一堆 raw log 聚合成一份可读的 report。</p>
+
+  <p>写着写着，它变成了一个更长期的东西：一个可以被未来的自己回来 <code>git blame</code> 的地方。所以这里的内容不会追热点，也很少写"现在"——更多是过一段时间之后，那件事还值不值得再被想起。</p>
+
+  <h2>关于写作方式</h2>
+  <p>我坚持一次只写一篇，写完放几天再回头看。每篇文章平均要改四到六稿，最长的一篇改了三个月——很像一次漫长的 code review，只是 reviewer 只有我自己。这并不是什么了不起的事，只是一个适合我节奏的速度；再快，我就会开始写自己没想清楚的东西。</p>
+
+  <p>这个博客只有两种状态：<code>published</code> 和 <code>draft</code>。没有"热门文章"、"推荐榜单"这样的设置。所有文章按时间倒序陈列，就像 <code>git log --oneline</code>，你按自己的心情选着读就好。</p>
+
+  <h2>一些不写在订阅号里的事</h2>
+  <p>这里没有算法，没有推送，没有"在看"。如果你愿意来读，那就来读；过了几个月没来，我也会安静地在这里继续写下去。这是一份理解：好的阅读关系，和好的代码协作关系一样，都是慢的、有可能失联的、但不需要每天都确认的。</p>
+</section>
+
+<!-- ============ NOW (terminal) ============ -->
+<section class="now reveal">
+  <h2>now</h2>
+  <div class="now-term">
+    <div class="head">
+      <span class="d"></span><span class="d"></span><span class="d"></span>
+      <span class="name">what-im-doing.txt</span>
+    </div>
+    <div class="body">
+      <div class="ln"><span class="p">$</span> <span class="f">cat</span> now.txt <span class="c"># updated 2026-07</span></div>
+      <div class="ln">↳ <span class="k">reading</span>   <span class="v">昆德拉《缓慢》第二遍</span></div>
+      <div class="ln">  <span class="k">         </span>  <span class="s">"被讨论的图像"第三遍</span></div>
+      <div class="ln">↳ <span class="k">writing</span>   <span class="v">关于"留白"的连载，八月发第一篇</span></div>
+      <div class="ln">↳ <span class="k">coding</span>    <span class="v">把这个博客从 Astro 迁到自家 SSG</span></div>
+      <div class="ln">  <span class="k">         </span>  <span class="c">// 第三次重写了，可能不是最后一次</span></div>
+      <div class="ln">↳ <span class="k">listening</span> <span class="s">Nils Frahm — All Melody</span></div>
+      <div class="ln">↳ <span class="k">thinking</span>  <span class="v">写不了的字，是不是其实根本不需要被写</span></div>
+      <div class="ln">↳ <span class="k">waiting</span>   <span class="v">七月末的一场雨，可以关掉所有显示器</span></div>
+      <div class="ln" style="margin-top:0.5rem;"><span class="p">$</span> <span class="c">_</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact reveal" id="contact">
+  <h2>想写信给我，<br>我会<span class="accent">慢慢回</span>。</h2>
+  <div class="right">
+    <a class="mail-btn" href="mailto:xu@example.com">
+      <span>xu@example.com</span>
+      <span class="arr">→</span>
+    </a>
+    <p style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); margin: 0.25rem 0 0.5rem;">
+      // 邮件会在一周内收到回复。如果你只想收每月更新提醒：
+    </p>
+    <div class="socials">
+      <a href="#">email-subscribe</a>
+      <a href="#">rss</a>
+      <a href="#">mastodon</a>
+      <a href="#">telegram</a>
+      <a href="#">github</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><span class="prompt">~/</span>lancer.log</div>
+      <p class="footer-tag">一个程序员的写字处。后端工程、工具理性，以及那些没写进 commit message 里的话。每月两到三篇，自托管，无追踪。</p>
+    </div>
+    <div class="footer-col">
+      <h4>browse</h4>
+      <ul>
+        <li><a href="index.html">posts</a></li>
+        <li><a href="#">archive</a></li>
+        <li><a href="#">tags</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>about</h4>
+      <ul>
+        <li><a href="about.html">whoami</a></li>
+        <li><a href="#">colophon</a></li>
+        <li><a href="#">contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>subscribe</h4>
+      <ul>
+        <li><a href="#">email</a></li>
+        <li><a href="#">rss</a></li>
+        <li><a href="#">mastodon</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="commit">© 2020 — 2026 lancer.log · commit <span class="hash">a1f3c2d</span> · main</span>
+    <span>BUILT QUIETLY · NO TRACKING · NO ADS · MIT LICENSED</span>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

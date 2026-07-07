@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lancer.log — 一个程序员的写字处</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="prompt">~/</span><span class="path">lancer.log</span><span class="cursor"></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active">posts</a>
+      <a href="about.html">about</a>
+      <a href="#">archive</a>
+      <a href="#">shelf</a>
+      <a href="about.html#contact" class="nav-cta">subscribe</a>
+    </div>
+    <button class="nav-burger">menu</button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="reveal">
+    <div class="hero-eyebrow">
+      <span class="prompt">$</span>
+      <span class="cmd">cat about-this-blog.md</span>
+      <span class="blink"></span>
+    </div>
+    <h1 class="hero-title">
+      一个写字的程序员，<br>
+      记录那些<span class="accent">没写进 commit message</span>里的事。
+    </h1>
+    <p class="hero-sub">
+      后端工程师白天写 <code>Go</code> 和 <code>TypeScript</code>，夜里把没说完的话写成短文。
+      聚焦工程实践、工具理性、 tech-adjacent 生活观察。每月两到三篇，自托管，无算法。
+    </p>
+    <div class="hero-meta">
+      <span class="stat"><span class="dot"></span><span class="k">posts</span><span class="v">48</span></span>
+      <span class="stat"><span class="k">since</span><span class="v">2020</span></span>
+      <span class="stat"><span class="k">words</span><span class="v">~98k</span></span>
+      <span class="stat"><span class="k">rss</span><span class="v">on</span></span>
+      <span class="stat"><span class="k">ads</span><span class="v">never</span></span>
+    </div>
+  </div>
+
+  <div class="hero-corner">
+    <div class="row"><span class="label">uptime</span><span class="val">2,341 days</span></div>
+    <div class="row"><span class="label">last push</span><span class="val">2026-07-05</span></div>
+    <div class="row"><span class="label">build</span><span class="val">passing</span></div>
+    <div class="row"><span class="label">stack</span><span class="val">astro · mdx</span></div>
+  </div>
+</header>
+
+<!-- ============ PINNED ============ -->
+<section class="pinned reveal">
+  <article class="pinned-card">
+    <a href="article.html" style="display:contents;">
+      <div class="pin-label">PINNED</div>
+      <h3>关于"够用就好"这件事，<br>我用了七年才真正学会</h3>
+      <p class="lede">
+        极简不是扔东西，而是在每一次拥有之前先确认：这件东西是否值得它将要占据的空间、注意力，
+        以及之后每一次的轻微愧疚。一篇写给七年前的自己的笔记。
+      </p>
+      <div class="pin-foot">
+        <span>2026.07.05</span>
+        <span>·</span>
+        <span>#随笔 #生活方式</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+  </article>
+</section>
+
+<!-- ============ POSTS LIST ============ -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-head reveal">
+    <h2>recent posts</h2>
+    <a class="view-all" href="#">view all (48) →</a>
+  </div>
+
+  <div class="posts">
+
+    <a class="post-row reveal" href="article.html">
+      <div class="post-meta">
+        <span class="hash">a1f3c2d</span>
+        <span class="date">2026-07-05</span>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">关于"够用就好"这件事，我用了七年才真正学会</h3>
+        <div class="post-tags">
+          <span class="post-tag">随笔</span>
+          <span class="post-tag">生活方式</span>
+        </div>
+      </div>
+      <div class="post-read">8 min read</div>
+    </a>
+
+    <a class="post-row reveal" href="article.html">
+      <div class="post-meta">
+        <span class="hash">8b2e91f</span>
+        <span class="date">2026-06-21</span>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">为什么我开始觉得，留白本身就是一种信息</h3>
+        <div class="post-tags">
+          <span class="post-tag">设计</span>
+          <span class="post-tag">前端</span>
+        </div>
+      </div>
+      <div class="post-read">6 min read</div>
+    </a>
+
+    <a class="post-row reveal" href="article.html">
+      <div class="post-meta">
+        <span class="hash">c4d7a08</span>
+        <span class="date">2026-06-02</span>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">把整套笔记系统换成了一个 txt 文件和一支铅笔</h3>
+        <div class="post-tags">
+          <span class="post-tag">工具</span>
+          <span class="post-tag">生产力</span>
+        </div>
+      </div>
+      <div class="post-read">9 min read</div>
+    </a>
+
+    <a class="post-row reveal" href="article.html">
+      <div class="post-meta">
+        <span class="hash">f0e2b51</span>
+        <span class="date">2026-05-18</span>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">为什么我不再用 ESLint 的所有默认规则</h3>
+        <div class="post-tags">
+          <span class="post-tag">工程</span>
+          <span class="post-tag">TypeScript</span>
+        </div>
+      </div>
+      <div class="post-read">11 min read</div>
+    </a>
+
+    <a class="post-row reveal" href="article.html">
+      <div class="post-meta">
+        <span class="hash">72ad3e9</span>
+        <span class="date">2026-04-29</span>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">把一个 monorepo 从 12 分钟构建压到 47 秒的笔记</h3>
+        <div class="post-tags">
+          <span class="post-tag">工程</span>
+          <span class="post-tag">CI</span>
+          <span class="post-tag">性能</span>
+        </div>
+      </div>
+      <div class="post-read">14 min read</div>
+    </a>
+
+    <a class="post-row reveal" href="article.html">
+      <div class="post-meta">
+        <span class="hash">9c1f4b3</span>
+        <span class="date">2026-04-10</span>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">类型系统不是用来约束你的，是用来替你记住的</h3>
+        <div class="post-tags">
+          <span class="post-tag">TypeScript</span>
+          <span class="post-tag">思考</span>
+        </div>
+      </div>
+      <div class="post-read">7 min read</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ============ STACK ============ -->
+<section class="section" style="padding-top: 3rem;">
+  <div class="section-head reveal">
+    <h2>this site is built with</h2>
+  </div>
+  <div class="container">
+    <div class="stack reveal">
+      <div class="stack-cell">
+        <div class="ic">01</div>
+        <h4>Astro</h4>
+        <p>静态站点生成，按需 Islands，首屏几乎零 JS。</p>
+      </div>
+      <div class="stack-cell">
+        <div class="ic">02</div>
+        <h4>MDX</h4>
+        <p>Markdown 里嵌入组件，让代码示例可交互。</p>
+      </div>
+      <div class="stack-cell">
+        <div class="ic">03</div>
+        <h4>Geist</h4>
+        <p>Vercel 开源字体，Sans + Mono 配对，自托管。</p>
+      </div>
+      <div class="stack-cell">
+        <div class="ic">04</div>
+        <h4>自托管</h4>
+        <p>跑在一台 5 美元的 VPS 上，Cloudflare 在前面。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><span class="prompt">~/</span>lancer.log</div>
+      <p class="footer-tag">一个程序员的写字处。后端工程、工具理性，以及那些没写进 commit message 里的话。每月两到三篇，自托管，无追踪。</p>
+    </div>
+    <div class="footer-col">
+      <h4>browse</h4>
+      <ul>
+        <li><a href="index.html">posts</a></li>
+        <li><a href="#">archive</a></li>
+        <li><a href="#">tags</a></li>
+        <li><a href="#">shelf</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>about</h4>
+      <ul>
+        <li><a href="about.html">whoami</a></li>
+        <li><a href="#">writing plan</a></li>
+        <li><a href="#">colophon</a></li>
+        <li><a href="#">contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>subscribe</h4>
+      <ul>
+        <li><a href="#">email</a></li>
+        <li><a href="#">rss</a></li>
+        <li><a href="#">mastodon</a></li>
+        <li><a href="#">telegram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="commit">© 2020 — 2026 lancer.log · commit <span class="hash">a1f3c2d</span> · main</span>
+    <span>BUILT QUIETLY · NO TRACKING · NO ADS · MIT LICENSED</span>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

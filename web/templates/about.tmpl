@@ -1,0 +1,70 @@
+﻿{{template "layout" .}}
+
+{{define "title"}}whoami - {{$.Site.Brand.Brand}}{{end}}
+
+{{define "content"}}
+<header class="about-hero">
+  <div class="about-intro reveal">
+    <div class="hero-eyebrow">
+      <span class="prompt">$</span>
+      <span class="cmd">whoami && cat direction.md</span>
+      <span class="blink"></span>
+    </div>
+    <h1>{{if .About.TitleAccent}}{{SplitAccent .About.Title .About.TitleAccent}}{{else}}{{RenderInline .About.Title}}{{end}}</h1>
+    {{range .About.Intro}}<p>{{.}}</p>{{end}}
+    <div class="hero-meta" style="margin-top: 2.25rem;">
+      {{range .About.Meta}}
+      <span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>
+      {{end}}
+    </div>
+  </div>
+
+  <aside class="about-side reveal">
+    <div class="term-head">
+      <span class="d"></span><span class="d"></span><span class="d"></span>
+      <span class="title">lan@blog: ~ / zsh</span>
+    </div>
+    <div class="line"><span class="p">$</span> <span class="k">whoami</span></div>
+    <div class="line">-&gt; <span class="v">{{.About.BioYml.Name}}</span> <span class="c">// learning in public</span></div>
+    <div class="line" style="margin-top:0.6rem;"><span class="p">$</span> <span class="k">cat</span> bio.yml</div>
+    <div class="line"><span class="k">name</span>: <span class="v">{{.About.BioYml.Name}}</span></div>
+    <div class="line"><span class="k">role</span>: <span class="v">{{.About.BioYml.Role}}</span></div>
+    <div class="line"><span class="k">stack</span>: <span class="v">{{.About.BioYml.Stack}}</span></div>
+    <div class="line"><span class="k">writes</span>: <span class="v">{{.About.BioYml.Writes}}</span></div>
+    <div class="line"><span class="k">based</span>: <span class="v">{{.About.BioYml.Based}}</span></div>
+    <div class="line"><span class="k">hosting</span>: <span class="v">{{.About.BioYml.Hosting}}</span></div>
+    <div class="line" style="margin-top:0.6rem;"><span class="p">$</span> <span class="k">status</span></div>
+    <div class="line">-&gt; <span class="v">{{.About.Uptime}}</span> <span class="c">// still building</span></div>
+  </aside>
+</header>
+
+<section class="about-body reveal">
+  {{if .About.BodyMarkdown}}
+    {{.About.BodyHTML}}
+  {{else}}
+    <h2>关于这个博客</h2>
+    <p>「{{.Site.Brand.Brand}}」是一份个人工程日志，记录前端实习、React 练习、后端补课、agent 探索，以及那些只有真正动手后才会冒出来的问题。</p>
+    <h2>关于学习方式</h2>
+    <p>我会把小项目、读文档、踩坑和复盘都写下来。这里不追求一次写成教程，更像不断追加 commit 的学习现场。</p>
+  {{end}}
+</section>
+
+<section class="now reveal">
+  <h2>now</h2>
+  <div class="now-term">
+    <div class="head">
+      <span class="d"></span><span class="d"></span><span class="d"></span>
+      <span class="name">what-im-doing.txt</span>
+    </div>
+    <div class="body">
+      {{range $l := .Now.Lines}}
+      {{if $l.IsCmd}}<div class="ln"><span class="p">$</span> {{if $l.F}}<span class="f">{{$l.F}}</span> {{end}}{{$l.Args}}{{if $l.C}} <span class="c">{{$l.C}}</span>{{end}}</div>{{end}}
+      {{if not $l.IsCmd}}<div class="ln">{{$l.Arrow}} <span class="k">{{$l.K}}</span>{{if $l.C}} <span class="c">{{$l.C}}</span>{{end}}{{if $l.IsString}} <span class="s">{{$l.V}}</span>{{else}} <span class="v">{{$l.V}}</span>{{end}}</div>{{end}}
+      {{end}}
+      <div class="ln" style="margin-top:0.5rem;"><span class="p">$</span> <span class="c">_</span></div>
+    </div>
+  </div>
+</section>
+
+{{end}}
+

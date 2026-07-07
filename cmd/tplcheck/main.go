@@ -1,0 +1,43 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"os"
+
+	"github.com/lancer/log/internal/handler"
+	"github.com/lancer/log/internal/model"
+	"github.com/lancer/log/web"
+)
+
+func main() {
+	tpl, err := handler.TemplatesFromEmbed()
+	if err != nil {
+		fmt.Println("LOAD ERR:", err)
+		os.Exit(1)
+	}
+	type idxData = handler.IndexData
+	type postData = handler.PostData
+	type aboutData = handler.AboutPageData
+	type archiveData = handler.ArchivePageData
+	type shelfData = handler.ShelfPageData
+	type nfData = handler.NotFoundData
+	cases := []struct {
+		name string
+		data any
+	}{
+		{"index", idxData{Posts: []model.Post{}, Stack: handler.StackData{}}},
+		{"post", postData{}},
+		{"about", aboutData{Now: handler.NowData{}}},
+		{"archive", archiveData{}},
+		{"shelf", shelfData{}},
+		{"notfound", nfData{}},
+	}
+	for _, c := range cases {
+		err := tpl.Execute(io.Discard, c.name, c.data)
+		fmt.Printf("page %-9s ok=%v err=%v\n", c.name, err == nil, err)
+	}
+	_ = context.Background()
+	_ = web.TemplatesFS
+}

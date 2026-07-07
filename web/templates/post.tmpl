@@ -1,0 +1,72 @@
+{{template "layout" .}}
+
+{{define "title"}}{{.Post.Title}} — {{$.Site.Brand.Brand}}{{end}}
+
+{{define "content"}}
+<!-- ============ ARTICLE HERO ============ -->
+<header class="art-hero">
+  <div class="art-hero-inner reveal">
+    <div class="art-crumbs">
+      <a href="/">~/posts</a>
+      <span class="sep">/</span>
+      <a href="/section/{{.Post.Section}}">{{.Post.Section}}</a>
+      <span class="sep">/</span>
+      <span>{{.Post.Slug}}.md</span>
+    </div>
+    <h1 class="art-h1">{{RenderInline .Post.Title}}</h1>
+    <p class="art-lede">{{.Post.Excerpt}}</p>
+    <div class="art-meta">
+      <span class="avatar">{{FirstChar .AuthorName}}</span>
+      <span class="v">{{.AuthorName}}</span>
+      <span class="sep">·</span>
+      <span class="k">published</span><span class="v">{{FormatDate .Post.PublishedAt}}</span>
+      <span class="sep">·</span>
+      <span class="k">read</span><span class="v">{{.Post.ReadMinutes}} min</span>
+      <span class="sep">·</span>
+      <span class="k">words</span><span class="v">{{.Post.Words}}</span>
+      <span class="sep">·</span>
+      <span class="k">commit</span><span class="v">{{CommitShort .Post.CommitHash}}</span>
+    </div>
+  </div>
+</header>
+
+{{if .Post.CoverURL}}
+<div class="art-cover reveal">
+  <img src="{{.Post.CoverURL}}" alt="{{.Post.Title}}">
+</div>
+{{end}}
+
+<!-- ============ ARTICLE BODY ============ -->
+<article class="art-body">
+  {{RenderHTML .Post.BodyHTML}}
+</article>
+
+<!-- ============ ARTICLE END ============ -->
+<section class="art-end reveal">
+  <div class="art-tags">
+    {{range .Post.Tags}}<a class="tag" href="/tags/{{.Slug}}">{{.Name}}</a>{{end}}
+  </div>
+
+  <div class="author-bio">
+    <div class="av">{{FirstChar .AuthorName}}</div>
+    <div>
+      <h4>{{.AuthorName}}</h4>
+      <p>{{.Site.Brand.FooterTag}} <a href="/">读全部文章 →</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREV / NEXT ============ -->
+{{if or .Prev .Next}}
+<nav class="art-pn reveal">
+  {{if .Prev}}<a class="pn-card" href="/posts/{{.Prev.Slug}}">
+    <div class="pn-label">← prev · {{CommitShort .Prev.CommitHash}}</div>
+    <div class="pn-title">{{.Prev.Title}}</div>
+  </a>{{else}}<div></div>{{end}}
+  {{if .Next}}<a class="pn-card next" href="/posts/{{.Next.Slug}}">
+    <div class="pn-label">{{CommitShort .Next.CommitHash}} · next →</div>
+    <div class="pn-title">{{.Next.Title}}</div>
+  </a>{{else}}<div></div>{{end}}
+</nav>
+{{end}}
+{{end}}

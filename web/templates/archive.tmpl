@@ -1,0 +1,74 @@
+﻿{{template "layout" .}}
+
+{{define "title"}}{{if .FilterLabel}}{{.FilterLabel}} - {{end}}archive - {{$.Site.Brand.Brand}}{{end}}
+
+{{define "content"}}
+<header class="page-hero archive-hero">
+  <div class="reveal">
+    <div class="hero-eyebrow">
+      <span class="prompt">$</span>
+      <span class="cmd">{{.Archive.EyebrowCmd}}</span>
+      <span class="blink"></span>
+    </div>
+    <h1>{{if .Archive.TitleAccent}}{{SplitAccent .Archive.Title .Archive.TitleAccent}}{{else}}{{.Archive.Title}}{{end}}</h1>
+    <p>{{.Archive.Intro}}</p>
+    <div class="hero-meta">
+      {{range .Archive.Meta}}<span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>{{end}}
+      <span class="stat"><span class="k">posts</span><span class="v">{{.TotalPosts}}</span></span>
+      <span class="stat"><span class="k">words</span><span class="v">{{.TotalWords}}</span></span>
+    </div>
+  </div>
+</header>
+
+<section class="archive-layout reveal">
+  <aside class="archive-side">
+    <div class="side-block">
+      <h3>sections</h3>
+      <a class="side-link" href="/archive"><span>all posts</span><span>{{.TotalPosts}}</span></a>
+      {{range .Sections}}
+      <a class="side-link" href="/section/{{.Slug}}"><span>{{.Name}}</span><span>{{.Count}}</span></a>
+      {{end}}
+    </div>
+    <div class="side-block">
+      <h3>tags</h3>
+      <div class="tag-cloud">
+        {{range .Tags}}<a href="/tags/{{.Slug}}">#{{.Name}} <span>{{.Count}}</span></a>{{end}}
+      </div>
+    </div>
+  </aside>
+
+  <div class="archive-main">
+    {{if .FilterLabel}}
+    <div class="filter-note">
+      <span>{{.FilterKind}}</span>
+      <strong>{{.FilterLabel}}</strong>
+      <a href="/archive">clear filter</a>
+    </div>
+    {{end}}
+
+    {{range .Years}}
+    <section class="year-group">
+      <div class="year-label">{{.Year}}</div>
+      <div class="year-posts">
+        {{range .Posts}}
+        <a class="post-row archive-row" href="/posts/{{.Slug}}">
+          <div class="post-meta">
+            <span class="hash">{{CommitShort .CommitHash}}</span>
+            <span class="date">{{FormatDate .PublishedAt}}</span>
+          </div>
+          <div class="post-body">
+            <h3 class="post-title">{{.Title}}</h3>
+            <p class="post-excerpt">{{.Excerpt}}</p>
+            <div class="post-tags">{{range .Tags}}<span class="post-tag">{{.Name}}</span>{{end}}</div>
+          </div>
+          <div class="post-read">{{.ReadMinutes}} min</div>
+        </a>
+        {{end}}
+      </div>
+    </section>
+    {{else}}
+    <p class="empty-line">// {{.EmptyText}}</p>
+    {{end}}
+  </div>
+</section>
+{{end}}
