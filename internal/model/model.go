@@ -7,11 +7,13 @@ import (
 )
 
 type User struct {
-	ID           uuid.UUID `json:"id"`
-	Username     string    `json:"username"`
-	PasswordHash string    `json:"-"`
-	DisplayName  string    `json:"display_name"`
-	CreatedAt    time.Time `json:"created_at"`
+	ID                uuid.UUID `json:"id"`
+	Username          string    `json:"username"`
+	PasswordHash      string    `json:"-"`
+	DisplayName       string    `json:"display_name"`
+	RecoveryEmail     string    `json:"recovery_email"`
+	CreatedAt         time.Time `json:"created_at"`
+	PasswordUpdatedAt time.Time `json:"password_updated_at"`
 }
 
 type Post struct {

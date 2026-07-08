@@ -17,12 +17,26 @@ var ErrNotFound = errors.New("not found")
 
 // ---------- Users ----------
 
+const userCols = `id, username, password_hash, display_name, COALESCE(recovery_email,''), created_at, COALESCE(password_updated_at, created_at)`
+
 func GetUserByUsername(ctx context.Context, q db.Conn, username string) (model.User, error) {
 	var u model.User
 	err := q.QueryRow(ctx,
-		`SELECT id, username, password_hash, display_name, created_at FROM users WHERE username=$1`,
+		`SELECT `+userCols+` FROM users WHERE username=$1`,
 		username,
-	).Scan(&u.ID, &u.Username, &u.PasswordHash, &u.DisplayName, &u.CreatedAt)
+	).Scan(&u.ID, &u.Username, &u.PasswordHash, &u.DisplayName, &u.RecoveryEmail, &u.CreatedAt, &u.PasswordUpdatedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return model.User{}, ErrNotFound
+	}
+	return u, err
+}
+
+func GetUserByID(ctx context.Context, q db.Conn, id uuid.UUID) (model.User, error) {
+	var u model.User
+	err := q.QueryRow(ctx,
+		`SELECT `+userCols+` FROM users WHERE id=$1`,
+		id,
+	).Scan(&u.ID, &u.Username, &u.PasswordHash, &u.DisplayName, &u.RecoveryEmail, &u.CreatedAt, &u.PasswordUpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return model.User{}, ErrNotFound
 	}
@@ -36,13 +50,95 @@ func CountUsers(ctx context.Context, q db.Conn) (int, error) {
 }
 
 func CreateUser(ctx context.Context, q db.Conn, username, hash, displayName string) (model.User, error) {
+	return CreateUserWithEmail(ctx, q, username, hash, displayName, "")
+}
+
+func CreateUserWithEmail(ctx context.Context, q db.Conn, username, hash, displayName, recoveryEmail string) (model.User, error) {
 	var u model.User
 	err := q.QueryRow(ctx,
-		`INSERT INTO users (username, password_hash, display_name) VALUES ($1,$2,$3)
-		 RETURNING id, username, password_hash, display_name, created_at`,
-		username, hash, displayName,
-	).Scan(&u.ID, &u.Username, &u.PasswordHash, &u.DisplayName, &u.CreatedAt)
+		`INSERT INTO users (username, password_hash, display_name, recovery_email, password_updated_at) VALUES ($1,$2,$3,$4,now())
+		 RETURNING `+userCols,
+		username, hash, displayName, recoveryEmail,
+	).Scan(&u.ID, &u.Username, &u.PasswordHash, &u.DisplayName, &u.RecoveryEmail, &u.CreatedAt, &u.PasswordUpdatedAt)
 	return u, err
+}
+
+func UpdateUserRecoveryEmail(ctx context.Context, q db.Conn, id uuid.UUID, email string) error {
+	ct, err := q.Exec(ctx, `UPDATE users SET recovery_email=$2 WHERE id=$1`, id, email)
+	if err != nil {
+		return err
+	}
+	if ct.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+func UpdateUserPassword(ctx context.Context, q db.Conn, id uuid.UUID, hash string) error {
+	ct, err := q.Exec(ctx, `UPDATE users SET password_hash=$2, password_updated_at=now() WHERE id=$1`, id, hash)
+	if err != nil {
+		return err
+	}
+	if ct.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+type PasswordResetCode struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	CodeHash  string
+	ExpiresAt time.Time
+	Attempts  int
+	CreatedAt time.Time
+}
+
+func CountRecentPasswordResetCodes(ctx context.Context, q db.Conn, userID uuid.UUID, since time.Time) (int, error) {
+	var n int
+	err := q.QueryRow(ctx,
+		`SELECT count(*) FROM password_reset_codes WHERE user_id=$1 AND created_at >= $2`,
+		userID, since,
+	).Scan(&n)
+	return n, err
+}
+
+func CreatePasswordResetCode(ctx context.Context, q db.Conn, userID uuid.UUID, codeHash string, expiresAt time.Time, requestedIP string) error {
+	_, err := q.Exec(ctx,
+		`INSERT INTO password_reset_codes (user_id, code_hash, expires_at, requested_ip) VALUES ($1,$2,$3,$4)`,
+		userID, codeHash, expiresAt, requestedIP,
+	)
+	return err
+}
+
+func LatestActivePasswordResetCode(ctx context.Context, q db.Conn, userID uuid.UUID) (PasswordResetCode, error) {
+	var r PasswordResetCode
+	err := q.QueryRow(ctx,
+		`SELECT id, user_id, code_hash, expires_at, attempts, created_at
+		 FROM password_reset_codes
+		 WHERE user_id=$1 AND used_at IS NULL AND expires_at > now() AND attempts < 5
+		 ORDER BY created_at DESC
+		 LIMIT 1`, userID,
+	).Scan(&r.ID, &r.UserID, &r.CodeHash, &r.ExpiresAt, &r.Attempts, &r.CreatedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return PasswordResetCode{}, ErrNotFound
+	}
+	return r, err
+}
+
+func IncrementPasswordResetAttempts(ctx context.Context, q db.Conn, id uuid.UUID) error {
+	_, err := q.Exec(ctx, `UPDATE password_reset_codes SET attempts=attempts+1 WHERE id=$1`, id)
+	return err
+}
+
+func UsePasswordResetCode(ctx context.Context, q db.Conn, id uuid.UUID) error {
+	_, err := q.Exec(ctx, `UPDATE password_reset_codes SET used_at=now() WHERE id=$1 AND used_at IS NULL`, id)
+	return err
+}
+
+func InvalidatePasswordResetCodes(ctx context.Context, q db.Conn, userID uuid.UUID) error {
+	_, err := q.Exec(ctx, `UPDATE password_reset_codes SET used_at=now() WHERE user_id=$1 AND used_at IS NULL`, userID)
+	return err
 }
 
 // ---------- Posts ----------

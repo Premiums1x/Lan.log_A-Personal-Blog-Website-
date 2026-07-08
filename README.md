@@ -81,6 +81,12 @@ Go + PostgreSQL 服务端渲染博客，带自托管 React 后台。模板和静
 | `JWT_TTL_HOURS` | `72` | token 有效期 |
 | `ADMIN_USERNAME` | `admin` | 首次启动创建的管理员用户名 |
 | `ADMIN_PASSWORD` | （随机） | 首次启动管理员密码；留空则生成随机密码并打印到 stdout |
+| `ADMIN_EMAIL` | 空 | 首次启动创建管理员时写入找回邮箱；已有用户不会被覆盖 |
+| `SMTP_HOST` | 空 | 密码找回邮件 SMTP 主机 |
+| `SMTP_PORT` | `587` | 密码找回邮件 SMTP 端口 |
+| `SMTP_USERNAME` | 空 | SMTP 用户名 |
+| `SMTP_PASSWORD` | 空 | SMTP 密码 |
+| `SMTP_FROM` | 空 | 密码找回邮件发件人地址 |
 
 > 程序启动第一件事是连 PG 跑迁移，连不上会 `log.Fatalf` 退出。没有数据库无法启动。
 
@@ -109,6 +115,15 @@ docker run -d --name blog-pg -p 5432:5432 \
 
 迁移会在程序首次启动时自动执行（`migrate.Run` 读 `web/migrations/*.sql` 顺序跑），**无需手动跑 SQL**。
 
+
+### Windows 一键启动脚本
+
+项目根目录提供了两个脚本，避免每次手动敲环境变量：
+
+- `start-backend.cmd`：只启动 Go 后端。
+- `start-dev.cmd`：同时打开 Go 后端和 Vite 管理端两个窗口。
+
+首次运行时如果没有 `.env`，脚本会从 `.env.example` 自动复制一份 `.env`，先编辑里面的数据库、管理员账号和 QQ 邮箱 SMTP 授权码，再双击脚本启动。
 ### 2. 启动后端（dev 模式，admin 不 embed）
 
 ```bash
@@ -116,6 +131,13 @@ export DATABASE_URL="postgres://blog:blog@localhost:5432/blog?sslmode=disable"
 export JWT_SECRET="dev-secret-change-me-please-32bytes!"
 export ADMIN_USERNAME=admin
 export ADMIN_PASSWORD=admin
+export ADMIN_EMAIL=you@example.com
+# Optional: enable forgot-password email codes
+# export SMTP_HOST=smtp.example.com
+# export SMTP_PORT=587
+# export SMTP_USERNAME=you@example.com
+# export SMTP_PASSWORD=your-smtp-password
+# export SMTP_FROM=you@example.com
 
 go run ./cmd/blog
 ```
@@ -136,7 +158,7 @@ npm run dev
 
 Vite 跑在 http://localhost:5174，已在 `vite.config.ts` 配代理把 `/api` 和 `/static` 转发到 `:8080`。
 
-打开 http://localhost:5174/admin/login 用 `admin / admin` 登录。
+打开 http://localhost:5174/admin/login 用 `admin / admin` 登录。登录后可在「账号安全」里修改密码并设置找回邮箱。
 
 ### 4. 模板自检
 
@@ -228,6 +250,12 @@ JWT_SECRET=至少16字节的随机字符串
 JWT_TTL_HOURS=72
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=强密码
+ADMIN_EMAIL=you@example.com
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USERNAME=you@example.com
+SMTP_PASSWORD=your-smtp-password
+SMTP_FROM=you@example.com
 ```
 
 > `HTTP_ADDR=127.0.0.1:8088` 只绑回环，只让 Nginx 反代访问，比 `:8088` 暴露公网更安全。
@@ -355,7 +383,9 @@ sudo docker update --restart=no <容器ID>   # 防止 always 策略再拉起（r
 
 | 路径 | 页面 |
 |---|---|
-| `/admin/login` | 登录 |
+| /admin/login | 登录 |
+| /admin/forgot-password | 邮箱验证码找回密码 |
+| /admin/account | 账号安全：修改密码 / 设置找回邮箱 |
 | `/admin` | Dashboard（统计 + 最近文章） |
 | `/admin/posts` | 文章列表 |
 | `/admin/posts/new` | 新建 |
@@ -367,7 +397,7 @@ sudo docker update --restart=no <容器ID>   # 防止 always 策略再拉起（r
 
 ## 后台使用
 
-浏览器打开 `http(s)://你的域名或IP/admin`，用 `.env` 里的 `ADMIN_USERNAME` / `ADMIN_PASSWORD` 登录（首次启动如果 `ADMIN_PASSWORD` 留空，随机密码会打到 systemd journal）。
+浏览器打开 `http(s)://你的域名或IP/admin`，用 `.env` 里的 `ADMIN_USERNAME` / `ADMIN_PASSWORD` 登录（首次启动如果 `ADMIN_PASSWORD` 留空，随机密码会打到 systemd journal）。登录后进入「账号安全」设置找回邮箱；配置 SMTP 后，可在 `/admin/forgot-password` 通过邮箱验证码重置密码。
 
 - **概览**： 已发布 / 草稿 / 置顶 统计 + 最近 6 篇。
 - **文章**： 搜索 + 状态过滤 + 表格列表，可置顶 / 删除。

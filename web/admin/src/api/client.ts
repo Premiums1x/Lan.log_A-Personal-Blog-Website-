@@ -53,6 +53,15 @@ export type Post = {
 
 export type User = { id: string; username: string; display_name?: string }
 
+export type Account = {
+  id: string
+  username: string
+  display_name?: string
+  recovery_email: string
+  has_recovery_email: boolean
+  password_updated_at: string
+}
+
 // Format an ISO timestamp into a readable Chinese date string.
 export function datetime(iso?: string | null): string {
   if (!iso) return '—'

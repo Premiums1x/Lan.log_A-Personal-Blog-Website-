@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/lancer/log/internal/auth"
 	"github.com/lancer/log/internal/config"
 	"github.com/lancer/log/internal/db"
@@ -21,6 +22,10 @@ import (
 func main() {
 	log.SetFlags(log.Ltime | log.Lmsgprefix)
 	log.SetPrefix("lancer.log • ")
+
+	if err := godotenv.Load(); err != nil {
+		log.Printf("note: .env not loaded (%v) — using process env", err)
+	}
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -80,7 +85,7 @@ func bootstrapAdmin(ctx context.Context, dsn string) error {
 	if err != nil {
 		return err
 	}
-	_, err = repo.CreateUser(ctx, d.Pool, user, hash, user)
+	_, err = repo.CreateUserWithEmail(ctx, d.Pool, user, hash, user, os.Getenv("ADMIN_EMAIL"))
 	if err != nil {
 		return err
 	}

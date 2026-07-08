@@ -1,0 +1,40 @@
+package mailer
+
+import (
+	"bytes"
+	"encoding/base64"
+	"fmt"
+	"net/smtp"
+	"strings"
+
+	"github.com/lancer/log/internal/config"
+)
+
+func SendPasswordResetCode(cfg config.SMTPConfig, to, brand, code string) error {
+	if !cfg.Ready() {
+		return fmt.Errorf("smtp is not configured")
+	}
+	brand = strings.TrimSpace(brand)
+	if brand == "" {
+		brand = "lancer.log"
+	}
+
+	subject := fmt.Sprintf("%s 管理端密码重置验证码", brand)
+	body := fmt.Sprintf("你的 %s 管理端密码重置验证码是：%s\n\n验证码 10 分钟内有效。如果不是你本人操作，请忽略这封邮件。\n", brand, code)
+
+	var msg bytes.Buffer
+	fmt.Fprintf(&msg, "From: %s\r\n", cfg.From)
+	fmt.Fprintf(&msg, "To: %s\r\n", to)
+	fmt.Fprintf(&msg, "Subject: %s\r\n", encodeSubject(subject))
+	fmt.Fprintf(&msg, "MIME-Version: 1.0\r\n")
+	fmt.Fprintf(&msg, "Content-Type: text/plain; charset=UTF-8\r\n")
+	fmt.Fprintf(&msg, "\r\n%s", body)
+
+	addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
+	auth := smtp.PlainAuth("", cfg.Username, cfg.Password, cfg.Host)
+	return smtp.SendMail(addr, auth, cfg.From, []string{to}, msg.Bytes())
+}
+
+func encodeSubject(s string) string {
+	return "=?UTF-8?B?" + base64.StdEncoding.EncodeToString([]byte(s)) + "?="
+}

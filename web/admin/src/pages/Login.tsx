@@ -47,9 +47,12 @@ export default function Login() {
               登录
             </Button>
           </Form.Item>
+          <Button type="link" block onClick={() => nav('/admin/forgot-password')} style={{ padding: 0 }}>
+            忘记密码？
+          </Button>
         </Form>
         <Typography.Text type="secondary" style={{ display: 'block', marginTop: 16, fontSize: 12, textAlign: 'center' }}>
-          默认账号见启动日志 ADMIN_PASSWORD
+          忘记密码时可通过账号安全页绑定的邮箱找回
         </Typography.Text>
       </Card>
     </div>

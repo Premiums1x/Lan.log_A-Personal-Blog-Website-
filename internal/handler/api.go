@@ -9,26 +9,27 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/lancer/log/internal/auth"
+	"github.com/lancer/log/internal/config"
 	"github.com/lancer/log/internal/db"
 	"github.com/lancer/log/internal/markdown"
 	"github.com/lancer/log/internal/repo"
 )
 
 type APIHandler struct {
-	DB      *db.DB
-	Auth    *auth.Manager
-	SiteURL string
+	DB     *db.DB
+	Auth   *auth.Manager
+	Config config.Config
 }
 
-func NewAPIHandler(d *db.DB, m *auth.Manager) *APIHandler {
-	return &APIHandler{DB: d, Auth: m}
+func NewAPIHandler(d *db.DB, m *auth.Manager, cfg config.Config) *APIHandler {
+	return &APIHandler{DB: d, Auth: m, Config: cfg}
 }
 
 func ok(c *gin.Context, v any)                  { c.JSON(200, v) }
 func fail(c *gin.Context, code int, msg string) { c.JSON(code, gin.H{"error": msg}) }
 
 // Brand returns the public brand name (from settings/branding.brand).
-// Public endpoint 鈥?no JWT required 鈥?used by admin SPA shell/login.
+// Public endpoint - no JWT required - used by admin SPA shell/login.
 func (h *APIHandler) Brand(c *gin.Context) {
 	var raw []byte
 	err := h.DB.Pool.QueryRow(c.Request.Context(),
@@ -62,7 +63,7 @@ func (h *APIHandler) Login(c *gin.Context) {
 	}
 	u, err := repo.GetUserByUsername(c.Request.Context(), h.DB.Pool, strings.TrimSpace(r.Username))
 	if errors.Is(err, repo.ErrNotFound) {
-		fail(c, 401, "鐢ㄦ埛鍚嶆垨瀵嗙爜閿欒")
+		fail(c, 401, "用户名或密码错误")
 		return
 	}
 	if err != nil {
@@ -70,7 +71,7 @@ func (h *APIHandler) Login(c *gin.Context) {
 		return
 	}
 	if !auth.CheckPassword(u.PasswordHash, r.Password) {
-		fail(c, 401, "鐢ㄦ埛鍚嶆垨瀵嗙爜閿欒")
+		fail(c, 401, "用户名或密码错误")
 		return
 	}
 	token, err := h.Auth.Issue(u)

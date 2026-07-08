@@ -1,5 +1,5 @@
 import { Layout, Menu, Button, Typography } from 'antd'
-import { DashboardOutlined, FileTextOutlined, SettingOutlined, LinkOutlined, LogoutOutlined } from '@ant-design/icons'
+import { DashboardOutlined, FileTextOutlined, SettingOutlined, LinkOutlined, LogoutOutlined, LockOutlined } from '@ant-design/icons'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/auth'
 import { useBrand } from '../hooks/brand'
@@ -14,10 +14,11 @@ export default function Shell() {
 
   const selectedKey = (() => {
     const p = loc.pathname
-    if (p === '/admin') return 'dashboard'
-    if (p.startsWith('/admin/posts')) return 'posts'
-    if (p.startsWith('/admin/settings')) return 'settings'
-    return 'dashboard'
+    if (p === '/admin') return '/admin'
+    if (p.startsWith('/admin/posts')) return '/admin/posts'
+    if (p.startsWith('/admin/account')) return '/admin/account'
+    if (p.startsWith('/admin/settings')) return '/admin/settings'
+    return '/admin'
   })()
 
   return (
@@ -37,6 +38,7 @@ export default function Shell() {
             { key: '/admin', icon: <DashboardOutlined />, label: '概览' },
             { key: '/admin/posts', icon: <FileTextOutlined />, label: '文章' },
             { key: '/admin/settings', icon: <SettingOutlined />, label: '站点设置' },
+            { key: '/admin/account', icon: <LockOutlined />, label: '账号安全' },
           ]}
         />
         <div style={{ position: 'absolute', bottom: 0, width: 232, padding: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>

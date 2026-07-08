@@ -60,7 +60,7 @@ func New(ctx context.Context, cfg config.Config) (*Server, error) {
 	r.StaticFS("/static", http.FS(staticFS))
 
 	pub := handler.NewPublicHandler(d, tmpl)
-	api := handler.NewAPIHandler(d, mgr)
+	api := handler.NewAPIHandler(d, mgr, cfg)
 
 	r.GET("/", pub.Index)
 	r.GET("/posts/:slug", pub.Post)
@@ -74,9 +74,14 @@ func New(ctx context.Context, cfg config.Config) (*Server, error) {
 	ag := r.Group("/api")
 	ag.POST("/login", api.Login)
 	ag.GET("/brand", api.Brand)
+	ag.POST("/password-reset/request", api.RequestPasswordReset)
+	ag.POST("/password-reset/confirm", api.ConfirmPasswordReset)
 	authed := ag.Group("")
 	authed.Use(mgr.Middleware())
 	authed.GET("/me", api.Me)
+	authed.GET("/account", api.Account)
+	authed.PUT("/account/recovery-email", api.UpdateRecoveryEmail)
+	authed.PUT("/account/password", api.UpdateAccountPassword)
 	authed.GET("/posts", api.ListPosts)
 	authed.GET("/posts/:id", api.GetPost)
 	authed.POST("/posts", api.CreatePost)
