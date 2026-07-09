@@ -37,7 +37,7 @@ export default function PostEdit() {
     if (data) setF({
       slug: data.slug, title: data.title, excerpt: data.excerpt, body_md: data.body_md,
       cover_url: data.cover_url, section: data.section, status: data.status,
-      pinned: data.pinned, tag_names: data.tags.map(t => t.name),
+      pinned: data.pinned, tag_names: (data.tags || []).map(t => t.name),
     })
   }, [data])
 

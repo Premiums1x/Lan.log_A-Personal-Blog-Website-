@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Table, Button, Input, Select, Space, Tag, Typography, Popconfirm, App as AntdApp } from 'antd'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { api, type Post, datetime } from '../api/client'
 
@@ -59,6 +59,10 @@ export default function Posts() {
         rowKey="id"
         loading={isLoading}
         dataSource={items}
+        onRow={record => ({
+          onDoubleClick: () => nav(`/admin/posts/${record.id}/edit`),
+          style: { cursor: 'pointer' },
+        })}
         pagination={{ pageSize: 20, showSizeChanger: false, hideOnSinglePage: true }}
         columns={[
           {
@@ -97,18 +101,28 @@ export default function Posts() {
           },
           {
             title: '操作',
-            width: 80,
+            width: 140,
             render: (_, p) => (
-              <Popconfirm
-                title="删除文章"
-                description={`确定删除《${p.title}》？该操作不可撤销。`}
-                onConfirm={() => del.mutate(p.id)}
-                okText="删除"
-                cancelText="取消"
-                okButtonProps={{ danger: true }}
-              >
-                <Button type="link" danger size="small">删除</Button>
-              </Popconfirm>
+              <Space size={4}>
+                <Button
+                  type="link"
+                  size="small"
+                  icon={<EditOutlined />}
+                  onClick={() => nav(`/admin/posts/${p.id}/edit`)}
+                >
+                  编辑
+                </Button>
+                <Popconfirm
+                  title="删除文章"
+                  description={`确定删除《${p.title}》？该操作不可撤销。`}
+                  onConfirm={() => del.mutate(p.id)}
+                  okText="删除"
+                  cancelText="取消"
+                  okButtonProps={{ danger: true }}
+                >
+                  <Button type="link" danger size="small">删除</Button>
+                </Popconfirm>
+              </Space>
             ),
           },
         ]}

@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:server": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../scripts/build-linux.ps1",
+    "build:deploy": "npm run build && npm run build:server",
+    "dev:local": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../scripts/dev-local.ps1"
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
