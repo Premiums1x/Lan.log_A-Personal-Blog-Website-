@@ -339,7 +339,7 @@ func TagsForPost(ctx context.Context, q db.Conn, postID uuid.UUID) ([]model.Tag,
 		return nil, err
 	}
 	defer rows.Close()
-	var out []model.Tag
+	out := make([]model.Tag, 0)
 	for rows.Next() {
 		var t model.Tag
 		if err := rows.Scan(&t.ID, &t.Slug, &t.Name); err != nil {
