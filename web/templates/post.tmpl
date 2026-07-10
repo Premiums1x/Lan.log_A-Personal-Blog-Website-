@@ -3,7 +3,6 @@
 {{define "title"}}{{.Post.Title}} — {{$.Site.Brand.Brand}}{{end}}
 
 {{define "content"}}
-<!-- ============ ARTICLE HERO ============ -->
 <header class="art-hero">
   <div class="art-hero-inner reveal">
     <div class="art-crumbs">
@@ -14,7 +13,7 @@
       <span>{{.Post.Slug}}.md</span>
     </div>
     <h1 class="art-h1">{{RenderInline .Post.Title}}</h1>
-    <p class="art-lede">{{.Post.Excerpt}}</p>
+    {{if .Post.Excerpt}}<p class="art-lede">{{.Post.Excerpt}}</p>{{end}}
     <div class="art-meta">
       <span class="avatar">{{FirstChar .AuthorName}}</span>
       <span class="v">{{.AuthorName}}</span>
@@ -30,23 +29,23 @@
   </div>
 </header>
 
-{{if .Post.CoverURL}}
-<div class="art-cover reveal">
-  <img src="{{.Post.CoverURL}}" alt="{{.Post.Title}}">
-</div>
-{{end}}
+<main class="article-page">
+  <article class="article-paper reveal" aria-label="{{.Post.Title}}">
+    {{if .Post.CoverURL}}
+    <div class="art-cover">
+      <img src="{{.Post.CoverURL}}" alt="{{.Post.Title}}">
+    </div>
+    {{end}}
+    <div class="art-body">
+      {{RenderHTML .Post.BodyHTML}}
+    </div>
+  </article>
+</main>
 
-<!-- ============ ARTICLE BODY ============ -->
-<article class="art-body">
-  {{RenderHTML .Post.BodyHTML}}
-</article>
-
-<!-- ============ ARTICLE END ============ -->
 <section class="art-end reveal">
   <div class="art-tags">
     {{range .Post.Tags}}<a class="tag" href="/tags/{{.Slug}}">{{.Name}}</a>{{end}}
   </div>
-
   <div class="author-bio">
     <div class="av">{{FirstChar .AuthorName}}</div>
     <div>
@@ -56,7 +55,6 @@
   </div>
 </section>
 
-<!-- ============ PREV / NEXT ============ -->
 {{if or .Prev .Next}}
 <nav class="art-pn reveal">
   {{if .Prev}}<a class="pn-card" href="/posts/{{.Prev.Slug}}">

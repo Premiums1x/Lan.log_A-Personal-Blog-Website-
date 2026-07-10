@@ -112,8 +112,8 @@ export default function PostEdit() {
           </Col>
         </Row>
 
-        <Form.Item label="摘要（留空自动取正文开头）">
-          <Input.TextArea rows={2} value={f.excerpt} onChange={e => set('excerpt', e.target.value)} placeholder="一句话摘要" />
+        <Form.Item label="摘要（可选）">
+          <Input.TextArea rows={2} value={f.excerpt} onChange={e => set('excerpt', e.target.value)} placeholder="留空则不展示" />
         </Form.Item>
 
         <Form.Item label={`正文 (Markdown) · 约 ${wordCount} 字`}>

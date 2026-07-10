@@ -129,6 +129,10 @@ type postReq struct {
 	TagNames []string `json:"tag_names"`
 }
 
+func optionalExcerpt(excerpt string) string {
+	return strings.TrimSpace(excerpt)
+}
+
 func (h *APIHandler) CreatePost(c *gin.Context) {
 	var r postReq
 	if err := c.ShouldBindJSON(&r); err != nil {
@@ -142,10 +146,7 @@ func (h *APIHandler) CreatePost(c *gin.Context) {
 	bodyHTML := markdown.Render(r.BodyMD)
 	words := markdown.WordCount(r.BodyMD)
 	readMin := markdown.ReadMinutes(r.BodyMD)
-	excerpt := strings.TrimSpace(r.Excerpt)
-	if excerpt == "" {
-		excerpt = markdown.Excerpt(r.BodyMD, 120)
-	}
+	excerpt := optionalExcerpt(r.Excerpt)
 	commit := newCommitHash(r.Slug)
 	section := strings.TrimSpace(r.Section)
 	if section == "" {
@@ -180,10 +181,7 @@ func (h *APIHandler) UpdatePost(c *gin.Context) {
 	bodyHTML := markdown.Render(r.BodyMD)
 	words := markdown.WordCount(r.BodyMD)
 	readMin := markdown.ReadMinutes(r.BodyMD)
-	excerpt := strings.TrimSpace(r.Excerpt)
-	if excerpt == "" {
-		excerpt = markdown.Excerpt(r.BodyMD, 120)
-	}
+	excerpt := optionalExcerpt(r.Excerpt)
 	commit := newCommitHash(r.Slug)
 	section := strings.TrimSpace(r.Section)
 	if section == "" {
