@@ -12,6 +12,12 @@ type Config struct {
 	JWTSecret   string
 	JWTTTLHours int
 	SMTP        SMTPConfig
+	GitHub      GitHubConfig
+}
+
+type GitHubConfig struct {
+	Token    string
+	Username string
 }
 
 type SMTPConfig struct {
@@ -38,6 +44,10 @@ func Load() (Config, error) {
 			Username: env("SMTP_USERNAME", ""),
 			Password: env("SMTP_PASSWORD", ""),
 			From:     env("SMTP_FROM", ""),
+		},
+		GitHub: GitHubConfig{
+			Token:    env("GITHUB_TOKEN", ""),
+			Username: env("GITHUB_USERNAME", ""),
 		},
 	}
 	if len(c.JWTSecret) < 16 {
