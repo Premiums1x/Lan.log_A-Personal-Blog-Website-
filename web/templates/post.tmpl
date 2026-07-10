@@ -30,13 +30,16 @@
 </header>
 
 <main class="article-page">
-  <article class="article-paper reveal" aria-label="{{.Post.Title}}">
+  <article class="article-paper reveal" id="article-paper" aria-label="{{.Post.Title}}">
+  <svg class="art-trace" id="art-trace-svg" aria-hidden="true" preserveAspectRatio="none">
+    <path id="trace-path" class="trace-path" d=""/>
+  </svg>
     {{if .Post.CoverURL}}
     <div class="art-cover">
       <img src="{{.Post.CoverURL}}" alt="{{.Post.Title}}">
     </div>
     {{end}}
-    <div class="art-body">
+    <div class="art-body" id="art-body">
       {{RenderHTML .Post.BodyHTML}}
     </div>
   </article>
@@ -46,6 +49,121 @@
   <div class="art-tags">
     {{range .Post.Tags}}<a class="tag" href="/tags/{{.Slug}}">{{.Name}}</a>{{end}}
   </div>
+  {{if .Heatmap}}
+  <div class="gh-heatmap" id="gh-heatmap">
+    <div class="gh-heatmap-head">
+      <span class="gh-label">{{.Heatmap.Total}} contributions in the last year</span>
+    </div>
+    <div class="gh-grid">
+      {{range .Heatmap.Weeks}}
+      <div class="gh-week">
+        {{range .}}<div class="gh-cell l{{.Level}}" data-d="{{.Date}}" data-c="{{.Count}}" tabindex="0" role="img" aria-label="{{.Date}} · {{.Count}} contributions"></div>{{end}}
+      </div>
+      {{end}}
+    </div>
+    <div class="gh-heatmap-foot">
+      <a href="{{.Heatmap.URL}}" target="_blank" rel="noopener">@{{.Heatmap.Username}}</a>
+      <span class="gh-sep">·</span>
+      <a href="{{.Heatmap.URL}}" target="_blank" rel="noopener">github.com/{{.Heatmap.Username}} →</a>
+    </div>
+    <div class="gh-scroll" id="gh-scroll" aria-hidden="true">
+      <div class="gh-scroll-track" id="gh-scroll-track">
+        <div class="gh-scroll-thumb" id="gh-scroll-thumb"></div>
+      </div>
+    </div>
+    <div class="gh-tip" id="gh-tip" aria-hidden="true">
+      <span class="gh-tip-date">&nbsp;</span>
+      <span class="gh-tip-count">&nbsp;</span>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var heatmap = document.getElementById('gh-heatmap');
+    var tip = document.getElementById('gh-tip');
+    if (!heatmap || !tip) return;
+    var dEl = tip.querySelector('.gh-tip-date');
+    var cEl = tip.querySelector('.gh-tip-count');
+    var showTimer = null, hideTimer = null;
+    function fmtDate(s){
+      var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var p = s.split('-'); return m[(+p[1]-1)||0] + ' ' + (+p[2]) + ', ' + p[0];
+    }
+    function show(cell){
+      clearTimeout(hideTimer);
+      dEl.textContent = fmtDate(cell.dataset.d || '');
+      var n = +cell.dataset.c || 0;
+      cEl.textContent = n + (n === 1 ? ' contribution' : ' contributions');
+      var hr = heatmap.getBoundingClientRect();
+      var cr = cell.getBoundingClientRect();
+      tip.style.left = (cr.left - hr.left + cr.width/2) + 'px';
+      tip.style.top  = (cr.top  - hr.top ) + 'px';
+      tip.classList.add('is-show');
+      tip.setAttribute('aria-hidden','false');
+    }
+    function hide(){
+      showTimer && clearTimeout(showTimer);
+      hideTimer = setTimeout(function(){
+        tip.classList.remove('is-show');
+        tip.setAttribute('aria-hidden','true');
+      }, 90);
+    }
+    heatmap.addEventListener('mouseover', function(e){
+      var cell = e.target.closest && e.target.closest('.gh-cell');
+      if (cell) show(cell);
+    });
+    heatmap.addEventListener('mouseout', function(e){
+      var cell = e.target.closest && e.target.closest('.gh-cell');
+      if (cell) hide();
+    });
+    heatmap.addEventListener('focusin', function(e){
+      var cell = e.target.closest && e.target.closest('.gh-cell');
+      if (cell) show(cell);
+    });
+    heatmap.addEventListener('focusout', function(e){
+      var cell = e.target.closest && e.target.closest('.gh-cell');
+      if (cell) hide();
+    });
+
+    // ─── custom scrollbar synced to grid scroll ───
+    var grid = heatmap.querySelector('.gh-grid');
+    var scroll = document.getElementById('gh-scroll');
+    var track  = document.getElementById('gh-scroll-track');
+    var thumb  = document.getElementById('gh-scroll-thumb');
+    if (grid && track && thumb) {
+      var ratio = 0;
+      function update() {
+        var max = grid.scrollWidth - grid.clientWidth;
+        if (max <= 0) { scroll.style.display = 'none'; return; }
+        scroll.style.display = '';
+        ratio = grid.scrollLeft / max;
+        var tw = track.clientWidth - thumb.offsetWidth;
+        thumb.style.left = (ratio * tw) + 'px';
+      }
+      grid.addEventListener('scroll', function(){
+        update();
+        scroll.classList.remove('flash');
+      }, { passive: true });
+      grid.addEventListener('wheel', function(){ scroll.classList.add('flash'); clearTimeout(scroll._f); scroll._f = setTimeout(function(){ scroll.classList.remove('flash'); }, 700); }, { passive: true });
+      var dragging = false;
+      track.addEventListener('pointerdown', function(e){
+        dragging = true; scroll.classList.add('dragging'); e.preventDefault();
+        jump(e);
+      });
+      window.addEventListener('pointermove', function(e){ if (dragging) jump(e); });
+      window.addEventListener('pointerup', function(){ if (dragging) { dragging = false; scroll.classList.remove('dragging'); } });
+      function jump(e){
+        var r = track.getBoundingClientRect();
+        var p = (e.clientX - r.left) / r.width;
+        if (p < 0) p = 0; if (p > 1) p = 1;
+        var max = grid.scrollWidth - grid.clientWidth;
+        grid.scrollTo({ left: p * max, behavior: 'smooth' });
+      }
+      update();
+      window.addEventListener('resize', update);
+    }
+  })();
+  </script>
+  {{else}}
   <div class="author-bio">
     <div class="av">{{FirstChar .AuthorName}}</div>
     <div>
@@ -53,6 +171,7 @@
       <p>{{.Site.Brand.FooterTag}} <a href="/">读全部文章 →</a></p>
     </div>
   </div>
+  {{end}}
 </section>
 
 {{if or .Prev .Next}}
@@ -67,4 +186,125 @@
   </a>{{else}}<div></div>{{end}}
 </nav>
 {{end}}
+<script>
+(function(){
+  var paper = document.getElementById('article-paper');
+  if (!paper) return;
+  var svg = paper.querySelector('#art-trace-svg');
+  var path = paper.querySelector('#trace-path');
+  if (!svg || !path) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  var SEG = 160;
+  var R  = 16;       /* corner radius */
+  var Rm = 1;        /* path inset to keep stroke fully visible */
+  var Rr = R - Rm;   /* arc radius on the path */
+  var raf = null, pending = null;
+  var peri = 0;
+
+  function buildPath(){
+    var r = paper.getBoundingClientRect();
+    var W = r.width, H = r.height;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    var P = 'M ' + R  + ' ' + Rm + ' '
+      + 'H ' + (W - R) + ' '
+      + 'A ' + Rr + ' ' + Rr + ' 0 0 1 ' + (W - Rm)  + ' ' + R        + ' '
+      + 'V ' + (H - R) + ' '
+      + 'A ' + Rr + ' ' + Rr + ' 0 0 1 ' + (W - R)   + ' ' + (H - Rm) + ' '
+      + 'H ' + R + ' '
+      + 'A ' + Rr + ' ' + Rr + ' 0 0 1 ' + Rm        + ' ' + (H - R) + ' '
+      + 'V ' + R + ' '
+      + 'A ' + Rr + ' ' + Rr + ' 0 0 1 ' + R         + ' ' + Rm      + ' '
+      + 'Z';
+    path.setAttribute('d', P);
+    peri = path.getTotalLength();
+    path.style.strokeDasharray = SEG + ' ' + (peri - SEG);
+  }
+
+  /* 周长坐标: 从 path 起点 (R, Rm) 顺时针走。
+     四段直线 + 四段 arc (each = PI/2 * Rr). */
+  function project(x, y, W, H){
+    var arcL = Math.PI / 2 * Rr;
+    var topLen  = (W - 2 * R);
+    var rightLen = (H - 2 * R);
+    var bottomLen = topLen;
+    var leftLen = rightLen;
+    var dT = y, dR = W - x, dB = H - y, dL = x;
+    var m = Math.min(dT, dR, dB, dL);
+    var t;
+    var cTop  = arcL;
+    var cRight = cTop  + topLen + arcL;
+    var cBot   = cRight + rightLen + arcL;
+    var cLeft  = cBot   + bottomLen + arcL;
+    if (m === dT) {
+      var xx = Math.max(R, Math.min(W - R, x));
+      t = cTop + (xx - R);
+    } else if (m === dR) {
+      var yy = Math.max(R, Math.min(H - R, y));
+      t = cRight + (yy - R);
+    } else if (m === dB) {
+      xx = Math.max(R, Math.min(W - R, x));
+      t = cBot + ((W - R) - xx);
+    } else {
+      yy = Math.max(R, Math.min(H - R, y));
+      t = cLeft + ((H - R) - yy);
+    }
+    return t;
+  }
+
+  function schedule(x, y, W, H){
+    pending = [x, y, W, H];
+    if (raf) return;
+    raf = requestAnimationFrame(function(){
+      raf = null;
+      if (!pending) return;
+      var p = pending; pending = null;
+      var t = project(p[0], p[1], p[2], p[3]);
+      /* 让 dash 中心对齐鼠标投影点 */
+      var off = (peri - (t - SEG / 2)) % peri;
+      if (off < 0) off += peri;
+      path.style.strokeDashoffset = off + 'px';
+    });
+  }
+
+  paper.addEventListener('mouseenter', function(){
+    if (!peri) buildPath();
+    paper.classList.add('art-on');
+  });
+  paper.addEventListener('mousemove', function(e){
+    var r = paper.getBoundingClientRect();
+    schedule(e.clientX - r.left, e.clientY - r.top, r.width, r.height);
+  });
+  paper.addEventListener('mouseleave', function(){
+    paper.classList.remove('art-on');
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+    pending = null;
+  });
+  window.addEventListener('resize', function(){
+    if (peri) buildPath();
+  });
+})();
+</script>
+<script>
+(function(){
+  var body = document.getElementById('art-body');
+  if (!body) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  if (!('IntersectionObserver' in window)) return;
+  var kids = Array.prototype.slice.call(body.children);
+  kids.forEach(function(el){ el.classList.add('prose-rise'); });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) {
+        e.target.style.animationDelay = Math.min((e.target.dataset.i||0)*40, 240) + 'ms';
+        e.target.classList.add('prose-in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+  kids.forEach(function(el, i){ el.dataset.i = i; io.observe(el); });
+})();
+</script>
 {{end}}

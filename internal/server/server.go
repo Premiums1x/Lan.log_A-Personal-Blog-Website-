@@ -10,6 +10,7 @@ import (
 	"github.com/lancer/log/internal/auth"
 	"github.com/lancer/log/internal/config"
 	"github.com/lancer/log/internal/db"
+	"github.com/lancer/log/internal/github"
 	"github.com/lancer/log/internal/handler"
 	"github.com/lancer/log/web"
 )
@@ -59,7 +60,12 @@ func New(ctx context.Context, cfg config.Config) (*Server, error) {
 	staticFS, _ := fs.Sub(web.StaticFS, "static")
 	r.StaticFS("/static", http.FS(staticFS))
 
-	pub := handler.NewPublicHandler(d, tmpl)
+	var gh *github.Client
+	if cfg.GitHub.Token != "" {
+		gh = github.NewClient(cfg.GitHub.Token, cfg.GitHub.Username)
+	}
+
+	pub := handler.NewPublicHandler(d, tmpl, gh)
 	api := handler.NewAPIHandler(d, mgr, cfg)
 
 	r.GET("/", pub.Index)
