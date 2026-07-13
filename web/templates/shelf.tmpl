@@ -4,7 +4,7 @@
 
 {{define "content"}}
 <main class="lancer-page lancer-loadout">
-  <header class="lancer-page-hero loadout-hero cinematic-stage runway-stage shelf-stage">
+  <header class="lancer-page-hero loadout-hero cinematic-stage runway-stage shelf-stage page-opening">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="page-poster-word" aria-hidden="true">LOADOUT</div>
     <div class="page-hero-copy reveal">
@@ -20,7 +20,11 @@
       <p class="terminal-ok">4 directories&nbsp;&nbsp; 0 reasons to stop</p>
       <strong>ACTIVE DECK</strong>
     </div>
+    <a class="drawer-cue" href="#shelf-drawer" data-drawer-target="shelf-drawer" aria-label="继续向下浏览">
+      <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
+    </a>
   </header>
+  <div class="page-drawer" id="shelf-drawer">
   <section class="loadout-wrap">
     <div class="loadout-title reveal">
       <div class="lancer-section-index"><span>01</span><p>INFLUENCE DECK</p></div>
@@ -46,5 +50,6 @@
     </section>
     {{else}}<p class="lancer-empty">LOADOUT EMPTY / 从管理后台添加新的影响来源。</p>{{end}}
   </section>
+  </div>
 </main>
 {{end}}

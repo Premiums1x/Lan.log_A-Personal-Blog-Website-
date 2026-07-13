@@ -95,6 +95,23 @@ func TestPrimaryOpenersUseOpenCinematicStages(t *testing.T) {
 	requireIdentityStrings(t, css, "open cinematic stage", `.cinematic-stage`, `border-radius: 0`)
 }
 
+func TestPrimaryPagesUseViewportOpenersAndDrawerShells(t *testing.T) {
+	for _, file := range []string{"templates/index.tmpl", "templates/about.tmpl", "templates/archive.tmpl", "templates/shelf.tmpl"} {
+		source := readIdentitySource(t, file)
+		requireIdentityStrings(t, source, file, `page-opening`, `class="drawer-cue`, `class="page-drawer`, `data-drawer-target`)
+	}
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "drawer CSS", `min-height: calc(100svh`, `.page-drawer`, `@media (prefers-reduced-motion: reduce)`)
+}
+
+func TestDrawerCueUsesSharedProgressiveBehavior(t *testing.T) {
+	layout := readIdentitySource(t, "templates/layout.tmpl")
+	requireIdentityStrings(t, layout, "public shell", `/static/lancer.js`)
+
+	source := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, source, "drawer cue JS", `[data-drawer-target]`, `addEventListener('click'`, `classList.add('is-used')`, `{ once: true }`)
+}
+
 func TestCinematicStagesDoNotReflowAbsoluteAtmosphereLayers(t *testing.T) {
 	css := readIdentitySource(t, "static/lancer.css")
 	if strings.Contains(css, `.cinematic-stage > *:not(.cinematic-image) { position: relative;`) {

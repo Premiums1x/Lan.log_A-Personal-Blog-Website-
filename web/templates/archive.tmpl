@@ -4,7 +4,7 @@
 
 {{define "content"}}
 <main class="lancer-page lancer-archive">
-  <header class="lancer-page-hero archive-cockpit cinematic-stage runway-stage archive-stage">
+  <header class="lancer-page-hero archive-cockpit cinematic-stage runway-stage archive-stage page-opening">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="page-poster-word" aria-hidden="true">SEASONS</div>
     <div class="page-hero-copy reveal">
@@ -20,7 +20,11 @@
       <div><span>WORDS LOGGED</span><strong>{{.TotalWords}}</strong></div>
       <div><span>ORDER</span><strong>NEWEST</strong></div>
     </div>
+    <a class="drawer-cue" href="#archive-drawer" data-drawer-target="archive-drawer" aria-label="继续向下浏览">
+      <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
+    </a>
   </header>
+  <div class="page-drawer" id="archive-drawer">
   <section class="season-layout">
     <aside class="race-control reveal">
       <div class="race-control-head"><span>RACE CONTROL</span><i>LIVE</i></div>
@@ -55,5 +59,6 @@
       </div>
     </div>
   </section>
+  </div>
 </main>
 {{end}}

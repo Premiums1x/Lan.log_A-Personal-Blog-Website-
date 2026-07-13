@@ -4,7 +4,7 @@
 
 {{define "content"}}
 <main class="lancer-page lancer-profile">
-  <header class="lancer-page-hero profile-hero cinematic-stage runway-stage about-stage">
+  <header class="lancer-page-hero profile-hero cinematic-stage runway-stage about-stage page-opening">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="page-poster-word" aria-hidden="true">PROFILE</div>
     <div class="page-hero-copy reveal">
@@ -29,7 +29,11 @@
       </div>
       <div class="manifest-status"><span>PROCESS</span><strong>ROUND_ACTIVE</strong><i></i></div>
     </aside>
+    <a class="drawer-cue" href="#about-drawer" data-drawer-target="about-drawer" aria-label="继续向下浏览">
+      <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
+    </a>
   </header>
+  <div class="page-drawer" id="about-drawer">
   <section class="profile-lanes">
     <article class="profile-lane on-track reveal">
       <div class="lane-label"><span>01</span><strong>ON TRACK</strong></div>
@@ -123,5 +127,6 @@
       </div>
     </div>
   </section>
+  </div>
 </main>
 {{end}}

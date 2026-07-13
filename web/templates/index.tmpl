@@ -2,7 +2,7 @@
 
 {{define "content"}}
 <main class="lancer-home">
-  <header class="lancer-hero cinematic-stage dev-stage">
+  <header class="lancer-hero cinematic-stage dev-stage page-opening">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="lancer-hero-noise" aria-hidden="true"></div>
     <div class="lancer-hero-ghost" aria-hidden="true">LANCER</div>
@@ -54,7 +54,11 @@
       {{end}}
       <div><span>STATUS</span><strong class="live-dot">ROUND ACTIVE</strong></div>
     </div>
+    <a class="drawer-cue" href="#home-drawer" data-drawer-target="home-drawer" aria-label="继续向下浏览">
+      <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
+    </a>
   </header>
+  <div class="page-drawer" id="home-drawer">
   {{if .Pinned}}
   <section class="lancer-current reveal" aria-labelledby="current-play-title">
     <div class="lancer-section-index"><span>01</span><p>CURRENT PLAY</p></div>
@@ -123,5 +127,6 @@
       {{end}}
     </div>
   </section>
+  </div>
 </main>
 {{end}}
