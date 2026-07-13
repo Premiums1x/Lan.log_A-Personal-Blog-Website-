@@ -139,6 +139,12 @@ export ADMIN_EMAIL=you@example.com
 # export SMTP_PASSWORD=your-smtp-password
 # export SMTP_FROM=you@example.com
 
+# 可选：用于后台生成文章摘要的 OpenAI-compatible 接口
+LLM_API_URL=https://your-provider.example/v1/chat/completions
+LLM_API_KEY=your-llm-api-key
+LLM_MODEL=your-model-name
+LLM_TIMEOUT_SECONDS=20
+
 go run ./cmd/blog
 ```
 
@@ -256,6 +262,12 @@ SMTP_PORT=587
 SMTP_USERNAME=you@example.com
 SMTP_PASSWORD=your-smtp-password
 SMTP_FROM=you@example.com
+
+# 可选：用于后台生成文章摘要的 OpenAI-compatible 接口
+LLM_API_URL=https://your-provider.example/v1/chat/completions
+LLM_API_KEY=your-llm-api-key
+LLM_MODEL=your-model-name
+LLM_TIMEOUT_SECONDS=20
 ```
 
 > `HTTP_ADDR=127.0.0.1:8088` 只绑回环，只让 Nginx 反代访问，比 `:8088` 暴露公网更安全。

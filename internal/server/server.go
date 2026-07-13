@@ -93,6 +93,7 @@ func New(ctx context.Context, cfg config.Config) (*Server, error) {
 	authed.POST("/posts", api.CreatePost)
 	authed.PUT("/posts/:id", api.UpdatePost)
 	authed.DELETE("/posts/:id", api.DeletePost)
+	authed.POST("/ai/excerpt", api.GenerateExcerpt)
 	authed.GET("/settings", api.ListSettings)
 	authed.GET("/settings/:key", api.GetSetting)
 	authed.PUT("/settings/:key", api.SetSetting)

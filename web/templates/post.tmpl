@@ -194,8 +194,11 @@
   var Rr = R - Rm;   /* arc radius on the path */
   var MOVE_INTERVAL = 120;
   var POSITION_STEP = 36;
+  var EDGE_ZONE = 80;
+  var EDGE_HYSTERESIS = 20;
   var moveTimer = null, pending = null;
   var scrolling = false, scrollIdle = null;
+  var activeEdge = null, currentOffset = null;
   var peri = 0;
 
   function buildPath(){
@@ -214,40 +217,64 @@
       + 'Z';
     path.setAttribute('d', P);
     peri = path.getTotalLength();
+    currentOffset = null;
     path.style.strokeDasharray = SEG + ' ' + (peri - SEG);
   }
 
-  /* 周长坐标: 从 path 起点 (R, Rm) 顺时针走。
-     四段直线 + 四段 arc (each = PI/2 * Rr). */
-  function project(x, y, W, H){
-    var arcL = Math.PI / 2 * Rr;
-    var topLen  = (W - 2 * R);
-    var rightLen = (H - 2 * R);
-    var bottomLen = topLen;
-    var leftLen = rightLen;
-    var dT = y, dR = W - x, dB = H - y, dL = x;
-    var m = Math.min(dT, dR, dB, dL);
-    var t;
-    var cTop  = arcL;
-    var cRight = cTop  + topLen + arcL;
-    var cBot   = cRight + rightLen + arcL;
-    var cLeft  = cBot   + bottomLen + arcL;
-    if (m === dT) {
-      var xx = Math.max(R, Math.min(W - R, x));
-      t = cTop + (xx - R);
-    } else if (m === dR) {
-      var yy = Math.max(R, Math.min(H - R, y));
-      t = cRight + (yy - R);
-    } else if (m === dB) {
-      xx = Math.max(R, Math.min(W - R, x));
-      t = cBot + ((W - R) - xx);
-    } else {
-      yy = Math.max(R, Math.min(H - R, y));
-      t = cLeft + ((H - R) - yy);
+  function nearestEdge(x, y, W, H){
+    var distances = { top: y, right: W - x, bottom: H - y, left: x };
+    var edge = 'top';
+    ['right', 'bottom', 'left'].forEach(function(name){
+      if (distances[name] < distances[edge]) edge = name;
+    });
+    if (distances[edge] > EDGE_ZONE) return null;
+    if (activeEdge && edge !== activeEdge) {
+      var activeDistance = distances[activeEdge];
+      var advantage = activeDistance - distances[edge];
+      if (activeDistance <= EDGE_ZONE && advantage < EDGE_HYSTERESIS) {
+        edge = activeEdge;
+      }
     }
-    return t;
+    activeEdge = edge;
+    return edge;
   }
 
+  /* 周长坐标: 从 path 起点 (R, Rm) 顺时针走。 */
+  function project(x, y, W, H, edge){
+    var arcL = Math.PI / 2 * Rr;
+    var topLen = W - 2 * R;
+    var rightLen = H - 2 * R;
+    var bottomLen = topLen;
+    var cTop = arcL;
+    var cRight = cTop + topLen + arcL;
+    var cBot = cRight + rightLen + arcL;
+    var cLeft = cBot + bottomLen + arcL;
+    var xx, yy;
+    if (edge === 'top') {
+      xx = Math.max(R, Math.min(W - R, x));
+      return cTop + (xx - R);
+    }
+    if (edge === 'right') {
+      yy = Math.max(R, Math.min(H - R, y));
+      return cRight + (yy - R);
+    }
+    if (edge === 'bottom') {
+      xx = Math.max(R, Math.min(W - R, x));
+      return cBot + ((W - R) - xx);
+    }
+    yy = Math.max(R, Math.min(H - R, y));
+    return cLeft + ((H - R) - yy);
+  }
+
+  function unwrapOffset(off){
+    if (currentOffset === null) {
+      currentOffset = off;
+      return off;
+    }
+    off += Math.round((currentOffset - off) / peri) * peri;
+    currentOffset = off;
+    return off;
+  }
   function schedule(x, y, W, H){
     if (scrolling) return;
     pending = [x, y, W, H];
@@ -256,17 +283,23 @@
       moveTimer = null;
       if (!pending) return;
       var p = pending; pending = null;
-      var t = project(p[0], p[1], p[2], p[3]);
+      var edge = nearestEdge(p[0], p[1], p[2], p[3]);
+      if (!edge) {
+        activeEdge = null;
+        paper.classList.remove('art-on');
+        return;
+      }
+      var t = project(p[0], p[1], p[2], p[3], edge);
       t = Math.round(t / POSITION_STEP) * POSITION_STEP;
       /* 让 dash 中心对齐吸附后的边框位置 */
       var off = (peri - (t - SEG / 2)) % peri;
       if (off < 0) off += peri;
-      path.style.strokeDashoffset = off + 'px';
+      path.style.strokeDashoffset = unwrapOffset(off) + 'px';
+      paper.classList.add('art-on');
     }, MOVE_INTERVAL);
   }
   paper.addEventListener('mouseenter', function(){
     if (!peri) buildPath();
-    paper.classList.add('art-on');
   });
   paper.addEventListener('mousemove', function(e){
     var r = paper.getBoundingClientRect();
@@ -276,6 +309,7 @@
     paper.classList.remove('art-on');
     if (moveTimer) { clearTimeout(moveTimer); moveTimer = null; }
     pending = null;
+    activeEdge = null;
   });
   window.addEventListener('scroll', function(){
     scrolling = true;

@@ -82,3 +82,43 @@ func TestArticleTraceUsesDeliberateSteppedMotionAndFreezesWhileScrolling(t *test
 		t.Error("article trace transition must settle before the next sampled move")
 	}
 }
+
+func TestArticleTraceOnlyRespondsNearEdgesAndUsesShortestRoute(t *testing.T) {
+	template, err := os.ReadFile("templates/post.tmpl")
+	if err != nil {
+		t.Fatalf("read post template: %v", err)
+	}
+
+	for _, want := range []string{
+		`var EDGE_ZONE = 80;`,
+		`var EDGE_HYSTERESIS = 20;`,
+		`function nearestEdge(x, y, W, H)`,
+		`if (!edge) {`,
+		`function unwrapOffset(off)`,
+		`Math.round((currentOffset - off) / peri) * peri`,
+	} {
+		if !strings.Contains(string(template), want) {
+			t.Errorf("article trace edge behavior missing %q", want)
+		}
+	}
+}
+
+func TestAdminEditorReviewsAIExcerptBeforePublishing(t *testing.T) {
+	source, err := os.ReadFile("admin/src/pages/PostEdit.tsx")
+	if err != nil {
+		t.Fatalf("read post editor: %v", err)
+	}
+	for _, want := range []string{
+		`/api/ai/excerpt`,
+		`正文已修改，当前摘要可能已经过期`,
+		`AI 生成最新摘要`,
+		`保留当前摘要`,
+		`清空摘要`,
+		`excerpt_reviewed`,
+		`excerpt_stale`,
+	} {
+		if !strings.Contains(string(source), want) {
+			t.Errorf("post editor AI excerpt workflow missing %q", want)
+		}
+	}
+}

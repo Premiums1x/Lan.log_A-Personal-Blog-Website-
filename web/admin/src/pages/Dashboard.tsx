@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { Card, Col, Row, Statistic, Typography, List, Tag, Button, Space, Skeleton } from 'antd'
+import { Alert, Card, Col, Row, Statistic, Typography, List, Tag, Button, Space, Skeleton } from 'antd'
 import { PlusOutlined, FileTextOutlined, SettingOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { api, type Post, datetime } from '../api/client'
 
 export default function Dashboard() {
   const nav = useNavigate()
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['posts'],
     queryFn: () => api<{ items: Post[]; total: number }>('/api/posts'),
   })
@@ -21,13 +21,13 @@ export default function Dashboard() {
 
       <Row gutter={16} style={{ marginBottom: 28 }}>
         <Col span={8}>
-          <Card><Statistic title="已发布" value={published.length} /></Card>
+          <Card><Statistic title="已发布" value={isError ? '—' : published.length} /></Card>
         </Col>
         <Col span={8}>
-          <Card><Statistic title="草稿" value={drafts.length} /></Card>
+          <Card><Statistic title="草稿" value={isError ? '—' : drafts.length} /></Card>
         </Col>
         <Col span={8}>
-          <Card><Statistic title="置顶" value={pinned.length} suffix="篇" /></Card>
+          <Card><Statistic title="置顶" value={isError ? '—' : pinned.length} suffix={isError ? undefined : '篇'} /></Card>
         </Col>
       </Row>
 
@@ -39,7 +39,14 @@ export default function Dashboard() {
 
       <Typography.Title level={5}>最近文章</Typography.Title>
       <Card>
-        {isLoading ? <Skeleton active /> : items.length === 0 ? (
+        {isLoading ? <Skeleton active /> : isError ? (
+          <Alert
+            type="error"
+            showIcon
+            message="文章数据加载失败"
+            description="登录状态可能已失效，请重新登录；如果问题仍然存在，请检查服务器日志。"
+          />
+        ) : items.length === 0 ? (
           <Typography.Text type="secondary">还没有文章，点"新建文章"开始写第一篇。</Typography.Text>
         ) : (
           <List

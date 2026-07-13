@@ -17,23 +17,26 @@ type User struct {
 }
 
 type Post struct {
-	ID          uuid.UUID  `json:"id"`
-	Slug        string     `json:"slug"`
-	Title       string     `json:"title"`
-	Excerpt     string     `json:"excerpt"`
-	BodyMD      string     `json:"body_md"`
-	BodyHTML    string     `json:"body_html"`
-	CoverURL    string     `json:"cover_url"`
-	Section     string     `json:"section"`
-	Status      string     `json:"status"`
-	CommitHash  string     `json:"commit_hash"`
-	ReadMinutes int        `json:"read_minutes"`
-	Words       int        `json:"words"`
-	Pinned      bool       `json:"pinned"`
-	PublishedAt *time.Time `json:"published_at"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	Tags        []Tag      `json:"tags"`
+	ID                      uuid.UUID  `json:"id"`
+	Slug                    string     `json:"slug"`
+	Title                   string     `json:"title"`
+	Excerpt                 string     `json:"excerpt"`
+	ExcerptSource           string     `json:"excerpt_source"`
+	ExcerptReviewedBodyHash string     `json:"excerpt_reviewed_body_hash"`
+	ExcerptStale            bool       `json:"excerpt_stale"`
+	BodyMD                  string     `json:"body_md"`
+	BodyHTML                string     `json:"body_html"`
+	CoverURL                string     `json:"cover_url"`
+	Section                 string     `json:"section"`
+	Status                  string     `json:"status"`
+	CommitHash              string     `json:"commit_hash"`
+	ReadMinutes             int        `json:"read_minutes"`
+	Words                   int        `json:"words"`
+	Pinned                  bool       `json:"pinned"`
+	PublishedAt             *time.Time `json:"published_at"`
+	CreatedAt               time.Time  `json:"created_at"`
+	UpdatedAt               time.Time  `json:"updated_at"`
+	Tags                    []Tag      `json:"tags"`
 }
 
 func (p Post) Published() bool { return p.Status == "published" }

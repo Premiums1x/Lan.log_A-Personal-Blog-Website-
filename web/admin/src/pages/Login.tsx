@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Form, Input, Button, Card, Typography, App as AntdApp } from 'antd'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
@@ -12,6 +12,13 @@ export default function Login() {
   const brand = useBrand()
   const { message } = AntdApp.useApp()
   const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    const reason = new URLSearchParams(loc.search).get('reason')
+    if (reason !== 'session-expired') return
+    message.warning('登录状态已失效，请重新登录')
+    nav('/admin/login', { replace: true })
+  }, [loc.search, message, nav])
 
   if (user) { nav('/admin'); return null }
 

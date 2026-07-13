@@ -23,6 +23,11 @@ export async function api<T = any>(
     try { data = JSON.parse(text) } catch { data = text }
   }
   if (!res.ok) {
+    const isPublicAuthRequest = path === '/api/login' || path.startsWith('/api/password-reset/')
+    if (res.status === 401 && tok && !isPublicAuthRequest) {
+      tokenStore.clear()
+      window.location.replace('/admin/login?reason=session-expired')
+    }
     const msg = (data && data.error) || res.statusText || 'request failed'
     const err = new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
     ;(err as any).status = res.status
@@ -36,6 +41,9 @@ export type Post = {
   slug: string
   title: string
   excerpt: string
+  excerpt_source: 'manual' | 'ai' | 'empty'
+  excerpt_reviewed_body_hash: string
+  excerpt_stale: boolean
   body_md: string
   body_html: string
   cover_url: string

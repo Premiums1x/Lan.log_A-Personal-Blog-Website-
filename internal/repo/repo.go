@@ -143,11 +143,11 @@ func InvalidatePasswordResetCodes(ctx context.Context, q db.Conn, userID uuid.UU
 
 // ---------- Posts ----------
 
-const postCols = `id, slug, title, excerpt, body_md, body_html, cover_url, section, status, commit_hash, read_minutes, words, pinned, published_at, created_at, updated_at`
+const postCols = `id, slug, title, excerpt, excerpt_source, excerpt_reviewed_body_hash, body_md, body_html, cover_url, section, status, commit_hash, read_minutes, words, pinned, published_at, created_at, updated_at`
 
 func scanPost(row pgx.Row, p *model.Post) error {
 	return row.Scan(
-		&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
+		&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.ExcerptSource, &p.ExcerptReviewedBodyHash, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
 		&p.Section, &p.Status, &p.CommitHash, &p.ReadMinutes, &p.Words, &p.Pinned,
 		&p.PublishedAt, &p.CreatedAt, &p.UpdatedAt,
 	)
@@ -186,7 +186,7 @@ func GetPostBySlug(ctx context.Context, q db.Conn, slug string) (model.Post, err
 	var p model.Post
 	err := q.QueryRow(ctx,
 		`SELECT `+postCols+` FROM posts WHERE slug=$1`, slug,
-	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
+	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.ExcerptSource, &p.ExcerptReviewedBodyHash, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
 		&p.Section, &p.Status, &p.CommitHash, &p.ReadMinutes, &p.Words, &p.Pinned,
 		&p.PublishedAt, &p.CreatedAt, &p.UpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -203,7 +203,7 @@ func GetPostByID(ctx context.Context, q db.Conn, id uuid.UUID) (model.Post, erro
 	var p model.Post
 	err := q.QueryRow(ctx,
 		`SELECT `+postCols+` FROM posts WHERE id=$1`, id,
-	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
+	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.ExcerptSource, &p.ExcerptReviewedBodyHash, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
 		&p.Section, &p.Status, &p.CommitHash, &p.ReadMinutes, &p.Words, &p.Pinned,
 		&p.PublishedAt, &p.CreatedAt, &p.UpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -233,7 +233,7 @@ func PinnedPost(ctx context.Context, q db.Conn) (*model.Post, error) {
 	var p model.Post
 	err := q.QueryRow(ctx,
 		`SELECT `+postCols+` FROM posts WHERE pinned=true AND status='published' LIMIT 1`,
-	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
+	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.ExcerptSource, &p.ExcerptReviewedBodyHash, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
 		&p.Section, &p.Status, &p.CommitHash, &p.ReadMinutes, &p.Words, &p.Pinned,
 		&p.PublishedAt, &p.CreatedAt, &p.UpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -247,16 +247,18 @@ func PinnedPost(ctx context.Context, q db.Conn) (*model.Post, error) {
 }
 
 type PostInput struct {
-	Slug     string   `json:"slug"`
-	Title    string   `json:"title"`
-	Excerpt  string   `json:"excerpt"`
-	BodyMD   string   `json:"body_md"`
-	BodyHTML string   `json:"body_html"`
-	CoverURL string   `json:"cover_url"`
-	Section  string   `json:"section"`
-	Status   string   `json:"status"`
-	Pinned   bool     `json:"pinned"`
-	TagNames []string `json:"tag_names"`
+	Slug                    string   `json:"slug"`
+	Title                   string   `json:"title"`
+	Excerpt                 string   `json:"excerpt"`
+	ExcerptSource           string   `json:"excerpt_source"`
+	ExcerptReviewedBodyHash string   `json:"excerpt_reviewed_body_hash"`
+	BodyMD                  string   `json:"body_md"`
+	BodyHTML                string   `json:"body_html"`
+	CoverURL                string   `json:"cover_url"`
+	Section                 string   `json:"section"`
+	Status                  string   `json:"status"`
+	Pinned                  bool     `json:"pinned"`
+	TagNames                []string `json:"tag_names"`
 }
 
 func CreatePost(ctx context.Context, q db.Conn, in PostInput, commit string, readMin, words int) (model.Post, error) {
@@ -267,12 +269,12 @@ func CreatePost(ctx context.Context, q db.Conn, in PostInput, commit string, rea
 	}
 	var p model.Post
 	err := q.QueryRow(ctx,
-		`INSERT INTO posts (slug,title,excerpt,body_md,body_html,cover_url,section,status,commit_hash,read_minutes,words,pinned,published_at)
-		 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+		`INSERT INTO posts (slug,title,excerpt,excerpt_source,excerpt_reviewed_body_hash,body_md,body_html,cover_url,section,status,commit_hash,read_minutes,words,pinned,published_at)
+		 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
 		 RETURNING `+postCols,
-		in.Slug, in.Title, in.Excerpt, in.BodyMD, in.BodyHTML, in.CoverURL, in.Section,
+		in.Slug, in.Title, in.Excerpt, in.ExcerptSource, in.ExcerptReviewedBodyHash, in.BodyMD, in.BodyHTML, in.CoverURL, in.Section,
 		in.Status, commit, readMin, words, in.Pinned, publishedAt,
-	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
+	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.ExcerptSource, &p.ExcerptReviewedBodyHash, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
 		&p.Section, &p.Status, &p.CommitHash, &p.ReadMinutes, &p.Words, &p.Pinned,
 		&p.PublishedAt, &p.CreatedAt, &p.UpdatedAt)
 	if err != nil {
@@ -298,11 +300,11 @@ func UpdatePost(ctx context.Context, q db.Conn, id uuid.UUID, in PostInput, comm
 
 	var p model.Post
 	err := q.QueryRow(ctx,
-		`UPDATE posts SET slug=$2,title=$3,excerpt=$4,body_md=$5,body_html=$6,cover_url=$7,section=$8,status=$9,commit_hash=$10,read_minutes=$11,words=$12,pinned=$13,published_at=$14,updated_at=now()
+		`UPDATE posts SET slug=$2,title=$3,excerpt=$4,excerpt_source=$5,excerpt_reviewed_body_hash=$6,body_md=$7,body_html=$8,cover_url=$9,section=$10,status=$11,commit_hash=$12,read_minutes=$13,words=$14,pinned=$15,published_at=$16,updated_at=now()
 		 WHERE id=$1 RETURNING `+postCols,
-		id, in.Slug, in.Title, in.Excerpt, in.BodyMD, in.BodyHTML, in.CoverURL, in.Section,
+		id, in.Slug, in.Title, in.Excerpt, in.ExcerptSource, in.ExcerptReviewedBodyHash, in.BodyMD, in.BodyHTML, in.CoverURL, in.Section,
 		in.Status, commit, readMin, words, in.Pinned, publishedAt,
-	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
+	).Scan(&p.ID, &p.Slug, &p.Title, &p.Excerpt, &p.ExcerptSource, &p.ExcerptReviewedBodyHash, &p.BodyMD, &p.BodyHTML, &p.CoverURL,
 		&p.Section, &p.Status, &p.CommitHash, &p.ReadMinutes, &p.Words, &p.Pinned,
 		&p.PublishedAt, &p.CreatedAt, &p.UpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -408,7 +410,7 @@ func ListPublishedBySection(ctx context.Context, q db.Conn, section string) ([]m
 
 func ListPublishedByTag(ctx context.Context, q db.Conn, slug string) ([]model.Post, error) {
 	rows, err := q.Query(ctx,
-		`SELECT p.id, p.slug, p.title, p.excerpt, p.body_md, p.body_html, p.cover_url, p.section, p.status, p.commit_hash, p.read_minutes, p.words, p.pinned, p.published_at, p.created_at, p.updated_at FROM posts p
+		`SELECT p.id, p.slug, p.title, p.excerpt, p.excerpt_source, p.excerpt_reviewed_body_hash, p.body_md, p.body_html, p.cover_url, p.section, p.status, p.commit_hash, p.read_minutes, p.words, p.pinned, p.published_at, p.created_at, p.updated_at FROM posts p
 		 JOIN post_tags pt ON pt.post_id=p.id
 		 JOIN tags t ON t.id=pt.tag_id
 		 WHERE p.status='published' AND t.slug=$1
