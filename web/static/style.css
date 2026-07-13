@@ -580,7 +580,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   stroke-width: 2;
   stroke-linecap: round;
   filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 55%, transparent));
-  transition: stroke-dashoffset .22s cubic-bezier(.2,.7,.2,1);
+  transition: stroke-dashoffset .16s cubic-bezier(.2,.72,.25,1);
 }
 @media (prefers-reduced-motion: reduce) {
   .art-trace .trace-path { transition: none; }

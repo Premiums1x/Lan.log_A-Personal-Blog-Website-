@@ -163,14 +163,6 @@
     }
   })();
   </script>
-  {{else}}
-  <div class="author-bio">
-    <div class="av">{{FirstChar .AuthorName}}</div>
-    <div>
-      <h4>{{.AuthorName}}</h4>
-      <p>{{.Site.Brand.FooterTag}} <a href="/">读全部文章 →</a></p>
-    </div>
-  </div>
   {{end}}
 </section>
 
@@ -200,7 +192,10 @@
   var R  = 16;       /* corner radius */
   var Rm = 1;        /* path inset to keep stroke fully visible */
   var Rr = R - Rm;   /* arc radius on the path */
-  var raf = null, pending = null;
+  var MOVE_INTERVAL = 120;
+  var POSITION_STEP = 36;
+  var moveTimer = null, pending = null;
+  var scrolling = false, scrollIdle = null;
   var peri = 0;
 
   function buildPath(){
@@ -254,20 +249,21 @@
   }
 
   function schedule(x, y, W, H){
+    if (scrolling) return;
     pending = [x, y, W, H];
-    if (raf) return;
-    raf = requestAnimationFrame(function(){
-      raf = null;
+    if (moveTimer) return;
+    moveTimer = setTimeout(function(){
+      moveTimer = null;
       if (!pending) return;
       var p = pending; pending = null;
       var t = project(p[0], p[1], p[2], p[3]);
-      /* 让 dash 中心对齐鼠标投影点 */
+      t = Math.round(t / POSITION_STEP) * POSITION_STEP;
+      /* 让 dash 中心对齐吸附后的边框位置 */
       var off = (peri - (t - SEG / 2)) % peri;
       if (off < 0) off += peri;
       path.style.strokeDashoffset = off + 'px';
-    });
+    }, MOVE_INTERVAL);
   }
-
   paper.addEventListener('mouseenter', function(){
     if (!peri) buildPath();
     paper.classList.add('art-on');
@@ -278,9 +274,16 @@
   });
   paper.addEventListener('mouseleave', function(){
     paper.classList.remove('art-on');
-    if (raf) { cancelAnimationFrame(raf); raf = null; }
+    if (moveTimer) { clearTimeout(moveTimer); moveTimer = null; }
     pending = null;
   });
+  window.addEventListener('scroll', function(){
+    scrolling = true;
+    if (moveTimer) { clearTimeout(moveTimer); moveTimer = null; }
+    pending = null;
+    clearTimeout(scrollIdle);
+    scrollIdle = setTimeout(function(){ scrolling = false; }, 160);
+  }, { passive: true });
   window.addEventListener('resize', function(){
     if (peri) buildPath();
   });
