@@ -1,111 +1,127 @@
 {{template "layout" .}}
 
 {{define "content"}}
-<!-- ============ HERO ============ -->
-<header class="hero">
-  <div class="code-aurora" aria-hidden="true">
-    <div class="aurora-glow aurora-glow-a"></div>
-    <div class="aurora-glow aurora-glow-b"></div>
-    <div class="aurora-glow aurora-glow-c"></div>
-    <div class="aurora-grid"></div>
-    <div class="aurora-scan"></div>
-    <div class="aurora-code">
-      <span class="code-line l1"><span class="code-k">const</span> notes = render("today")</span>
-      <span class="code-line l2">commit(thought, "quiet detail")</span>
-      <span class="code-line l3"><span class="code-c">// drafts breathe before they ship</span></span>
-      <span class="code-line l4">await coffee.then(write)</span>
-      <span class="code-line l5">branch("main").merge(memory)</span>
-      <span class="code-line l6">publish(post).with(tags)</span>
-      <span class="code-line l7"><span class="code-k">return</span> small_steps<span class="code-cursor"></span></span>
+<main class="lancer-home">
+  <header class="lancer-hero cinematic-stage dev-stage">
+    <div class="cinematic-image" aria-hidden="true"></div>
+    <div class="lancer-hero-noise" aria-hidden="true"></div>
+    <div class="lancer-hero-ghost" aria-hidden="true">LANCER</div>
+
+    <div class="lancer-hero-copy reveal">
+      <div class="lancer-kicker"><span>PERSONAL LOG</span><i></i><span>SEASON 26</span></div>
+      <p class="lancer-role"><span>lancer@field-notes:~$</span> ./continue --mode=build</p>
+      <h1>
+        <span class="lancer-wordmark">LANCER</span>
+        <span class="lancer-thesis">{{.Hero.Title}}{{if .Hero.TitleAccent}}<em>{{.Hero.TitleAccent}}</em>{{end}}{{.Hero.TitleTail}}</span>
+      </h1>
+      <p class="lancer-hero-sub">{{.Hero.Sub}}</p>
+      <div class="lancer-actions">
+        <a class="lancer-action primary" href="#field-notes"><span>进入日志</span><b>↘</b></a>
+        <a class="lancer-action secondary" href="/about"><span>查看 profile</span><b>→</b></a>
+      </div>
     </div>
-  </div>
-  <div class="reveal">
-    <div class="hero-eyebrow">
-      <span class="prompt">$</span>
-      <span class="cmd">{{.Hero.EyebrowCmd}}</span>
-      <span class="blink"></span>
+
+    <div class="dev-console reveal" aria-label="Developer cockpit: source code and terminal output">
+      <div class="dev-editor-head"><span><i></i><i></i><i></i></span><strong>entry.route.ts</strong><b>UTF-8&nbsp;&nbsp;main*</b></div>
+      <ol class="dev-code">
+        <li><span>const</span> lancer = <b>{</b></li>
+        <li>&nbsp;&nbsp;role: <em>'programmer'</em>,</li>
+        <li>&nbsp;&nbsp;instinct: <em>'break_the_line'</em>,</li>
+        <li>&nbsp;&nbsp;mental: <em>'hold_the_clutch'</em>,</li>
+        <li>&nbsp;&nbsp;next: <strong>await</strong> buildTomorrow()</li>
+        <li><b>}</b></li>
+      </ol>
+      <div class="terminal-stream">
+        <div><span>lancer@field-notes</span><b>terminal</b></div>
+        <p><i>$</i> go run ./cmd/life --keep-moving</p>
+        <p class="terminal-ok">✓ route compiled&nbsp;&nbsp; ✓ doubt handled&nbsp;&nbsp; ✓ next round ready</p>
+      </div>
+      <div class="console-route">
+        <svg class="lancer-line" viewBox="0 0 620 180" aria-hidden="true">
+          <path class="lancer-line-grid" d="M44 138 C140 138 148 88 238 92 S356 30 446 70 S520 118 580 26"/>
+          <path class="lancer-line-live" d="M44 138 C140 138 148 88 238 92 S356 30 446 70 S520 118 580 26"/>
+          <g class="lancer-node node-explore"><circle cx="44" cy="138" r="6"/><text x="44" y="170">EXPLORE</text></g>
+          <g class="lancer-node node-break"><circle cx="238" cy="92" r="6"/><text x="238" y="124">BREAK</text></g>
+          <g class="lancer-node node-clutch"><circle cx="446" cy="70" r="6"/><text x="446" y="102">CLUTCH</text></g>
+          <g class="lancer-node node-next"><circle cx="580" cy="26" r="6"/><text x="580" y="58">NEXT</text></g>
+        </svg>
+      </div>
     </div>
-    <h1 class="hero-title">
-      {{.Hero.Title}}<br>
-      {{if .Hero.TitleAccent}}记录那些<span class="accent">{{.Hero.TitleAccent}}</span>{{end}}{{.Hero.TitleTail}}
-    </h1>
-    <p class="hero-sub">{{.Hero.Sub}}</p>
-    <div class="hero-meta">
+
+    <div class="lancer-telemetry reveal">
       {{range .Hero.Meta}}
-      <span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>
+      <div><span>{{.K}}</span><strong>{{.V}}</strong></div>
       {{end}}
+      <div><span>STATUS</span><strong class="live-dot">ROUND ACTIVE</strong></div>
     </div>
-  </div>
-
-  <div class="hero-corner">
-    {{range .Hero.Corner}}
-    <div class="row"><span class="label">{{.Label}}</span><span class="val">{{.Val}}</span></div>
-    {{end}}
-  </div>
-</header>
-
-{{if .Pinned}}
-<!-- ============ PINNED ============ -->
-<section class="pinned reveal">
-  <article class="pinned-card">
-    <a href="/posts/{{.Pinned.Slug}}" style="display:contents;">
-      <div class="pin-label">PINNED</div>
-      <h3>{{.Pinned.Title}}</h3>
-      <p class="lede">{{.Pinned.Excerpt}}</p>
-      <div class="pin-foot">
-        <span>{{FormatDate .Pinned.PublishedAt}}</span>
-        <span>·</span>
-        <span>{{range .Pinned.Tags}}#{{.Name}} {{end}}</span>
-        <span class="arrow">→</span>
+  </header>
+  {{if .Pinned}}
+  <section class="lancer-current reveal" aria-labelledby="current-play-title">
+    <div class="lancer-section-index"><span>01</span><p>CURRENT PLAY</p></div>
+    <a class="current-card" href="/posts/{{.Pinned.Slug}}">
+      <div class="current-main">
+        <p class="current-meta"><span>{{CommitShort .Pinned.CommitHash}}</span><span>{{FormatDate .Pinned.PublishedAt}}</span></p>
+        <h2 id="current-play-title">{{.Pinned.Title}}</h2>
+        {{if .Pinned.Excerpt}}<p>{{.Pinned.Excerpt}}</p>{{end}}
+      </div>
+      <div class="current-drawer">
+        <span>OPEN FIELD NOTE</span>
+        <strong>{{.Pinned.ReadMinutes}} MIN</strong>
+        <b>↗</b>
       </div>
     </a>
-  </article>
-</section>
-{{end}}
+  </section>
+  {{end}}
 
-<!-- ============ POSTS LIST ============ -->
-<section class="section" style="padding-top: 0;">
-  <div class="section-head reveal">
-    <h2>recent posts</h2>
-    <a class="view-all" href="/archive">view all ({{.PostCount}}) →</a>
-  </div>
-
-  <div class="posts">
-    {{range .Posts}}
-    <a class="post-row reveal" href="/posts/{{.Slug}}">
-      <div class="post-meta">
-        <span class="hash">{{CommitShort .CommitHash}}</span>
-        <span class="date">{{FormatDate .PublishedAt}}</span>
+  <section class="lancer-notes" id="field-notes" aria-labelledby="field-notes-title">
+    <div class="lancer-section-head reveal">
+      <div class="lancer-section-index"><span>02</span><p>FIELD NOTES</p></div>
+      <div>
+        <h2 id="field-notes-title">每一篇，都是这一阶段留下的回合记录。</h2>
+        <a href="/archive">完整赛季记录 <span>({{.PostCount}})</span> →</a>
       </div>
-      <div class="post-body">
-        <h3 class="post-title">{{.Title}}</h3>
-        <div class="post-tags">
-          {{range .Tags}}<span class="post-tag">{{.Name}}</span>{{end}}
+    </div>
+
+    <div class="field-grid">
+      {{range $i, $post := .Posts}}
+      <a class="field-card reveal field-card-{{$i}}" href="/posts/{{$post.Slug}}">
+        <div class="field-top">
+          <span class="field-number">NOTE / 0{{$i}}</span>
+          <span>{{$post.ReadMinutes}} MIN READ</span>
         </div>
-      </div>
-      <div class="post-read">{{.ReadMinutes}} min read</div>
-    </a>
-    {{else}}
-    <p style="font-family:var(--font-mono);color:var(--muted);padding:2rem 0;">// 还没有发布的文章。去 /admin 写第一篇吧。</p>
-    {{end}}
-  </div>
-</section>
-
-<!-- ============ STACK ============ -->
-<section class="section" style="padding-top: 3rem;">
-  <div class="section-head reveal">
-    <h2>this site is built with</h2>
-  </div>
-  <div class="container">
-    <div class="stack reveal">
-      {{range .Stack.Cells}}
-      <div class="stack-cell">
-        <div class="ic">{{.Ic}}</div>
-        <h4>{{.Title}}</h4>
-        <p>{{.Desc}}</p>
-      </div>
+        <div class="field-content">
+          <p>{{FormatDate $post.PublishedAt}} / {{$post.Section}}</p>
+          <h3>{{$post.Title}}</h3>
+          {{if $post.Excerpt}}<div class="field-drawer"><p>{{$post.Excerpt}}</p></div>{{end}}
+        </div>
+        <div class="field-foot">
+          <div>{{range $post.Tags}}<span>#{{.Name}}</span>{{end}}</div>
+          <b>↗</b>
+        </div>
+      </a>
+      {{else}}
+      <p class="lancer-empty">NO FIELD NOTES YET / 下一回合正在准备。</p>
       {{end}}
     </div>
-  </div>
-</section>
+  </section>
+
+  <section class="lancer-influences" aria-labelledby="influence-title">
+    <div class="lancer-section-head reveal">
+      <div class="lancer-section-index"><span>03</span><p>INFLUENCE DECK</p></div>
+      <div>
+        <h2 id="influence-title">技术之外，真正让我保持热血的东西。</h2>
+        <p>PADDOCK / COURT / SERVER / PLAYLIST</p>
+      </div>
+    </div>
+    <div class="influence-grid">
+      {{range $i, $cell := .Stack.Cells}}
+      <article class="influence-card reveal influence-{{$i}}">
+        <div class="influence-code">{{$cell.Ic}}</div>
+        <div class="influence-copy"><h3>{{$cell.Title}}</h3><p>{{$cell.Desc}}</p></div>
+        <span class="influence-arrow">↗</span>
+      </article>
+      {{end}}
+    </div>
+  </section>
+</main>
 {{end}}

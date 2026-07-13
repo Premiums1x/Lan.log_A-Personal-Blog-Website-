@@ -1,56 +1,50 @@
-﻿{{template "layout" .}}
+{{template "layout" .}}
 
-{{define "title"}}shelf - {{$.Site.Brand.Brand}}{{end}}
+{{define "title"}}loadout - {{$.Site.Brand.Brand}}{{end}}
 
 {{define "content"}}
-<header class="page-hero shelf-hero">
-  <div class="page-aurora page-aurora-shelf" aria-hidden="true">
-    <span class="page-glow page-glow-a"></span>
-    <span class="page-glow page-glow-b"></span>
-    <span class="page-grid"></span>
-    <span class="page-code pc1">collect(tools)</span>
-    <span class="page-code pc2">pin(reference)</span>
-    <span class="page-code pc3">ship(side_project)</span>
-    <span class="page-code pc4">reuse(good_ideas)</span>
-  </div>
-  <div class="reveal">
-    <div class="hero-eyebrow">
-      <span class="prompt">$</span>
-      <span class="cmd">{{.Shelf.EyebrowCmd}}</span>
-      <span class="blink"></span>
+<main class="lancer-page lancer-loadout">
+  <header class="lancer-page-hero loadout-hero cinematic-stage runway-stage shelf-stage">
+    <div class="cinematic-image" aria-hidden="true"></div>
+    <div class="page-poster-word" aria-hidden="true">LOADOUT</div>
+    <div class="page-hero-copy reveal">
+      <div class="lancer-kicker"><span>LOADOUT</span><i></i><span>TOOLS / STORIES / SIGNALS</span></div>
+      <p class="page-command"><span>lancer@field-notes:~$</span> ls ./loadout --group-by=signal</p>
+      <h1>带进下一回合的，<br><em>不只有代码。</em></h1>
+      <p>{{.Shelf.Intro}}</p>
     </div>
-    <h1>{{if .Shelf.TitleAccent}}{{SplitAccent .Shelf.Title .Shelf.TitleAccent}}{{else}}{{.Shelf.Title}}{{end}}</h1>
-    <p>{{.Shelf.Intro}}</p>
-    <div class="hero-meta">
-      {{range .Shelf.Meta}}<span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>{{end}}
+    <div class="loadout-terminal loadout-slots reveal">
+      <div class="dev-editor-head"><span><i></i><i></i><i></i></span><strong>loadout.sh</strong><b>bash</b></div>
+      <p><i>$</i> ls ./loadout</p>
+      <div class="loadout-output"><span>01&nbsp; engineering/</span><span>02&nbsp; stories/</span><span>03&nbsp; competition/</span><span>04&nbsp; soundtrack/</span></div>
+      <p class="terminal-ok">4 directories&nbsp;&nbsp; 0 reasons to stop</p>
+      <strong>ACTIVE DECK</strong>
     </div>
-  </div>
-</header>
+  </header>
+  <section class="loadout-wrap">
+    <div class="loadout-title reveal">
+      <div class="lancer-section-index"><span>01</span><p>INFLUENCE DECK</p></div>
+      <h2>我正在使用、阅读，或反复回去寻找力量的东西。</h2>
+    </div>
 
-<main class="shelf-wrap">
-  {{range .Shelf.Groups}}
-  <section class="shelf-group reveal">
-    <div class="shelf-group-head">
-      <span>{{.Eyebrow}}</span>
-      <h2>{{.Title}}</h2>
-      <p>{{.Desc}}</p>
-    </div>
-    <div class="shelf-grid">
-      {{range .Items}}
-      {{if .Href}}<a class="shelf-item" href="{{.Href}}" target="_blank" rel="noreferrer">{{else}}<div class="shelf-item">{{end}}
-        <div class="shelf-item-top">
-          <span class="shelf-meta">{{.Meta}}</span>
-          <span class="shelf-status">{{.Status}}</span>
-        </div>
-        <h3>{{.Title}}</h3>
-        <p>{{.Desc}}</p>
-        <div class="shelf-tags">{{range .Tags}}<span>{{.}}</span>{{end}}</div>
-      {{if .Href}}</a>{{else}}</div>{{end}}
-      {{end}}
-    </div>
+    {{range $groupIndex, $group := .Shelf.Groups}}
+    <section class="loadout-group reveal">
+      <header>
+        <span>DECK / 0{{$groupIndex}}</span>
+        <h2>{{$group.Title}}</h2>
+        <p>{{$group.Desc}}</p>
+      </header>
+      <div class="loadout-grid">
+        {{range $itemIndex, $item := $group.Items}}
+        {{if $item.Href}}<a class="loadout-card" href="{{$item.Href}}" target="_blank" rel="noreferrer">{{else}}<article class="loadout-card">{{end}}
+          <div class="loadout-card-top"><span>SLOT / 0{{$itemIndex}}</span><strong>{{$item.Status}}</strong></div>
+          <div class="loadout-card-copy"><p>{{$item.Meta}}</p><h3>{{$item.Title}}</h3><div class="loadout-drawer">{{$item.Desc}}</div></div>
+          <div class="loadout-tags">{{range $item.Tags}}<span>{{.}}</span>{{end}}<b>↗</b></div>
+        {{if $item.Href}}</a>{{else}}</article>{{end}}
+        {{end}}
+      </div>
+    </section>
+    {{else}}<p class="lancer-empty">LOADOUT EMPTY / 从管理后台添加新的影响来源。</p>{{end}}
   </section>
-  {{else}}
-  <p class="empty-line shelf-empty">// shelf is empty. Add items from /admin/settings/shelf.</p>
-  {{end}}
 </main>
 {{end}}

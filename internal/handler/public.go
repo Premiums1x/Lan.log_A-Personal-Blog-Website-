@@ -135,7 +135,7 @@ func (h *PublicHandler) Post(c *gin.Context) {
 	}
 
 	site, _ := h.siteData(c)
-	data := PostData{Site: site, Page: "", Post: p, AuthorName: "Lan"}
+	data := PostData{Site: site, Page: "", Post: p, AuthorName: "Lancer"}
 	data.Post.BodyHTML = body
 	if h.GitHub != nil && h.GitHub.Enabled() {
 		if cal, err := h.GitHub.FetchContributions(c.Request.Context()); err == nil {
@@ -299,58 +299,59 @@ func looksLikeLegacyNow(now NowData) bool {
 
 func defaultArchiveIntro() PageIntroData {
 	return PageIntroData{
-		EyebrowCmd:  "git log --reverse --stat",
-		Title:       "Archive",
-		TitleAccent: "Archive",
-		Intro:       "All published posts, grouped by time. This is a long-running learning log for frontend work, agents, backend practice, and ideas still taking shape.",
-		Meta:        []AboutMeta{{K: "mode", V: "timeline"}, {K: "order", V: "newest first"}, {K: "status", V: "published only"}},
+		EyebrowCmd:  "season --all --newest-first",
+		Title:       "Season Log",
+		TitleAccent: "Season",
+		Intro:       "不是胜场统计，而是每一阶段真实留下的路线。回头看时，希望能看见自己怎样探索、失误、修正，然后继续向前。",
+		Meta:        []AboutMeta{{K: "mode", V: "season record"}, {K: "order", V: "newest first"}, {K: "status", V: "published rounds"}},
 	}
 }
-
 func defaultAbout(site SiteData) AboutData {
 	return AboutData{
-		Title:       "A CS student moving from frontend toward agents and backend.",
-		TitleAccent: "agents",
+		Title:       "有些路还没走明白，但我仍然相信更好的明天。",
+		TitleAccent: "更好的明天",
 		Intro: []string{
-			"I am a computer science undergraduate about to enter senior year, currently working as a frontend intern.",
-			"This blog records the process of turning docs, internships, small projects, and self-study into practical engineering judgment.",
+			"我是 Lancer。这里不公开现实身份，只记录我愿意留下的思考、热爱和正在走的路线。",
+			"我喜欢进攻带来的突破，也希望自己在真正的残局里足够冷静，让看到这一回合的人感到放心。",
 		},
-		Meta:         []AboutMeta{{K: "role", V: "frontend intern"}, {K: "major", V: "computer science"}, {K: "next", V: "agent / backend"}, {K: "blog", V: site.Brand.Brand}},
-		BioYml:       BioYml{Name: "Lan", Role: "frontend intern / CS student", Stack: "react / go / agent", Writes: "learning in public", Based: "china", Hosting: "self-hosted blog"},
-		Uptime:       "still learning",
-		BodyMarkdown: "## About me\n\nI am in that useful stage where concepts are starting to make sense, but real implementation still exposes gaps. This blog keeps those gaps visible.\n\n## About this site\n\nThis is not a resume and not a tutorial archive. It is an engineering log for frontend internship notes, React practice, Go and backend experiments, agent ideas, and route changes in my learning plan.\n\n## Interests\n\nI like Max Verstappen's consistency and attack, and Stephen Curry's way of turning long practice into instinct. Coding has a bit of that too: repeat the basics, then stay calm in complex situations.",
+		Meta:         []AboutMeta{{K: "callsign", V: "Lancer"}, {K: "mode", V: "exploring"}, {K: "writes", V: "field notes"}, {K: "blog", V: site.Brand.Brand}},
+		BioYml:       BioYml{Name: "Lancer", Role: "explorer / builder", Stack: "frontend / go / agent", Writes: "field notes", Based: "private", Hosting: "self-hosted"},
+		Uptime:       "这一回合没结束",
+		BodyMarkdown: "## 为什么是这个博客\n\n它首先写给我自己。不是为了把一段经历包装成漂亮结论，而是为了保留探索、失误、修正和继续向前的证据。\n\n## 进攻与残局\n\n我喜欢突破手撕开防线的瞬间，也喜欢残局里噪音逐渐消失、只剩判断和执行的时刻。写代码也很像这样：有时要大胆进入，有时要让自己慢下来，把问题一个个处理。\n\n## 更好的明天\n\n生活并不总按计划推进。偶尔不顺利时，我希望自己还能咬咬牙，把今天向前推一点。只要这一回合没有结束，就还有下一次选择。",
 	}
 }
-
 func defaultNow() NowData {
 	return NowData{Lines: []NowLine{
-		{IsCmd: true, F: "cat", Args: "now.txt", C: "# current focus"},
-		{Arrow: "->", K: "internship", V: "frontend", IsString: true},
-		{Arrow: "->", K: "learning", V: "react / go / agents", IsString: true},
-		{Arrow: "->", K: "next", V: "ship small projects", IsString: true},
+		{IsCmd: true, F: "cat", Args: "round.txt", C: "# current round"},
+		{Arrow: "->", K: "building", V: "personal blog / field notes", IsString: true},
+		{Arrow: "->", K: "learning", V: "frontend / go / agents", IsString: true},
+		{Arrow: "->", K: "mental", V: "这一回合没结束", IsString: true},
+		{Arrow: "->", K: "next", V: "把今天推进一点", IsString: true},
 	}}
 }
-
 func defaultShelf() ShelfData {
 	return ShelfData{
-		EyebrowCmd:  "ls shelf/learning-stack",
-		Title:       "Shelf",
-		TitleAccent: "Shelf",
-		Intro:       "A living shelf for books, docs, tools, and courses I am reading, using, or planning to study more deeply.",
-		Meta:        []AboutMeta{{K: "type", V: "books / tools / courses"}, {K: "update", V: "manual"}, {K: "bias", V: "small useful things"}},
+		EyebrowCmd:  "loadout --show active",
+		Title:       "Loadout",
+		TitleAccent: "Loadout",
+		Intro:       "带进下一回合的工具、文档、故事、比赛和声音。它们不都直接关于代码，但都在塑造我的判断和热情。",
+		Meta:        []AboutMeta{{K: "type", V: "tools / stories / signals"}, {K: "update", V: "manual"}, {K: "owner", V: "Lancer"}},
 		Groups: []ShelfGroup{
-			{Title: "Learning", Eyebrow: "reading queue", Desc: "Resources that strengthen the engineering base.", Items: []ShelfItem{
-				{Title: "React Docs", Desc: "Rebuild muscle memory around components, state, effects, and data flow.", Meta: "frontend", Href: "https://react.dev/", Status: "re-reading", Tags: []string{"react", "frontend"}},
-				{Title: "Go by Example", Desc: "Small examples for Go syntax and standard library practice.", Meta: "backend", Href: "https://gobyexample.com/", Status: "active", Tags: []string{"go", "backend"}},
+			{Title: "Engineering", Eyebrow: "active tools", Desc: "帮助我把想法变成真实结果的工具和资料。", Items: []ShelfItem{
+				{Title: "React Docs", Desc: "回到组件、状态、Effect 与数据流的原点。", Meta: "frontend", Href: "https://react.dev/", Status: "active", Tags: []string{"react", "frontend"}},
+				{Title: "Go by Example", Desc: "用小例子训练后端语法、标准库和工程直觉。", Meta: "backend", Href: "https://gobyexample.com/", Status: "active", Tags: []string{"go", "backend"}},
 			}},
-			{Title: "Tools", Eyebrow: "daily kit", Desc: "Tools used in internship work and personal projects.", Items: []ShelfItem{
-				{Title: "VS Code / Cursor", Desc: "Main entry for frontend work, reading Go projects, and agent collaboration.", Meta: "editor", Href: "#", Status: "daily", Tags: []string{"editor", "agent"}},
-				{Title: "Postman / Apifox", Desc: "API debugging and frontend/backend integration practice.", Meta: "api", Href: "#", Status: "daily", Tags: []string{"api", "backend"}},
+			{Title: "Competition", Eyebrow: "mental models", Desc: "从赛道、球场和服务器里学到的进攻与冷静。", Items: []ShelfItem{
+				{Title: "Racecraft", Desc: "路线、节奏、轮胎与风险选择。速度来自精确，也来自敢于行动。", Meta: "F1", Status: "watching", Tags: []string{"Verstappen", "Leclerc"}},
+				{Title: "Clutch Notes", Desc: "突破先创造空间，残局再把噪音降到最低。", Meta: "Counter-Strike", Status: "training", Tags: []string{"NiKo", "clutch"}},
+			}},
+			{Title: "Soundtrack", Eyebrow: "energy source", Desc: "为长时间投入和想象中的高光时刻提供节奏。", Items: []ShelfItem{
+				{Title: "Millennium Mandopop", Desc: "周杰伦、邓紫棋，以及那些能把普通夜晚变成一段故事的歌。", Meta: "playlist", Status: "repeat", Tags: []string{"Mandopop", "2000s"}},
+				{Title: "Phonk / EDM", Desc: "快节奏、低频和推进感，适合需要重新进入状态的时刻。", Meta: "focus mix", Status: "playing", Tags: []string{"phonk", "edm"}},
 			}},
 		},
 	}
 }
-
 func (h *PublicHandler) NotFound(c *gin.Context) {
 	site, _ := h.siteData(c)
 	data := NotFoundData{Site: site, Page: "", Path: c.Request.URL.Path}

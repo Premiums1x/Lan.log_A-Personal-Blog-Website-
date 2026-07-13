@@ -3,8 +3,10 @@
 {{define "title"}}{{.Post.Title}} — {{$.Site.Brand.Brand}}{{end}}
 
 {{define "content"}}
-<header class="art-hero">
+<header class="art-hero article-cockpit">
+  <div class="article-cockpit-word" aria-hidden="true">ROUND</div>
   <div class="art-hero-inner reveal">
+    <div class="article-round-label"><span>ROUND NOTES</span><i></i><strong>FIELD / {{.Post.Section}}</strong></div>
     <div class="art-crumbs">
       <a href="/">~/posts</a>
       <span class="sep">/</span>
@@ -30,7 +32,7 @@
 </header>
 
 <main class="article-page">
-  <article class="article-paper reveal" id="article-paper" aria-label="{{.Post.Title}}">
+  <article class="article-paper" id="article-paper" aria-label="{{.Post.Title}}">
   <svg class="art-trace" id="art-trace-svg" aria-hidden="true" preserveAspectRatio="none">
     <path id="trace-path" class="trace-path" d=""/>
   </svg>

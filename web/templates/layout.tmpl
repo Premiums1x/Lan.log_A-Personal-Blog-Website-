@@ -1,70 +1,97 @@
-﻿{{define "layout"}}<!doctype html>
+{{define "layout"}}<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B0D12">
 <title>{{block "title" .}}{{.Site.Brand.Brand}}{{end}}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="/static/site-icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/lancer.css">
 </head>
-<body>
+<body class="lancer-site page-{{.Page}}">
 
 {{template "nav" .}}
-
 {{block "content" .}}{{end}}
-
 {{template "footer" .}}
 
 <script>
   const nav = document.getElementById('nav');
+  const navToggle = document.querySelector('[data-nav-toggle]');
   const onScroll = () => nav && nav.classList.toggle('is-scrolled', window.scrollY > 8);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
-  }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  if (nav && navToggle) {
+    navToggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', String(open));
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-in'));
+  }
 </script>
 </body>
 </html>{{end}}
 
 {{define "nav"}}
-<nav class="nav" id="nav">
-  <div class="nav-inner">
-    <a class="brand" href="/">
-      <span class="prompt">~/</span><span class="path">{{.Site.Brand.Brand}}</span><span class="cursor"></span>
+<nav class="nav lancer-nav" id="nav">
+  <div class="nav-inner lancer-nav-inner">
+    <a class="brand lancer-brand" href="/" aria-label="Lancer home">
+      <span class="lancer-mark">L/</span>
+      <span class="lancer-brand-copy">
+        <strong>{{.Site.Brand.Brand}}</strong>
+        <small>FIELD NOTES</small>
+      </span>
     </a>
-    <div class="nav-links">
+    <div class="nav-runtime" aria-label="build status"><i></i><span>branch / main</span><b>commit / {{.Site.Brand.CommitHash}}</b></div>
+    <div class="nav-links lancer-nav-links" id="site-menu">
       {{range .Site.Nav.Links}}
-      <a href="{{.Href}}"{{if eq .Label $.Page}} class="active"{{end}}>{{.Label}}</a>
+      <a href="{{.Href}}"{{if eq .Label $.Page}} class="active"{{end}}><span>{{.Label}}</span></a>
       {{end}}
       {{if .Site.Nav.CTALabel}}<a href="{{.Site.Nav.CTAHref}}" class="nav-cta">{{.Site.Nav.CTALabel}}</a>{{end}}
     </div>
-    <button class="nav-burger">menu</button>
+    <button class="nav-burger lancer-menu" data-nav-toggle aria-expanded="false" aria-controls="site-menu">
+      <span>MENU</span><i></i>
+    </button>
   </div>
 </nav>
 {{end}}
 
 {{define "footer"}}
-<footer class="footer">
-  <div class="footer-inner">
-    <div>
-      <div class="footer-brand"><span class="prompt">~/</span>{{.Site.Brand.Brand}}</div>
+<footer class="footer lancer-footer">
+  <div class="lancer-footer-lead">
+    <span class="lancer-footer-index">L/26</span>
+    <p>这一回合没结束。<br><strong>把今天推进一点，明天继续进攻。</strong></p>
+  </div>
+  <div class="footer-inner lancer-footer-inner">
+    <div class="lancer-footer-brand">
+      <div class="footer-brand"><span class="lancer-mark small">L/</span>{{.Site.Brand.Brand}}</div>
       <p class="footer-tag">{{.Site.Brand.FooterTag}}</p>
     </div>
     {{range .Site.Footer.Cols}}
     <div class="footer-col">
       <h4>{{.H}}</h4>
-      <ul>
-        {{range .Links}}<li><a href="{{.Href}}">{{.Label}}</a></li>{{end}}
-      </ul>
+      <ul>{{range .Links}}<li><a href="{{.Href}}">{{.Label}} <span>↗</span></a></li>{{end}}</ul>
     </div>
     {{end}}
   </div>
-  <div class="footer-bottom">
+  <div class="footer-bottom lancer-footer-bottom">
     <span class="commit">© {{.Site.Brand.SinceYear}} — {{YearNow}} {{.Site.Brand.Brand}} · commit <span class="hash">{{.Site.Brand.CommitHash}}</span> · main</span>
     <span>{{.Site.Brand.BuildBadge}}</span>
   </div>
