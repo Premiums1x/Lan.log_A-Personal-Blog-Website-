@@ -129,14 +129,52 @@ func TestCinematicBackgroundAssetsAreWired(t *testing.T) {
 }
 
 func TestAboutInfluencesSwitchOnPointerAndKeyboardFocus(t *testing.T) {
-	source := readIdentitySource(t, "templates/about.tmpl")
-	requireIdentityStrings(t, source, "interactive influences",
+	templateSource := readIdentitySource(t, "templates/about.tmpl")
+	requireIdentityStrings(t, templateSource, "interactive influence markup",
 		`class="influence-preview`,
 		`data-influence`,
-		`pointerenter`,
-		`focusin`,
+		`data-image`,
 		`aria-selected`,
 	)
+
+	scriptSource := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, scriptSource, "interactive influence behavior",
+		`.interactive-influences`,
+		`pointerenter`,
+		`focusin`,
+		`click`,
+		`layers[0].style.setProperty('--influence-image'`,
+		`layers[nextLayer].style.setProperty('--influence-image'`,
+	)
+	if strings.Contains(scriptSource, `root.style.setProperty('--influence-image'`) {
+		t.Fatal("influence image state must be isolated per preview layer")
+	}
+}
+
+func TestHomeUsesSeparateMobileOpeningFocalPoint(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/index.tmpl")
+	requireIdentityStrings(t, templateSource, "home opener crop",
+		`--opening-position:68% 28%`,
+		`--opening-position-mobile:48% center`,
+	)
+
+	cssSource := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, cssSource, "mobile opener crop CSS",
+		`background-position: var(--opening-position-mobile, var(--opening-position))`,
+	)
+}
+
+func TestInterestWorldAppearsBeyondEveryHero(t *testing.T) {
+	checks := map[string][]string{
+		"templates/index.tmpl":   {`class="world-deck`, `data-world="niko"`, `class="chapter-image-band`},
+		"templates/about.tmpl":   {`--influence-image`, `niko-2022.webp`, `verstappen-2018.webp`},
+		"templates/archive.tmpl": {`class="chapter-image-band`, `leclerc.webp`},
+		"templates/shelf.tmpl":   {`class="world-card`, `messi.webp`},
+		"templates/layout.tmpl":  {`MEDIA CREDITS`, `Wikimedia Commons`},
+	}
+	for file, wants := range checks {
+		requireIdentityStrings(t, readIdentitySource(t, file), file, wants...)
+	}
 }
 func TestArticleKeepsCalmPaperInsideLancerIdentity(t *testing.T) {
 	source := readIdentitySource(t, "templates/post.tmpl")

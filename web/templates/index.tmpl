@@ -2,7 +2,7 @@
 
 {{define "content"}}
 <main class="lancer-home">
-  <header class="lancer-hero cinematic-stage dev-stage page-opening">
+  <header class="lancer-hero cinematic-stage dev-stage page-opening" style="--opening-image:url('/static/media/interests/niko-2022.webp'); --opening-position:68% 28%; --opening-position-mobile:48% center">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="lancer-hero-noise" aria-hidden="true"></div>
     <div class="lancer-hero-ghost" aria-hidden="true">LANCER</div>
@@ -77,9 +77,30 @@
   </section>
   {{end}}
 
+  <section class="world-deck" aria-labelledby="world-deck-title">
+    <header class="chapter-image-band world-deck-heading" style="--chapter-image:url('/static/media/interests/niko-2022.webp'); --chapter-position:68% 28%">
+      <div class="chapter-band-meta"><span>02 / WORLD DECK</span><b>INPUT / DRIVE</b></div>
+      <div class="chapter-band-copy">
+        <p>influence.route → keep_attacking</p>
+        <h2 id="world-deck-title">让我保持进攻的东西。</h2>
+      </div>
+    </header>
+    <div class="world-card-grid" aria-label="Lancer 的兴趣世界">
+      <article class="world-card is-active" data-world="niko" style="--world-image:url('/static/media/interests/niko-2022.webp'); --world-position:66% 26%" tabindex="0">
+        <span>ENTRY / CLUTCH</span><h3>NiKo</h3><p>突破时相信枪法，残局里相信判断。</p>
+      </article>
+      <article class="world-card" data-world="f1" style="--world-image:url('/static/media/interests/verstappen-2018.webp'); --world-position:52% 32%" tabindex="0">
+        <span>RACE / PRECISION</span><h3>F1</h3><p>把速度变成一条可以重复走对的线。</p>
+      </article>
+      <article class="world-card" data-world="football" style="--world-image:url('/static/media/interests/messi.webp'); --world-position:52% 25%" tabindex="0">
+        <span>VISION / BREAK</span><h3>Football</h3><p>看见缝隙，然后撕开防线。</p>
+      </article>
+    </div>
+  </section>
+
   <section class="lancer-notes" id="field-notes" aria-labelledby="field-notes-title">
     <div class="lancer-section-head reveal">
-      <div class="lancer-section-index"><span>02</span><p>FIELD NOTES</p></div>
+      <div class="lancer-section-index"><span>03</span><p>FIELD NOTES</p></div>
       <div>
         <h2 id="field-notes-title">每一篇，都是这一阶段留下的回合记录。</h2>
         <a href="/archive">完整赛季记录 <span>({{.PostCount}})</span> →</a>
@@ -111,7 +132,7 @@
 
   <section class="lancer-influences" aria-labelledby="influence-title">
     <div class="lancer-section-head reveal">
-      <div class="lancer-section-index"><span>03</span><p>INFLUENCE DECK</p></div>
+      <div class="lancer-section-index"><span>04</span><p>INFLUENCE DECK</p></div>
       <div>
         <h2 id="influence-title">技术之外，真正让我保持热血的东西。</h2>
         <p>PADDOCK / COURT / SERVER / PLAYLIST</p>
