@@ -77,6 +77,38 @@
   </section>
   {{end}}
 
+  <section class="live-node-card" data-system-status aria-labelledby="live-node-title" aria-busy="true">
+    <header>
+      <span class="live-dot" aria-hidden="true"></span>
+      <div>
+        <p>LIVE NODE</p>
+        <h2 id="live-node-title">这台博客服务器，此刻正在运行。</h2>
+      </div>
+      <output data-status aria-live="polite">CONNECTING</output>
+    </header>
+    <div class="live-node-grid">
+      <article>
+        <span>CPU LOAD</span>
+        <strong data-metric="cpu" aria-label="CPU 使用率">--%</strong>
+        <i data-gauge="cpu" aria-hidden="true"></i>
+      </article>
+      <article>
+        <span>CPU CLOCK</span>
+        <strong data-metric="frequency" aria-label="CPU 当前频率">-- MHz</strong>
+      </article>
+      <article>
+        <span>MEMORY</span>
+        <strong data-metric="memory" aria-label="内存使用率">--%</strong>
+        <small data-memory-detail aria-label="已用内存和总内存">-- / --</small>
+        <i data-gauge="memory" aria-hidden="true"></i>
+      </article>
+      <article>
+        <span>UPTIME</span>
+        <strong data-metric="uptime" aria-label="服务器持续运行时间">--</strong>
+      </article>
+    </div>
+  </section>
+
   <section class="world-deck" aria-labelledby="world-deck-title">
     <header class="chapter-image-band world-deck-heading" style="--chapter-image:url('/static/media/interests/niko-2022.webp'); --chapter-position:68% 28%">
       <div class="chapter-band-meta"><span>02 / WORLD DECK</span><b>INPUT / DRIVE</b></div>

@@ -190,6 +190,51 @@ func TestArticleKeepsCalmPaperInsideLancerIdentity(t *testing.T) {
 	}
 }
 
+func TestHomeRendersLiveNodeWithoutLeakingHostIdentity(t *testing.T) {
+	source := readIdentitySource(t, "templates/index.tmpl")
+	requireIdentityStrings(t, source, "live node",
+		`LIVE NODE`,
+		`data-system-status`,
+		`data-metric="cpu"`,
+		`data-metric="memory"`,
+		`data-metric="frequency"`,
+		`data-metric="uptime"`,
+	)
+
+	js := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, js, "telemetry client", `/api/system-status`, `AbortController`, `visibilityState`)
+	for _, forbidden := range []string{"hostname", "processes", "mounts"} {
+		if strings.Contains(strings.ToLower(source+js), forbidden) {
+			t.Fatalf("public telemetry references %s", forbidden)
+		}
+	}
+}
+
+func TestLiveNodePollingIsFailureHonestAndResponsive(t *testing.T) {
+	js := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, js, "telemetry safety",
+		`15000`,
+		`8000`,
+		`setInterval`,
+		`clearInterval`,
+		`clearTimeout`,
+		`const timeout = setTimeout`,
+		`clearTimeout(timeout)`,
+		`visibilitychange`,
+		`textContent`,
+		`UNAVAILABLE`,
+		`Math.max(0, Math.min(100`,
+	)
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "telemetry responsive CSS",
+		`.live-node-card`,
+		`.live-node-grid`,
+		`grid-template-columns: repeat(2, minmax(0, 1fr))`,
+		`@media (max-width: 320px)`,
+	)
+}
+
 func TestLancerIdentityMigrationUpdatesExistingSettings(t *testing.T) {
 	source := readIdentitySource(t, "migrations/0004_lancer_identity.sql")
 	requireIdentityStrings(t, source, "identity migration",
