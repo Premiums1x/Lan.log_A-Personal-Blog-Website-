@@ -1,5 +1,61 @@
-document.querySelectorAll('[data-drawer-target]').forEach((cue) => {
-  cue.addEventListener('click', () => cue.classList.add('is-used'), { once: true });
+document.querySelectorAll('[data-drawer-handle]').forEach((handle) => {
+  const drawer = handle.closest('.page-drawer');
+  if (!drawer) return;
+
+  let pointerID = null;
+  let startY = 0;
+  let startScrollY = 0;
+  let pendingScrollY = 0;
+  let frameID = null;
+  let suppressClick = false;
+  let previousScrollBehavior = '';
+
+  const applyDrag = () => {
+    window.scrollTo({ top: pendingScrollY, behavior: 'auto' });
+    frameID = null;
+  };
+
+  handle.addEventListener('pointerdown', (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    pointerID = event.pointerId;
+    startY = event.clientY;
+    startScrollY = window.scrollY;
+    pendingScrollY = startScrollY;
+    suppressClick = false;
+    previousScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    handle.setPointerCapture(pointerID);
+    drawer.classList.add('is-dragging');
+  });
+
+  handle.addEventListener('pointermove', (event) => {
+    if (event.pointerId !== pointerID) return;
+    const dragDistance = startY - event.clientY;
+    if (Math.abs(dragDistance) > 4) suppressClick = true;
+    pendingScrollY = Math.max(0, startScrollY + dragDistance);
+    if (frameID === null) frameID = requestAnimationFrame(applyDrag);
+    event.preventDefault();
+  });
+
+  const finishDrag = (event) => {
+    if (event.pointerId !== pointerID) return;
+    if (handle.hasPointerCapture(pointerID)) handle.releasePointerCapture(pointerID);
+    pointerID = null;
+    document.documentElement.style.scrollBehavior = previousScrollBehavior;
+    drawer.classList.remove('is-dragging');
+  };
+
+  handle.addEventListener('pointerup', finishDrag);
+  handle.addEventListener('pointercancel', finishDrag);
+  handle.addEventListener('click', (event) => {
+    if (suppressClick) {
+      event.preventDefault();
+      suppressClick = false;
+      return;
+    }
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    drawer.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  });
 });
 
 document.querySelectorAll('.interactive-influences').forEach((root) => {
@@ -11,16 +67,17 @@ document.querySelectorAll('.interactive-influences').forEach((root) => {
   const copy = root.querySelector('#influence-preview-copy');
   let activeLayer = 0;
 
-  const selected = cards.find((card) => card.getAttribute('aria-selected') === 'true');
+  const selected = cards.find((card) => card.getAttribute('aria-pressed') === 'true');
   if (selected && layers[0]) {
     layers[0].style.setProperty('--influence-image', `url("${selected.dataset.image}")`);
     layers[0].style.backgroundPosition = selected.dataset.position || 'center';
+    layers[0].style.backgroundSize = selected.dataset.size || 'cover';
   }
 
   const activate = (card) => {
     if (root.dataset.active === card.dataset.influence) return;
 
-    cards.forEach((item) => item.setAttribute('aria-selected', String(item === card)));
+    cards.forEach((item) => item.setAttribute('aria-pressed', String(item === card)));
     root.dataset.active = card.dataset.influence;
     index.textContent = card.dataset.index;
     title.textContent = card.querySelector('h3').textContent;
@@ -30,6 +87,7 @@ document.querySelectorAll('.interactive-influences').forEach((root) => {
       const nextLayer = activeLayer === 0 ? 1 : 0;
       layers[nextLayer].style.setProperty('--influence-image', `url("${card.dataset.image}")`);
       layers[nextLayer].style.backgroundPosition = card.dataset.position || 'center';
+      layers[nextLayer].style.backgroundSize = card.dataset.size || 'cover';
       layers[nextLayer].classList.add('is-active');
       layers[activeLayer].classList.remove('is-active');
       activeLayer = nextLayer;
@@ -50,10 +108,21 @@ document.querySelectorAll('[data-system-status]').forEach((root) => {
   const memory = root.querySelector('[data-metric="memory"]');
   const memoryDetail = root.querySelector('[data-memory-detail]');
   const uptime = root.querySelector('[data-metric="uptime"]');
-  const cpuGauge = root.querySelector('[data-gauge="cpu"]');
-  const memoryGauge = root.querySelector('[data-gauge="memory"]');
+
   const percentFormat = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 1 });
   const numberFormat = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0 });
+  const sampleLimit = 40;
+  const chartHistory = { cpu: [], frequency: [], memory: [], uptime: [] };
+  const chartViews = new Map();
+  let frequencyCeiling = 5000;
+  root.querySelectorAll('[data-chart]').forEach((chart) => {
+    chartViews.set(chart.dataset.chart, {
+      line: chart.querySelector('[data-chart-line]'),
+      area: chart.querySelector('[data-chart-area]'),
+      point: chart.querySelector('[data-chart-point]'),
+      samples: root.querySelector(`[data-chart-samples="${chart.dataset.chart}"]`),
+    });
+  });
 
   let pollTimer = null;
   let activeController = null;
@@ -93,8 +162,58 @@ document.querySelectorAll('[data-system-status]').forEach((root) => {
     return parts.join(' ');
   };
 
-  const setGauge = (gauge, value) => {
-    gauge.style.setProperty('--gauge', `${clampPercent(value)}%`);
+  const renderChart = (key) => {
+    const view = chartViews.get(key);
+    const history = chartHistory[key];
+    if (!view || !history.length) return;
+
+    const width = 240;
+    const height = 92;
+    const padding = 6;
+    const usableWidth = width - (padding * 2);
+    const usableHeight = height - (padding * 2);
+    let min = 0;
+    let max = 100;
+    if (key === 'frequency') {
+      const observedPeak = Math.max(...history);
+      frequencyCeiling = Math.max(
+        frequencyCeiling,
+        Math.ceil((observedPeak * 1.15) / 500) * 500,
+      );
+      max = Math.max(5000, frequencyCeiling);
+    } else if (key === 'uptime') {
+      min = 0;
+      max = 1;
+    }
+
+    const points = history.map((value, index) => {
+      const x = width - padding - (((history.length - 1) - index) / (sampleLimit - 1) * usableWidth);
+      const y = key === 'uptime'
+        ? height / 2
+        : height - padding - (((value - min) / (max - min)) * usableHeight);
+      return [x, y];
+    });
+    const linePath = points.map(([x, y], index) => `${index === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`).join(' ');
+    const [firstX] = points[0];
+    const [lastX, lastY] = points[points.length - 1];
+    const areaPath = key !== 'uptime' && points.length > 1
+      ? `${linePath} L${lastX.toFixed(2)} ${height - padding} L${firstX.toFixed(2)} ${height - padding} Z`
+      : '';
+
+    view.line.setAttribute('d', linePath);
+    view.area.setAttribute('d', areaPath);
+    view.point.setAttribute('cx', lastX.toFixed(2));
+    view.point.setAttribute('cy', lastY.toFixed(2));
+    view.point.setAttribute('opacity', '1');
+    view.samples.textContent = `${String(history.length).padStart(2, '0')} / ${sampleLimit}`;
+  };
+
+  const appendChartPoint = (key, value) => {
+    const history = chartHistory[key];
+    if (!history || !Number.isFinite(value)) return;
+    history.push(value);
+    if (history.length > sampleLimit) history.shift();
+    renderChart(key);
   };
 
   const renderUnavailable = () => {
@@ -106,8 +225,7 @@ document.querySelectorAll('[data-system-status]').forEach((root) => {
     memory.textContent = '--%';
     memoryDetail.textContent = '-- / --';
     uptime.textContent = '--';
-    cpuGauge.style.removeProperty('--gauge');
-    memoryGauge.style.removeProperty('--gauge');
+
   };
 
   const renderSnapshot = (snapshot) => {
@@ -129,8 +247,10 @@ document.querySelectorAll('[data-system-status]').forEach((root) => {
     memory.textContent = `${percentFormat.format(memoryPercent)}%`;
     memoryDetail.textContent = `${formatBytes(snapshot.memory_used_bytes)} / ${formatBytes(snapshot.memory_total_bytes)}`;
     uptime.textContent = formatUptime(snapshot.uptime_seconds);
-    setGauge(cpuGauge, cpuPercent);
-    setGauge(memoryGauge, memoryPercent);
+    appendChartPoint('cpu', cpuPercent);
+    appendChartPoint('frequency', snapshot.cpu_frequency_mhz);
+    appendChartPoint('memory', memoryPercent);
+    appendChartPoint('uptime', snapshot.uptime_seconds);
   };
 
   const cancelRequest = () => {

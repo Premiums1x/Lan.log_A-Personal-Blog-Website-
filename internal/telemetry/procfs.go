@@ -226,6 +226,9 @@ func parseCPUFrequency(contents string) (float64, error) {
 			return 0, errors.New("procfs cpuinfo has invalid cpu MHz")
 		}
 		total += frequency
+		if math.IsNaN(total) || math.IsInf(total, 0) {
+			return 0, errors.New("procfs cpuinfo cpu MHz total is not finite")
+		}
 		count++
 	}
 	if err := scanner.Err(); err != nil {
@@ -234,7 +237,11 @@ func parseCPUFrequency(contents string) (float64, error) {
 	if count == 0 {
 		return 0, errors.New("procfs cpuinfo has no cpu MHz entries")
 	}
-	return total / float64(count), nil
+	average := total / float64(count)
+	if math.IsNaN(average) || math.IsInf(average, 0) {
+		return 0, errors.New("procfs cpuinfo average cpu MHz is not finite")
+	}
+	return average, nil
 }
 
 func parseUptime(contents string) (uint64, error) {

@@ -1,12 +1,18 @@
-# Interest media credits
+# Interest media record
 
-These local derivatives are used by the Lancer influence deck. Each source is hosted locally; the source page, author, license, and transformations are recorded below.
+These local images were selected and provided by Lancer for the site's influence deck. Their original source and license are not recorded in this repository.
 
-| Local asset | Subject | Author | License | Source | Changes |
-| --- | --- | --- | --- | --- | --- |
-| `niko-2022.webp` | NiKo | G2 Esports | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:NiKo_2022.png) | Cropped, resized, and color graded. |
-| `verstappen-2018.webp` | Max Verstappen | Fotóshírek szerkesztőség; description credit © Práger Péter / www.pragerfoto.hu | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Max_Verstappen_-_Nagy_Futam_2018.jpg) | Cropped, resized, and color graded. |
-| `leclerc.webp` | Charles Leclerc | Gil Zetbase | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Charles-Leclerc.jpg) | Cropped, resized, and color graded. |
-| `messi.webp` | Lionel Messi | Wonker | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Lionel_Messi.jpg) | Cropped, resized, and color graded. |
+| Local asset | Subject | Provenance |
+| --- | --- | --- |
+| `niko-user.jpg` | NiKo | User-provided |
+| `verstappen-user.jpg` | Max Verstappen | User-provided |
+| `leclerc-user.jpg` | Charles Leclerc | User-provided |
+| `messi-user.jpg` | Lionel Messi | User-provided |
+| `curry-new-user.jpg` | Stephen Curry | User-provided |
+| `gem-user.jpg` | G.E.M. | User-provided |
+| `f1-deck-user.jpg` | Formula 1 grid | User-provided |
+| `nba-deck-user.jpg` | NBA / Kobe Bryant | User-provided |
+| `cs2-deck-user.jpg` | Counter-Strike 2 | User-provided |
+| `jay-deck-user.jpg` | Jay Chou discography collage | User-provided |
 
-No source image is hotlinked by the site.
+No remote image is hotlinked by the site.

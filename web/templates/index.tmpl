@@ -2,7 +2,7 @@
 
 {{define "content"}}
 <main class="lancer-home">
-  <header class="lancer-hero cinematic-stage dev-stage page-opening" style="--opening-image:url('/static/media/interests/niko-2022.webp'); --opening-position:68% 28%; --opening-position-mobile:48% center">
+  <header class="lancer-hero cinematic-stage dev-stage page-opening" style="--opening-image:url('/static/media/interests/niko-user.jpg'); --opening-position:center 22%; --opening-position-mobile:54% 20%">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="lancer-hero-noise" aria-hidden="true"></div>
     <div class="lancer-hero-ghost" aria-hidden="true">LANCER</div>
@@ -59,6 +59,7 @@
     </a>
   </header>
   <div class="page-drawer" id="home-drawer">
+    <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
   {{if .Pinned}}
   <section class="lancer-current reveal" aria-labelledby="current-play-title">
     <div class="lancer-section-index"><span>01</span><p>CURRENT PLAY</p></div>
@@ -87,30 +88,51 @@
       <output data-status aria-live="polite">CONNECTING</output>
     </header>
     <div class="live-node-grid">
-      <article>
-        <span>CPU LOAD</span>
-        <strong data-metric="cpu" aria-label="CPU 使用率">--%</strong>
-        <i data-gauge="cpu" aria-hidden="true"></i>
+      <article data-telemetry="cpu">
+        <div class="telemetry-metric-head"><span>CPU LOAD</span><strong data-metric="cpu" aria-label="CPU 使用率">--%</strong></div>
+        <svg class="telemetry-chart" data-chart="cpu" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>15S SAMPLE</span><b data-chart-samples="cpu">00 / 40</b></div>
       </article>
-      <article>
-        <span>CPU CLOCK</span>
-        <strong data-metric="frequency" aria-label="CPU 当前频率">-- MHz</strong>
+      <article data-telemetry="frequency">
+        <div class="telemetry-metric-head"><span>CPU CLOCK</span><strong data-metric="frequency" aria-label="CPU 当前频率">-- MHz</strong></div>
+        <svg class="telemetry-chart" data-chart="frequency" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>0–5 GHZ SCALE</span><b data-chart-samples="frequency">00 / 40</b></div>
       </article>
-      <article>
-        <span>MEMORY</span>
-        <strong data-metric="memory" aria-label="内存使用率">--%</strong>
-        <small data-memory-detail aria-label="已用内存和总内存">-- / --</small>
-        <i data-gauge="memory" aria-hidden="true"></i>
+      <article data-telemetry="memory">
+        <div class="telemetry-metric-head"><span>MEMORY</span><strong data-metric="memory" aria-label="内存使用率">--%</strong></div>
+        <svg class="telemetry-chart" data-chart="memory" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><small data-memory-detail aria-label="已用内存和总内存">-- / --</small><b data-chart-samples="memory">00 / 40</b></div>
       </article>
-      <article>
-        <span>UPTIME</span>
-        <strong data-metric="uptime" aria-label="服务器持续运行时间">--</strong>
+      <article data-telemetry="uptime">
+        <div class="telemetry-metric-head"><span>UPTIME</span><strong data-metric="uptime" aria-label="服务器持续运行时间">--</strong></div>
+        <svg class="telemetry-chart" data-chart="uptime" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>ONLINE TRACE</span><b data-chart-samples="uptime">00 / 40</b></div>
       </article>
     </div>
   </section>
 
   <section class="world-deck" aria-labelledby="world-deck-title">
-    <header class="chapter-image-band world-deck-heading" style="--chapter-image:url('/static/media/interests/niko-2022.webp'); --chapter-position:68% 28%">
+    <header class="chapter-image-band world-deck-heading" style="--chapter-image:url('/static/media/interests/niko-trophy-user.jpg'); --chapter-position:10% center">
       <div class="chapter-band-meta"><span>02 / WORLD DECK</span><b>INPUT / DRIVE</b></div>
       <div class="chapter-band-copy">
         <p>influence.route → keep_attacking</p>
@@ -118,14 +140,14 @@
       </div>
     </header>
     <div class="world-card-grid" aria-label="Lancer 的兴趣世界">
-      <article class="world-card is-active" data-world="niko" style="--world-image:url('/static/media/interests/niko-2022.webp'); --world-position:66% 26%" tabindex="0">
-        <span>ENTRY / CLUTCH</span><h3>NiKo</h3><p>突破时相信枪法，残局里相信判断。</p>
+      <article class="world-card" data-world="counter-strike" style="--world-image:url('/static/media/interests/niko-user.jpg'); --world-position:66% 26%" tabindex="0">
+        <span>ENTRY / CLUTCH</span><h3>Counter-Strike</h3><p>突破时敢于撕开防线，残局里相信判断。</p>
       </article>
-      <article class="world-card" data-world="f1" style="--world-image:url('/static/media/interests/verstappen-2018.webp'); --world-position:52% 32%" tabindex="0">
+      <article class="world-card" data-world="f1" style="--world-image:url('/static/media/interests/verstappen-user.jpg'); --world-position:52% 32%" tabindex="0">
         <span>RACE / PRECISION</span><h3>F1</h3><p>把速度变成一条可以重复走对的线。</p>
       </article>
-      <article class="world-card" data-world="football" style="--world-image:url('/static/media/interests/messi.webp'); --world-position:52% 25%" tabindex="0">
-        <span>VISION / BREAK</span><h3>Football</h3><p>看见缝隙，然后撕开防线。</p>
+      <article class="world-card" data-world="basketball" style="--world-image:url('/static/media/interests/curry-new-user.jpg'); --world-position:50% 64%" tabindex="0">
+        <span>COURT / RANGE</span><h3>Basketball</h3><p>用训练换来出手空间，在压力里保持手感。</p>
       </article>
     </div>
   </section>
@@ -172,7 +194,7 @@
     </div>
     <div class="influence-grid">
       {{range $i, $cell := .Stack.Cells}}
-      <article class="influence-card reveal influence-{{$i}}">
+      <article class="influence-card reveal influence-{{$i}}" tabindex="0">
         <div class="influence-code">{{$cell.Ic}}</div>
         <div class="influence-copy"><h3>{{$cell.Title}}</h3><p>{{$cell.Desc}}</p></div>
         <span class="influence-arrow">↗</span>

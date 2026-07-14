@@ -60,14 +60,33 @@ func TestParseCPUFrequencyAveragesAllEntries(t *testing.T) {
 	}
 }
 
-func TestSnapshotJSONDoesNotExposeHostIdentity(t *testing.T) {
+func TestParseCPUFrequencyRejectsOverflowingAccumulator(t *testing.T) {
+	contents := "cpu MHz: 1.7976931348623157e+308\ncpu MHz: 1.7976931348623157e+308\n"
+	if got, err := parseCPUFrequency(contents); err == nil {
+		t.Fatalf("got frequency=%v, want overflow error", got)
+	}
+}
+
+func TestSnapshotJSONExposesOnlyAllowedKeys(t *testing.T) {
 	b, err := json.Marshal(Snapshot{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, forbidden := range []string{"hostname", "process", "path", "ip", "mount"} {
-		if strings.Contains(strings.ToLower(string(b)), forbidden) {
-			t.Fatalf("leaked %s in %s", forbidden, b)
+	var got map[string]json.RawMessage
+	if err := json.Unmarshal(b, &got); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]struct{}{
+		"online": {}, "cpu_percent": {}, "cpu_frequency_mhz": {},
+		"memory_used_bytes": {}, "memory_total_bytes": {}, "memory_percent": {},
+		"uptime_seconds": {}, "sampled_at": {},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("snapshot keys=%v, want exactly %v", got, want)
+	}
+	for key := range got {
+		if _, ok := want[key]; !ok {
+			t.Fatalf("snapshot exposed unexpected key %q", key)
 		}
 	}
 }

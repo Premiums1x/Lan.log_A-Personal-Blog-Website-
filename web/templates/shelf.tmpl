@@ -4,7 +4,7 @@
 
 {{define "content"}}
 <main class="lancer-page lancer-loadout">
-  <header class="lancer-page-hero loadout-hero cinematic-stage runway-stage shelf-stage page-opening" style="--opening-image:url('/static/media/interests/messi.webp'); --opening-position:62% 24%">
+  <header class="lancer-page-hero loadout-hero cinematic-stage runway-stage shelf-stage page-opening" style="--opening-image:url('/static/media/interests/messi-user.jpg'); --opening-position:62% 24%">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="page-poster-word" aria-hidden="true">LOADOUT</div>
     <div class="page-hero-copy reveal">
@@ -25,13 +25,14 @@
     </a>
   </header>
   <div class="page-drawer" id="shelf-drawer">
+    <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
   <section class="loadout-wrap">
     <div class="loadout-title reveal">
       <div class="lancer-section-index"><span>01</span><p>INFLUENCE DECK</p></div>
       <h2>我正在使用、阅读，或反复回去寻找力量的东西。</h2>
     </div>
 
-    <article class="world-card chapter-image-band shelf-chapter reveal" data-world="football" style="--chapter-image:url('/static/media/interests/messi.webp'); --chapter-position:50% 25%" aria-labelledby="shelf-chapter-title">
+    <article class="world-card chapter-image-band shelf-chapter reveal" data-world="football" style="--chapter-image:url('/static/media/interests/messi-user.jpg'); --chapter-position:50% 25%" aria-labelledby="shelf-chapter-title">
       <div class="chapter-band-meta"><span>VISION / LOADOUT</span><b>SPACE FOUND</b></div>
       <div class="chapter-band-copy">
         <p>scan → decide → break the line</p>
@@ -48,7 +49,7 @@
       </header>
       <div class="loadout-grid">
         {{range $itemIndex, $item := $group.Items}}
-        {{if $item.Href}}<a class="loadout-card" href="{{$item.Href}}" target="_blank" rel="noreferrer">{{else}}<article class="loadout-card">{{end}}
+        {{if $item.Href}}<a class="loadout-card" href="{{$item.Href}}" target="_blank" rel="noreferrer">{{else}}<article class="loadout-card loadout-card-static">{{end}}
           <div class="loadout-card-top"><span>SLOT / 0{{$itemIndex}}</span><strong>{{$item.Status}}</strong></div>
           <div class="loadout-card-copy"><p>{{$item.Meta}}</p><h3>{{$item.Title}}</h3><div class="loadout-drawer">{{$item.Desc}}</div></div>
           <div class="loadout-tags">{{range $item.Tags}}<span>{{.}}</span>{{end}}<b>↗</b></div>

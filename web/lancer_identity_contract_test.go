@@ -98,10 +98,10 @@ func TestPrimaryOpenersUseOpenCinematicStages(t *testing.T) {
 func TestPrimaryPagesUseViewportOpenersAndDrawerShells(t *testing.T) {
 	for _, file := range []string{"templates/index.tmpl", "templates/about.tmpl", "templates/archive.tmpl", "templates/shelf.tmpl"} {
 		source := readIdentitySource(t, file)
-		requireIdentityStrings(t, source, file, `page-opening`, `class="drawer-cue`, `class="page-drawer`, `data-drawer-target`)
+		requireIdentityStrings(t, source, file, `page-opening`, `class="drawer-cue`, `class="page-drawer`, `data-drawer-target`, `class="drawer-handle"`, `data-drawer-handle`)
 	}
 	css := readIdentitySource(t, "static/lancer.css")
-	requireIdentityStrings(t, css, "drawer CSS", `min-height: calc(100svh`, `.page-drawer`, `@media (prefers-reduced-motion: reduce)`)
+	requireIdentityStrings(t, css, "drawer CSS", `min-height: calc(100svh`, `@media (min-width: 1081px) and (min-height: 720px)`, `height: calc(100svh - var(--lancer-nav-height, 76px))`, `position: sticky`, `top: var(--lancer-nav-height`, `.drawer-handle`, `touch-action: none`, `cursor: grab`, `@media (prefers-reduced-motion: reduce)`)
 }
 
 func TestDrawerCueUsesSharedProgressiveBehavior(t *testing.T) {
@@ -109,7 +109,19 @@ func TestDrawerCueUsesSharedProgressiveBehavior(t *testing.T) {
 	requireIdentityStrings(t, layout, "public shell", `/static/lancer.js`)
 
 	source := readIdentitySource(t, "static/lancer.js")
-	requireIdentityStrings(t, source, "drawer cue JS", `[data-drawer-target]`, `addEventListener('click'`, `classList.add('is-used')`, `{ once: true }`)
+	requireIdentityStrings(t, source, "drawer interactions", `[data-drawer-handle]`, `addEventListener('pointerdown'`, `addEventListener('pointermove'`, `setPointerCapture`, `requestAnimationFrame`, `window.scrollTo`, `startScrollY + dragDistance`, `scrollBehavior = 'auto'`)
+	if strings.Contains(source, `classList.add('is-used')`) {
+		t.Fatal("drawer cue must remain fully visible after it has been used")
+	}
+	if strings.Contains(source, `getBoundingClientRect()`) || strings.Contains(source, `--drawer-progress`) || strings.Contains(source, `dragDistance * 1.65`) {
+		t.Fatal("drawer must preserve native sticky scrolling outside direct handle dragging")
+	}
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "drawer motion", `font-size: 1.75rem`, `animation: drawer-cue-float 3.4s cubic-bezier(.45, 0, .2, 1) infinite`, `@keyframes drawer-cue-float`)
+	if strings.Contains(css, `drawer-cue-step`) || strings.Contains(css, `steps(2, end)`) {
+		t.Fatal("drawer cue must use slow continuous motion rather than stepped jitter")
+	}
 }
 
 func TestCinematicStagesDoNotReflowAbsoluteAtmosphereLayers(t *testing.T) {
@@ -134,8 +146,12 @@ func TestAboutInfluencesSwitchOnPointerAndKeyboardFocus(t *testing.T) {
 		`class="influence-preview`,
 		`data-influence`,
 		`data-image`,
-		`aria-selected`,
+		`role="group"`,
+		`aria-pressed`,
 	)
+	if strings.Contains(templateSource, `role="listbox"`) || strings.Contains(templateSource, `aria-selected`) {
+		t.Fatal("influence buttons must use ordinary group and pressed-state semantics")
+	}
 
 	scriptSource := readIdentitySource(t, "static/lancer.js")
 	requireIdentityStrings(t, scriptSource, "interactive influence behavior",
@@ -143,19 +159,56 @@ func TestAboutInfluencesSwitchOnPointerAndKeyboardFocus(t *testing.T) {
 		`pointerenter`,
 		`focusin`,
 		`click`,
+		`getAttribute('aria-pressed')`,
+		`setAttribute('aria-pressed'`,
 		`layers[0].style.setProperty('--influence-image'`,
 		`layers[nextLayer].style.setProperty('--influence-image'`,
 	)
+	if strings.Contains(scriptSource, `aria-selected`) {
+		t.Fatal("influence behavior must update aria-pressed rather than aria-selected")
+	}
 	if strings.Contains(scriptSource, `root.style.setProperty('--influence-image'`) {
 		t.Fatal("influence image state must be isolated per preview layer")
 	}
 }
 
+func TestShelfDisclosuresWorkWithKeyboardAndWithoutLinks(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/shelf.tmpl")
+	requireIdentityStrings(t, templateSource, "shelf disclosure markup", `class="loadout-card loadout-card-static"`)
+
+	cssSource := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, cssSource, "shelf keyboard disclosure CSS",
+		`.loadout-card:focus-visible`,
+		`.loadout-card:focus-within::before`,
+		`.loadout-card:focus-within .loadout-drawer`,
+		`.loadout-card-static .loadout-drawer`,
+	)
+}
+
+func TestHomeInfluenceDeckRevealsUserImagesWithTheExistingDrawerMotion(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/index.tmpl")
+	requireIdentityStrings(t, templateSource, "home influence deck accessibility", `class="influence-card reveal influence-{{$i}}" tabindex="0"`)
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "home influence image reveal",
+		`--influence-image: url('/static/media/interests/f1-deck-user.jpg')`,
+		`--influence-image: url('/static/media/interests/nba-deck-user.jpg')`,
+		`--influence-position: 50% 75%`,
+		`--influence-image: url('/static/media/interests/cs2-deck-user.jpg')`,
+		`--influence-image: url('/static/media/interests/jay-deck-user.jpg')`,
+		`.influence-card::after`,
+		`background-image: linear-gradient`,
+		`transform: translateY(calc(100% - 5px)) scale(1.025)`,
+		`.influence-card:hover::after`,
+		`.influence-card:focus-visible::after`,
+		`opacity: .78`,
+	)
+}
 func TestHomeUsesSeparateMobileOpeningFocalPoint(t *testing.T) {
 	templateSource := readIdentitySource(t, "templates/index.tmpl")
 	requireIdentityStrings(t, templateSource, "home opener crop",
-		`--opening-position:68% 28%`,
-		`--opening-position-mobile:48% center`,
+		`--opening-position:center 22%`,
+		`--opening-position-mobile:54% 20%`,
 	)
 
 	cssSource := readIdentitySource(t, "static/lancer.css")
@@ -166,14 +219,91 @@ func TestHomeUsesSeparateMobileOpeningFocalPoint(t *testing.T) {
 
 func TestInterestWorldAppearsBeyondEveryHero(t *testing.T) {
 	checks := map[string][]string{
-		"templates/index.tmpl":   {`class="world-deck`, `data-world="niko"`, `class="chapter-image-band`},
-		"templates/about.tmpl":   {`--influence-image`, `niko-2022.webp`, `verstappen-2018.webp`},
-		"templates/archive.tmpl": {`class="chapter-image-band`, `leclerc.webp`},
-		"templates/shelf.tmpl":   {`class="world-card`, `messi.webp`},
-		"templates/layout.tmpl":  {`MEDIA CREDITS`, `Wikimedia Commons`},
+		"templates/index.tmpl":   {`class="world-deck`, `data-world="counter-strike"`, `class="chapter-image-band`, `niko-user.jpg`},
+		"templates/about.tmpl":   {`--influence-image`, `niko-user.jpg`, `verstappen-user.jpg`},
+		"templates/archive.tmpl": {`class="chapter-image-band`, `leclerc-user.jpg`},
+		"templates/shelf.tmpl":   {`class="world-card`, `messi-user.jpg`},
+		"templates/layout.tmpl":  {`MEDIA / USER PROVIDED`},
 	}
 	for file, wants := range checks {
 		requireIdentityStrings(t, readIdentitySource(t, file), file, wants...)
+	}
+}
+func TestHomeWorldCardsResetToEqualWidthAndUseRequestedSubjects(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/index.tmpl")
+	requireIdentityStrings(t, templateSource, "home world cards", `>Counter-Strike</h3>`, `>F1</h3>`, `>Basketball</h3>`, `curry-new-user.jpg`, `--world-position:50% 64%`)
+	if strings.Contains(templateSource, `world-card is-active`) || strings.Contains(templateSource, `data-world="football"`) {
+		t.Fatal("home world cards must start equal and must not retain the football card")
+	}
+
+	cssSource := readIdentitySource(t, "static/lancer.css")
+	if strings.Contains(cssSource, `.world-card.is-active { flex-grow`) {
+		t.Fatal("world deck must not keep one card expanded after pointer exit")
+	}
+}
+func TestHomeCockpitAndWorldCardCopyRespectImageSpace(t *testing.T) {
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "home image-safe layout",
+		`width: min(100%, 760px)`,
+		`margin-right: clamp(-56px, -3vw, -24px)`,
+		`.world-card[data-world="counter-strike"] h3`,
+		`.world-card[data-world="f1"] h3`,
+		`letter-spacing: .08em`,
+		`white-space: nowrap`,
+		`max-width: none`,
+	)
+}
+func TestHomeNiKoImagesUsePosterScaleAndImageAwareChapterCopy(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/index.tmpl")
+	requireIdentityStrings(t, templateSource, "home world deck trophy media", `niko-trophy-user.jpg`)
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "home NiKo composition",
+		`background-size: auto 125%`,
+		`.world-deck-heading`,
+		`background-size: auto 92%`,
+		`.world-deck-heading .chapter-band-copy`,
+		`margin-left: auto`,
+		`text-align: right`,
+		`.dev-stage .cinematic-image::before`,
+	)
+}
+func TestAboutHeroAndInfluencesKeepPeopleVisible(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/about.tmpl")
+	requireIdentityStrings(t, templateSource, "about requested media", `data-influence="sport"`, `curry-new-user.jpg`, `data-position="50% 58%"`, `data-influence="music"`, `data-image="/static/media/interests/gem-user.jpg" data-position="50% 42%" data-size="cover"`)
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "about image-safe layout", `.about-stage .cinematic-image`, `background-size: auto 122%`, `width: min(100%, 620px)`, `background-repeat: no-repeat`)
+
+	js := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, js, "influence crop runtime", `dataset.size || 'cover'`, `backgroundSize`)
+}
+func TestArchiveAndShelfOpenersPreservePortraitSubjects(t *testing.T) {
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "secondary opener image safety",
+		`.archive-stage .cinematic-image`,
+		`background-size: auto 125%`,
+		`background: var(--opening-image)`,
+		`mask-image: linear-gradient`,
+		`z-index: 0`,
+		`z-index: 2`,
+		`.shelf-stage .cinematic-image`,
+		`background-size: auto 100%`,
+		`.archive-stage .archive-terminal`,
+		`.shelf-stage .loadout-terminal`,
+		`background-position: 18% center`,
+		`width: min(100%, 560px)`,
+		`width: min(100%, 620px)`,
+	)
+}
+func TestArchiveChapterKeepsCopyClearOfLeclerc(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/archive.tmpl")
+	requireIdentityStrings(t, templateSource, "archive chapter media layers", `class="archive-chapter-media archive-chapter-backdrop"`, `class="archive-chapter-media archive-chapter-portrait"`)
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "archive chapter composition", `.archive-chapter-backdrop`, `linear-gradient(180deg, #9AA8B6 0%`, `.archive-chapter-portrait`, `background-size: auto 118%`, `mask-image: linear-gradient`, `background-image: none`)
+	if strings.Contains(css, `background-image: var(--chapter-image), var(--chapter-image)`) || strings.Contains(css, `filter: blur(28px)`) {
+		t.Fatal("archive chapter must use one crisp portrait over a photo-matched silver field")
 	}
 }
 func TestArticleKeepsCalmPaperInsideLancerIdentity(t *testing.T) {
@@ -199,10 +329,16 @@ func TestHomeRendersLiveNodeWithoutLeakingHostIdentity(t *testing.T) {
 		`data-metric="memory"`,
 		`data-metric="frequency"`,
 		`data-metric="uptime"`,
+		`data-chart="cpu"`,
+		`data-chart="frequency"`,
+		`data-chart="memory"`,
+		`data-chart="uptime"`,
+		`data-chart-line`,
+		`data-chart-area`,
 	)
 
 	js := readIdentitySource(t, "static/lancer.js")
-	requireIdentityStrings(t, js, "telemetry client", `/api/system-status`, `AbortController`, `visibilityState`)
+	requireIdentityStrings(t, js, "telemetry client", `/api/system-status`, `AbortController`, `visibilityState`, `const sampleLimit = 40`, `chartHistory`, `frequencyCeiling`, `Math.max(5000`, `key === 'uptime'`, `height / 2`, `appendChartPoint`, `setAttribute('d'`)
 	for _, forbidden := range []string{"hostname", "processes", "mounts"} {
 		if strings.Contains(strings.ToLower(source+js), forbidden) {
 			t.Fatalf("public telemetry references %s", forbidden)
@@ -230,11 +366,34 @@ func TestLiveNodePollingIsFailureHonestAndResponsive(t *testing.T) {
 	requireIdentityStrings(t, css, "telemetry responsive CSS",
 		`.live-node-card`,
 		`.live-node-grid`,
+		`.telemetry-metric-head`,
+		`.telemetry-chart-line`,
+		`.telemetry-chart-area`,
 		`grid-template-columns: repeat(2, minmax(0, 1fr))`,
+		`min-height: 205px`,
 		`@media (max-width: 320px)`,
 	)
 }
 
+func TestLiveNodeUptimeStaysOnOneLine(t *testing.T) {
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "uptime metric", `.live-node-grid [data-metric="uptime"]`, `white-space: nowrap`, `font-size: clamp(18px, 1.8vw, 24px)`)
+}
+
+func TestArchiveSupportingTypeRemainsReadable(t *testing.T) {
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "archive supporting typography",
+		`.race-control-head`, `font: 500 11px var(--telemetry)`,
+		`.control-block > a`, `font-size: 14px`,
+		`.control-block h2`, `font: 500 10px var(--telemetry)`,
+		`.control-tags a`, `font: 500 11px var(--telemetry)`,
+		`.season-note-meta`, `font: 500 14px var(--telemetry)`,
+		`.season-note-copy > p`, `font-size: 15px`,
+		`.season-note-copy > div span`, `font: 500 13px var(--telemetry)`,
+		`.season-note-read`, `font: 500 11px var(--telemetry)`,
+		`.season-note-read b`, `font-size: 28px`,
+	)
+}
 func TestLancerIdentityMigrationUpdatesExistingSettings(t *testing.T) {
 	source := readIdentitySource(t, "migrations/0004_lancer_identity.sql")
 	requireIdentityStrings(t, source, "identity migration",

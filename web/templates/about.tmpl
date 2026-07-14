@@ -4,7 +4,7 @@
 
 {{define "content"}}
 <main class="lancer-page lancer-profile">
-  <header class="lancer-page-hero profile-hero cinematic-stage runway-stage about-stage page-opening" style="--opening-image:url('/static/media/interests/verstappen-2018.webp'); --opening-position:68% 35%">
+  <header class="lancer-page-hero profile-hero cinematic-stage runway-stage about-stage page-opening" style="--opening-image:url('/static/media/interests/verstappen-user.jpg'); --opening-position:68% 35%">
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="page-poster-word" aria-hidden="true">PROFILE</div>
     <div class="page-hero-copy reveal">
@@ -34,6 +34,7 @@
     </a>
   </header>
   <div class="page-drawer" id="about-drawer">
+    <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
   <section class="profile-lanes">
     <article class="profile-lane on-track reveal">
       <div class="lane-label"><span>01</span><strong>ON TRACK</strong></div>
@@ -57,7 +58,7 @@
     <div class="influence-interactive-shell reveal">
       <aside class="influence-preview" aria-live="polite">
         <div class="influence-preview-media" aria-hidden="true">
-          <i class="influence-preview-image is-active" style="--influence-image:url('/static/media/interests/verstappen-2018.webp')"></i><i class="influence-preview-image"></i>
+          <i class="influence-preview-image is-active" style="--influence-image:url('/static/media/interests/verstappen-user.jpg')"></i><i class="influence-preview-image"></i>
         </div>
         <div class="influence-preview-top"><span>influence.current</span><b>POINTER / FOCUS</b></div>
         <div class="influence-preview-code"><i>const</i> drive = <strong>resolve(activeInfluence)</strong>;</div>
@@ -68,17 +69,17 @@
         </div>
         <div class="influence-preview-line"><i></i><span>INPUT DETECTED</span></div>
       </aside>
-      <div class="influence-board-grid" role="listbox" aria-label="Lancer influences">
-        <button type="button" class="influence-board-card" data-influence="f1" data-image="/static/media/interests/verstappen-2018.webp" data-position="62% 32%" data-index="01 / PADDOCK" aria-selected="true">
+      <div class="influence-board-grid" role="group" aria-label="Lancer influences">
+        <button type="button" class="influence-board-card" data-influence="f1" data-image="/static/media/interests/verstappen-user.jpg" data-position="62% 32%" data-index="01 / PADDOCK" aria-pressed="true">
           <span>F1 / 01</span><h3>VERSTAPPEN / LECLERC</h3><p>速度、进攻、精密，以及下一圈仍然敢于压上。</p><b>↗</b>
         </button>
-        <button type="button" class="influence-board-card" data-influence="sport" data-image="/static/media/interests/messi.webp" data-position="52% 24%" data-index="02 / COURT + PITCH" aria-selected="false">
+        <button type="button" class="influence-board-card" data-influence="sport" data-image="/static/media/interests/curry-new-user.jpg" data-position="50% 58%" data-size="cover" data-index="02 / COURT + PITCH" aria-pressed="false">
           <span>SPORT / 02</span><h3>CURRY / MESSI</h3><p>把千万次训练藏进本能，在看似没有空间的位置完成突破。</p><b>↗</b>
         </button>
-        <button type="button" class="influence-board-card" data-influence="server" data-image="/static/media/interests/niko-2022.webp" data-position="66% 24%" data-index="03 / SERVER" aria-selected="false">
+        <button type="button" class="influence-board-card" data-influence="server" data-image="/static/media/interests/niko-user.jpg" data-position="66% 24%" data-index="03 / SERVER" aria-pressed="false">
           <span>SERVER / 03</span><h3>NiKo / TheShy</h3><p>十年饮冰，难凉热血。进入战场时敢于撕开第一道防线。</p><b>↗</b>
         </button>
-        <button type="button" class="influence-board-card" data-influence="music" data-image="/static/media/interests/leclerc.webp" data-position="50% 28%" data-index="04 / SOUNDTRACK" aria-selected="false">
+        <button type="button" class="influence-board-card" data-influence="music" data-image="/static/media/interests/gem-user.jpg" data-position="50% 42%" data-size="cover" data-index="04 / SOUNDTRACK" aria-pressed="false">
           <span>MIX / 04</span><h3>MANDOPOP / PHONK / EDM</h3><p>周杰伦、邓紫棋与新的节拍，组成每一个高光时刻的声音。</p><b>↗</b>
         </button>
       </div>

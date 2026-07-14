@@ -25,7 +25,7 @@ func requireInterestMediaStrings(t *testing.T, source, label string, wants ...st
 }
 
 func TestInterestImagesAreLocalAndCredited(t *testing.T) {
-	assets := []string{"niko-2022.webp", "verstappen-2018.webp", "leclerc.webp", "messi.webp"}
+	assets := []string{"niko-user.jpg", "verstappen-user.jpg", "leclerc-user.jpg", "messi-user.jpg", "curry-new-user.jpg", "gem-user.jpg", "f1-deck-user.jpg", "nba-deck-user.jpg", "cs2-deck-user.jpg", "jay-deck-user.jpg"}
 	credits := readInterestMediaSource(t, "static/media/interests/CREDITS.md")
 	for _, asset := range assets {
 		if _, err := os.Stat("static/media/interests/" + asset); err != nil {
@@ -33,5 +33,5 @@ func TestInterestImagesAreLocalAndCredited(t *testing.T) {
 		}
 		requireInterestMediaStrings(t, credits, "media credits", asset)
 	}
-	requireInterestMediaStrings(t, credits, "media credits", "CC BY 4.0", "CC0 1.0", "CC BY-SA 4.0", "CC BY 2.0")
+	requireInterestMediaStrings(t, credits, "media credits", "User-provided", "No remote image is hotlinked")
 }
