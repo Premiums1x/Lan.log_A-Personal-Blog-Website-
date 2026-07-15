@@ -463,7 +463,7 @@ func TestArchiveTerminalHeaderAndOrderControlStayUsable(t *testing.T) {
 		`.archive-terminal > .dev-editor-head > span`,
 		`align-self: center`,
 		`.archive-terminal > .dev-editor-head > strong`,
-		`font: 700 clamp(22px, 2.4vw, 34px)/1 var(--display)`,
+		`font: 700 clamp(20px, 2vw, 28px)/1 var(--display)`,
 		`.archive-order-control`,
 		`.archive-order-control:focus-visible`,
 	)

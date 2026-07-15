@@ -882,7 +882,7 @@
 .archive-terminal { align-self: center; overflow: hidden; background: rgba(5,8,12,.78); backdrop-filter: blur(12px); }
 .archive-terminal > .dev-editor-head { min-height: 42px; padding: 0 14px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; border-bottom: 1px solid rgba(255,255,255,.12); }
 .archive-terminal > .dev-editor-head > span { align-self: center; }
-.archive-terminal > .dev-editor-head > strong { min-width: 0; overflow: hidden; color: var(--attack-orange); font: 700 clamp(22px, 2.4vw, 34px)/1 var(--display); text-overflow: ellipsis; white-space: nowrap; }
+.archive-terminal > .dev-editor-head > strong { min-width: 0; overflow: hidden; color: var(--attack-orange); font: 700 clamp(20px, 2vw, 28px)/1 var(--display); text-overflow: ellipsis; white-space: nowrap; }
 .archive-terminal-line { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.55); font: 500 9px/1.7 var(--telemetry); }
 .archive-terminal-line i { display: block; color: var(--attack-orange); font-style: normal; }
 .archive-terminal > div:not(.dev-editor-head) { min-height: 78px; }
