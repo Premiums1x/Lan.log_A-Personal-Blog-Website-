@@ -311,6 +311,38 @@ function createDrawerRuntime() {
   };
 }
 
+function createArticleExpandRuntime(itemCount = 8, initialCount = 6) {
+  const items = Array.from({ length: itemCount }, () => ({ hidden: false, style: {}, classList: { add() {} } }));
+  const trigger = new FakeEventTarget();
+  trigger.hidden = true;
+  trigger.attributes = {};
+  trigger.setAttribute = (name, value) => { trigger.attributes[name] = String(value); };
+  const root = {
+    dataset: { expandInitial: String(initialCount) },
+    querySelectorAll(selector) { return selector === '[data-expand-item]' ? items : []; },
+    querySelector(selector) { return selector === '[data-expand-trigger]' ? trigger : null; },
+  };
+  const document = {
+    querySelectorAll(selector) { return selector === '[data-expand-list]' ? [root] : []; },
+  };
+  vm.runInNewContext(CLIENT_SOURCE, {
+    document,
+    window: {},
+    requestAnimationFrame(callback) { callback(); return 1; },
+  }, { filename: 'lancer.js' });
+  return { items, trigger, root };
+}
+test('article lists show six items then reveal every remaining item', () => {
+  const runtime = createArticleExpandRuntime(9, 6);
+  assert.deepEqual(runtime.items.map((item) => item.hidden), [false, false, false, false, false, false, true, true, true]);
+  assert.equal(runtime.trigger.hidden, false);
+  assert.equal(runtime.trigger.attributes['aria-expanded'], 'false');
+
+  runtime.trigger.dispatch('click');
+  assert.equal(runtime.items.every((item) => item.hidden === false), true);
+  assert.equal(runtime.trigger.hidden, true);
+  assert.equal(runtime.trigger.attributes['aria-expanded'], 'true');
+});
 test('drawer handle drags native scroll and keeps click-to-open behavior', () => {
   const runtime = createDrawerRuntime();
   for (const eventType of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'click']) {

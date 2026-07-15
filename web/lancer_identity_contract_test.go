@@ -185,6 +185,59 @@ func TestShelfDisclosuresWorkWithKeyboardAndWithoutLinks(t *testing.T) {
 	)
 }
 
+func TestArticleListsCollapseAfterSixAndKeepTruePublishedCount(t *testing.T) {
+	index := readIdentitySource(t, "templates/index.tmpl")
+	requireIdentityStrings(t, index, "home article expansion",
+		`data-expand-list data-expand-initial="6"`,
+		`data-expand-item`,
+		`data-expand-trigger hidden`,
+		`aria-expanded="false"`,
+		`展开余下文章`,
+		`{{.PostCount}}`,
+	)
+
+	archive := readIdentitySource(t, "templates/archive.tmpl")
+	requireIdentityStrings(t, archive, "archive season expansion",
+		`class="season-year" data-expand-list data-expand-initial="6"`,
+		`data-expand-item`,
+		`data-expand-trigger hidden`,
+		`展开余下文章`,
+	)
+
+	script := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, script, "progressive article expansion",
+		`[data-expand-list]`,
+		`[data-expand-item]`,
+		`[data-expand-trigger]`,
+		`items.slice(initialCount)`,
+		`trigger.hidden = false`,
+		`trigger.setAttribute('aria-expanded', 'true')`,
+	)
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "article expansion styling",
+		`.article-expand`,
+		`.field-card[hidden]`,
+		`.season-note[hidden]`,
+	)
+
+	repoSource := readIdentitySource(t, "../internal/repo/repo.go")
+	requireIdentityStrings(t, repoSource, "published count repository",
+		`func CountPublished`,
+		`SELECT COUNT(*) FROM posts WHERE status='published'`,
+		`func ListPublishedAll`,
+	)
+
+	handlerSource := readIdentitySource(t, "../internal/handler/public.go")
+	requireIdentityStrings(t, handlerSource, "home true published count",
+		`repo.ListPublishedAll`,
+		`repo.CountPublished`,
+		`PostCount: postCount`,
+	)
+	if strings.Contains(handlerSource, `PostCount: len(posts)`) {
+		t.Fatal("home must not report the length of a truncated result as the published total")
+	}
+}
 func TestHomeInfluenceDeckRevealsUserImagesWithTheExistingDrawerMotion(t *testing.T) {
 	templateSource := readIdentitySource(t, "templates/index.tmpl")
 	requireIdentityStrings(t, templateSource, "home influence deck accessibility", `class="influence-card reveal influence-{{$i}}" tabindex="0"`)

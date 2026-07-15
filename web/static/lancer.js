@@ -1,3 +1,27 @@
+document.querySelectorAll('[data-expand-list]').forEach((root) => {
+  const items = [...root.querySelectorAll('[data-expand-item]')];
+  const trigger = root.querySelector('[data-expand-trigger]');
+  const initialCount = Math.max(1, Number.parseInt(root.dataset.expandInitial || '6', 10) || 6);
+  const collapsedItems = items.slice(initialCount);
+  if (!trigger || collapsedItems.length === 0) return;
+
+  collapsedItems.forEach((item) => { item.hidden = true; });
+  trigger.hidden = false;
+  trigger.setAttribute('aria-expanded', 'false');
+
+  trigger.addEventListener('click', () => {
+    collapsedItems.forEach((item, index) => {
+      item.hidden = false;
+      requestAnimationFrame(() => {
+        item.style.transitionDelay = `${Math.min(index * 45, 225)}ms`;
+        item.classList.add('is-in');
+      });
+    });
+    root.dataset.expanded = 'true';
+    trigger.setAttribute('aria-expanded', 'true');
+    trigger.hidden = true;
+  }, { once: true });
+});
 document.querySelectorAll('[data-drawer-handle]').forEach((handle) => {
   const drawer = handle.closest('.page-drawer');
   if (!drawer) return;

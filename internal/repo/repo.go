@@ -171,6 +171,26 @@ func ListPublished(ctx context.Context, q db.Conn, limit int) ([]model.Post, err
 	return collectPosts(ctx, q, rows)
 }
 
+// ListPublishedAll returns every published post from newest to oldest.
+func ListPublishedAll(ctx context.Context, q db.Conn) ([]model.Post, error) {
+	rows, err := q.Query(ctx,
+		`SELECT `+postCols+` FROM posts
+		 WHERE status='published'
+		 ORDER BY published_at DESC NULLS LAST, created_at DESC`,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return collectPosts(ctx, q, rows)
+}
+
+// CountPublished returns the true number of published posts.
+func CountPublished(ctx context.Context, q db.Conn) (int, error) {
+	var count int
+	err := q.QueryRow(ctx, `SELECT COUNT(*) FROM posts WHERE status='published'`).Scan(&count)
+	return count, err
+}
 func ListAll(ctx context.Context, q db.Conn) ([]model.Post, error) {
 	rows, err := q.Query(ctx,
 		`SELECT `+postCols+` FROM posts ORDER BY created_at DESC`,

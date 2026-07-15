@@ -107,14 +107,18 @@ func (h *PublicHandler) Index(c *gin.Context) {
 	var stack StackData
 	_ = DecodeSetting(m["stack"], &stack)
 
-	posts, _ := repo.ListPublished(c.Request.Context(), h.DB.Pool, 12)
+	posts, _ := repo.ListPublishedAll(c.Request.Context(), h.DB.Pool)
+	postCount, err := repo.CountPublished(c.Request.Context(), h.DB.Pool)
+	if err != nil {
+		postCount = len(posts)
+	}
 	pinned, _ := repo.PinnedPost(c.Request.Context(), h.DB.Pool)
 	if pinned == nil && len(posts) > 0 {
 		p := posts[0]
 		pinned = &p
 	}
 
-	data := IndexData{Site: site, Page: "posts", Hero: hero, Stack: stack, Pinned: pinned, Posts: posts, PostCount: len(posts)}
+	data := IndexData{Site: site, Page: "posts", Hero: hero, Stack: stack, Pinned: pinned, Posts: posts, PostCount: postCount}
 	h.render(c, "index", data)
 }
 

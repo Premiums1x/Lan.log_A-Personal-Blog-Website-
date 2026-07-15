@@ -161,9 +161,10 @@
       </div>
     </div>
 
-    <div class="field-grid">
+    <div class="field-grid" id="field-notes-list" data-expand-list data-expand-initial="6">
+      {{if .Posts}}
       {{range $i, $post := .Posts}}
-      <a class="field-card reveal field-card-{{$i}}" href="/posts/{{$post.Slug}}">
+      <a class="field-card reveal field-card-{{$i}}" href="/posts/{{$post.Slug}}" data-expand-item>
         <div class="field-top">
           <span class="field-number">NOTE / 0{{$i}}</span>
           <span>{{$post.ReadMinutes}} MIN READ</span>
@@ -178,6 +179,8 @@
           <b>↗</b>
         </div>
       </a>
+      {{end}}
+      {{if gt (len .Posts) 6}}<button class="article-expand" type="button" data-expand-trigger hidden aria-expanded="false" aria-controls="field-notes-list"><span>展开余下文章</span><b aria-hidden="true">↓</b></button>{{end}}
       {{else}}
       <p class="lancer-empty">NO FIELD NOTES YET / 下一回合正在准备。</p>
       {{end}}

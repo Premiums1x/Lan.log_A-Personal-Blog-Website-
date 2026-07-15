@@ -53,17 +53,18 @@
       {{if .FilterLabel}}<div class="season-filter"><span>{{.FilterKind}}</span><strong>{{.FilterLabel}}</strong><a href="/archive">CLEAR FILTER ×</a></div>{{end}}
       <div class="season-line">
         {{range .Years}}
-        <section class="season-year">
+        <section class="season-year" data-expand-list data-expand-initial="6">
           <header><span>SEASON</span><h2>{{.Year}}</h2><i></i></header>
-          <div class="season-notes">
+          <div class="season-notes" id="season-notes-{{.Year}}">
             {{range .Posts}}
-            <a class="season-note" href="/posts/{{.Slug}}">
+            <a class="season-note" href="/posts/{{.Slug}}" data-expand-item>
               <div class="season-note-meta"><span>{{FormatDate .PublishedAt}}</span><span>{{CommitShort .CommitHash}}</span></div>
               <div class="season-note-copy"><h3>{{.Title}}</h3>{{if .Excerpt}}<p>{{.Excerpt}}</p>{{end}}<div>{{range .Tags}}<span>#{{.Name}}</span>{{end}}</div></div>
               <div class="season-note-read"><span>{{.ReadMinutes}} MIN</span><b>↗</b></div>
             </a>
             {{end}}
           </div>
+          {{if gt (len .Posts) 6}}<button class="article-expand" type="button" data-expand-trigger hidden aria-expanded="false" aria-controls="season-notes-{{.Year}}"><span>展开余下文章</span><b aria-hidden="true">↓</b></button>{{end}}
         </section>
         {{else}}<p class="lancer-empty">{{.EmptyText}}</p>{{end}}
       </div>
