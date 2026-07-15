@@ -10,7 +10,8 @@ document.querySelectorAll('[data-expand-list]').forEach((root) => {
   trigger.setAttribute('aria-expanded', 'false');
 
   trigger.addEventListener('click', () => {
-    collapsedItems.forEach((item, index) => {
+    const hiddenItems = items.filter((item) => item.hidden);
+    hiddenItems.forEach((item, index) => {
       item.hidden = false;
       requestAnimationFrame(() => {
         item.style.transitionDelay = `${Math.min(index * 45, 225)}ms`;
@@ -21,6 +22,50 @@ document.querySelectorAll('[data-expand-list]').forEach((root) => {
     trigger.setAttribute('aria-expanded', 'true');
     trigger.hidden = true;
   }, { once: true });
+});
+document.querySelectorAll('[data-archive-sort]').forEach((control) => {
+  const archive = control.closest('.lancer-archive');
+  const seasonLine = archive?.querySelector('.season-line');
+  const label = control.querySelector('[data-archive-order-label]');
+  if (!archive || !seasonLine || !label) return;
+
+  control.dataset.sortReady = 'true';
+
+  const syncExpansion = (year) => {
+    const items = [...year.querySelectorAll('[data-expand-item]')];
+    const trigger = year.querySelector('[data-expand-trigger]');
+    const initialCount = Math.max(1, Number.parseInt(year.dataset.expandInitial || '6', 10) || 6);
+    const expanded = year.dataset.expanded === 'true';
+    items.forEach((item, index) => { item.hidden = !expanded && index >= initialCount; });
+    if (trigger) {
+      trigger.hidden = expanded || items.length <= initialCount;
+      trigger.setAttribute('aria-expanded', String(expanded));
+    }
+  };
+
+  const applyOrder = (order) => {
+    const direction = order === 'oldest' ? 1 : -1;
+    const years = [...archive.querySelectorAll('[data-archive-year]')];
+    years.sort((a, b) => (Number(a.dataset.archiveYear) - Number(b.dataset.archiveYear)) * direction);
+    years.forEach((year) => {
+      const notes = year.querySelector('.season-notes');
+      const posts = [...year.querySelectorAll('[data-published]')];
+      posts.sort((a, b) => a.dataset.published.localeCompare(b.dataset.published) * direction);
+      posts.forEach((post) => notes?.append(post));
+      syncExpansion(year);
+      seasonLine.append(year);
+    });
+
+    const isOldest = order === 'oldest';
+    control.dataset.order = order;
+    archive.dataset.archiveOrder = order;
+    label.textContent = isOldest ? 'OLDEST ↑' : 'NEWEST ↓';
+    control.setAttribute('aria-label', isOldest ? '切换文章排序，当前从旧到新' : '切换文章排序，当前从新到旧');
+  };
+
+  control.addEventListener('click', () => {
+    applyOrder(control.dataset.order === 'newest' ? 'oldest' : 'newest');
+  });
 });
 document.querySelectorAll('[data-drawer-handle]').forEach((handle) => {
   const drawer = handle.closest('.page-drawer');

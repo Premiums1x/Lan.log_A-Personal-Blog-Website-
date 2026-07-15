@@ -592,11 +592,17 @@
 /* archive / season log */
 .archive-cockpit { grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr); }
 .archive-scoreboard { position: relative; z-index: 1; display: grid; border: 1px solid var(--line-dark); }
-.archive-scoreboard > div { min-height: 112px; padding: 18px 20px; display: grid; grid-template-columns: 1fr auto; align-items: end; border-bottom: 1px solid var(--line-dark); }
-.archive-scoreboard > div:last-child { border-bottom: 0; }
+.archive-scoreboard > div,
+.archive-scoreboard > button { min-height: 112px; padding: 18px 20px; display: grid; grid-template-columns: 1fr auto; align-items: end; border: 0; border-bottom: 1px solid var(--line-dark); background: transparent; }
+.archive-scoreboard > :last-child { border-bottom: 0; }
 .archive-scoreboard span { align-self: start; color: rgba(255,255,255,.38); font: 500 8px var(--telemetry); letter-spacing: .1em; }
 .archive-scoreboard strong { font: 700 clamp(28px, 4vw, 50px)/.9 var(--display); }
 .archive-scoreboard > div:first-child strong { color: var(--attack-orange); }
+.archive-order-control { appearance: none; width: 100%; color: #fff; text-align: left; cursor: pointer; transition: background .28s ease, box-shadow .28s ease; }
+.archive-order-control strong { display: flex; align-items: center; gap: 12px; transition: color .28s ease, transform .32s var(--lancer-ease); }
+.archive-order-control:hover { background: rgba(103,216,255,.06); box-shadow: inset 4px 0 0 var(--telemetry-cyan); }
+.archive-order-control:hover strong { color: var(--telemetry-cyan); transform: translateX(-6px); }
+.archive-order-control:focus-visible { outline: 2px solid var(--telemetry-cyan); outline-offset: -2px; background: rgba(103,216,255,.08); }
 .season-layout { width: min(calc(100% - 40px), var(--lancer-max)); margin: clamp(90px, 10vw, 150px) auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(46px, 6vw, 90px); align-items: start; }
 .race-control { position: sticky; top: 100px; border: 1px solid var(--grid-black); background: var(--clutch-white); }
 .race-control-head { padding: 16px 18px; display: flex; justify-content: space-between; background: var(--grid-black); color: #fff; font: 500 11px var(--telemetry); letter-spacing: .1em; }
@@ -874,7 +880,9 @@
 .manifest-status i { width: 6px; height: 6px; margin-left: auto; border-radius: 50%; background: #72d792; box-shadow: 0 0 12px #72d792; }
 
 .archive-terminal { align-self: center; overflow: hidden; background: rgba(5,8,12,.78); backdrop-filter: blur(12px); }
-.archive-terminal > .dev-editor-head { min-height: 42px; padding: 0 14px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; border-bottom: 1px solid rgba(255,255,255,.12); }
+.archive-terminal > .dev-editor-head { min-height: 42px; padding: 0 14px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; border-bottom: 1px solid rgba(255,255,255,.12); }
+.archive-terminal > .dev-editor-head > span { align-self: center; }
+.archive-terminal > .dev-editor-head > strong { min-width: 0; overflow: hidden; color: var(--attack-orange); font: 700 clamp(22px, 2.4vw, 34px)/1 var(--display); text-overflow: ellipsis; white-space: nowrap; }
 .archive-terminal-line { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.55); font: 500 9px/1.7 var(--telemetry); }
 .archive-terminal-line i { display: block; color: var(--attack-orange); font-style: normal; }
 .archive-terminal > div:not(.dev-editor-head) { min-height: 78px; }

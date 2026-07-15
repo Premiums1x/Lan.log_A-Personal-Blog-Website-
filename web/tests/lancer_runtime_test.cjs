@@ -343,6 +343,75 @@ test('article lists show six items then reveal every remaining item', () => {
   assert.equal(runtime.trigger.hidden, true);
   assert.equal(runtime.trigger.attributes['aria-expanded'], 'true');
 });
+function createArchiveSortRuntime() {
+  const makePost = (published) => ({ dataset: { published }, hidden: false });
+  const makeYear = (archiveYear, dates) => {
+    const notes = {
+      children: dates.map(makePost),
+      append(item) {
+        this.children = this.children.filter((candidate) => candidate !== item);
+        this.children.push(item);
+      },
+    };
+    return {
+      dataset: { archiveYear, expandInitial: '6' },
+      querySelectorAll(selector) { return selector === '[data-expand-item]' || selector === '[data-published]' ? notes.children : []; },
+      querySelector(selector) {
+        if (selector === '.season-notes') return notes;
+        if (selector === '[data-expand-trigger]') return null;
+        return null;
+      },
+      notes,
+    };
+  };
+  const years = [
+    makeYear('2026', ['2026-07-12', '2026-07-01']),
+    makeYear('2025', ['2025-12-20', '2025-02-02']),
+  ];
+  const seasonLine = {
+    children: [...years],
+    append(item) {
+      this.children = this.children.filter((candidate) => candidate !== item);
+      this.children.push(item);
+    },
+  };
+  const label = new FakeElement('NEWEST');
+  const control = new FakeEventTarget();
+  control.dataset = { order: 'newest' };
+  control.attributes = {};
+  control.setAttribute = (name, value) => { control.attributes[name] = String(value); };
+  const archive = {
+    dataset: {},
+    querySelector(selector) { return selector === '.season-line' ? seasonLine : null; },
+    querySelectorAll(selector) { return selector === '[data-archive-year]' ? seasonLine.children : []; },
+  };
+  control.closest = (selector) => selector === '.lancer-archive' ? archive : null;
+  control.querySelector = (selector) => selector === '[data-archive-order-label]' ? label : null;
+
+  const document = {
+    querySelectorAll(selector) {
+      if (selector === '[data-expand-list]') return years;
+      if (selector === '[data-archive-sort]') return [control];
+      return [];
+    },
+  };
+  vm.runInNewContext(CLIENT_SOURCE, { document, window: {}, Number }, { filename: 'lancer.js' });
+  return { archive, control, label, seasonLine, years };
+}
+
+test('archive order control switches years and posts between newest and oldest', () => {
+  const runtime = createArchiveSortRuntime();
+  runtime.control.dispatch('click');
+  assert.deepEqual(runtime.seasonLine.children.map((year) => year.dataset.archiveYear), ['2025', '2026']);
+  assert.deepEqual(runtime.years[0].notes.children.map((post) => post.dataset.published), ['2026-07-01', '2026-07-12']);
+  assert.equal(runtime.label.textContent, 'OLDEST ↑');
+  assert.equal(runtime.control.attributes['aria-label'], '切换文章排序，当前从旧到新');
+
+  runtime.control.dispatch('click');
+  assert.deepEqual(runtime.seasonLine.children.map((year) => year.dataset.archiveYear), ['2026', '2025']);
+  assert.deepEqual(runtime.years[0].notes.children.map((post) => post.dataset.published), ['2026-07-12', '2026-07-01']);
+  assert.equal(runtime.label.textContent, 'NEWEST ↓');
+});
 test('drawer handle drags native scroll and keeps click-to-open behavior', () => {
   const runtime = createDrawerRuntime();
   for (const eventType of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'click']) {

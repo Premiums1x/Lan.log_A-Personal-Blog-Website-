@@ -447,6 +447,37 @@ func TestArchiveSupportingTypeRemainsReadable(t *testing.T) {
 		`.season-note-read b`, `font-size: 28px`,
 	)
 }
+func TestArchiveTerminalHeaderAndOrderControlStayUsable(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/archive.tmpl")
+	requireIdentityStrings(t, templateSource, "archive order control",
+		`class="archive-order-control"`,
+		`data-archive-sort`,
+		`data-archive-order-label`,
+		`data-archive-year`,
+		`data-published=`,
+		`aria-label="切换文章排序，当前从新到旧"`,
+	)
+
+	css := readIdentitySource(t, "static/lancer.css")
+	requireIdentityStrings(t, css, "archive terminal header repair",
+		`.archive-terminal > .dev-editor-head > span`,
+		`align-self: center`,
+		`.archive-terminal > .dev-editor-head > strong`,
+		`font: 700 clamp(22px, 2.4vw, 34px)/1 var(--display)`,
+		`.archive-order-control`,
+		`.archive-order-control:focus-visible`,
+	)
+
+	script := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, script, "archive date sorting",
+		`[data-archive-sort]`,
+		`[data-archive-year]`,
+		`[data-published]`,
+		`OLDEST`,
+		`NEWEST`,
+		`aria-label`,
+	)
+}
 func TestLancerIdentityMigrationUpdatesExistingSettings(t *testing.T) {
 	source := readIdentitySource(t, "migrations/0004_lancer_identity.sql")
 	requireIdentityStrings(t, source, "identity migration",
