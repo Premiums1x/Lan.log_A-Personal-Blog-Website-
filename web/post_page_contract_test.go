@@ -20,6 +20,7 @@ func TestPostPageUsesIndependentReadingPaper(t *testing.T) {
 		`{{if .Post.Excerpt}}`,
 		`class="article-paper`,
 		`class="art-body`,
+		`class="github-activity`,
 	} {
 		if !strings.Contains(string(template), want) {
 			t.Errorf("post template missing %q", want)
@@ -30,6 +31,7 @@ func TestPostPageUsesIndependentReadingPaper(t *testing.T) {
 		`.article-paper {`,
 		`.article-paper .art-trace`,
 		`.art-trace .trace-path`,
+		`.github-activity {`,
 		`@media (max-width: 720px)`,
 	} {
 		if !strings.Contains(string(css), want) {
