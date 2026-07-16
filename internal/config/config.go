@@ -12,6 +12,24 @@ type Config struct {
 	JWTSecret   string
 	JWTTTLHours int
 	SMTP        SMTPConfig
+	GitHub      GitHubConfig
+	LLM         LLMConfig
+}
+
+type LLMConfig struct {
+	APIURL         string
+	APIKey         string
+	Model          string
+	TimeoutSeconds int
+}
+
+func (c LLMConfig) Ready() bool {
+	return c.APIURL != "" && c.APIKey != "" && c.Model != ""
+}
+
+type GitHubConfig struct {
+	Token    string
+	Username string
 }
 
 type SMTPConfig struct {
@@ -38,6 +56,16 @@ func Load() (Config, error) {
 			Username: env("SMTP_USERNAME", ""),
 			Password: env("SMTP_PASSWORD", ""),
 			From:     env("SMTP_FROM", ""),
+		},
+		GitHub: GitHubConfig{
+			Token:    env("GITHUB_TOKEN", ""),
+			Username: env("GITHUB_USERNAME", ""),
+		},
+		LLM: LLMConfig{
+			APIURL:         env("LLM_API_URL", ""),
+			APIKey:         env("LLM_API_KEY", ""),
+			Model:          env("LLM_MODEL", ""),
+			TimeoutSeconds: envInt("LLM_TIMEOUT_SECONDS", 20),
 		},
 	}
 	if len(c.JWTSecret) < 16 {

@@ -18,4 +18,9 @@ test('apex-clutch prototype has its required scenes and motion fallback', () => 
   assert.match(html, /cs-niko\.png/);
   assert.match(html, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(html, /aria-label=/);
+  assert.match(html, /data-scene="f1"/);
+  assert.match(html, /data-scene="basketball"/);
+  assert.match(html, /data-scene="cs"/);
+  assert.match(html, /class="post-link"/);
+  assert.match(html, /IntersectionObserver/);
 });

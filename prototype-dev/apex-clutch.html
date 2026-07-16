@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>lancer.log — apex &amp; clutch</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,800;1,800&family=DM+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --paper: #f3f6fa; --paper-deep: #e8eef5; --ink: #14213d; --muted: #63718b;
+      --cobalt: #193b78; --mist: #b8cee2; --ember: #e86744; --gold: #d9a23b;
+      --radar: #49bfae; --line: rgba(20, 33, 61, .14); --serif: "Noto Serif SC", serif;
+      --sans: "Plus Jakarta Sans", "Noto Sans SC", sans-serif; --mono: "DM Mono", monospace;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible { outline: 3px solid var(--ember); outline-offset: 4px; }
+    .nav { position: fixed; z-index: 20; top: 0; left: 0; right: 0; border-bottom: 1px solid transparent; transition: background .35s var(--ease), border-color .35s var(--ease); }
+    .nav.scrolled { background: rgba(243,246,250,.9); border-color: var(--line); backdrop-filter: blur(14px); }
+    .nav-inner { max-width: 1240px; height: 68px; margin: auto; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: baseline; gap: 8px; font: 500 14px var(--mono); }
+    .brand-mark { color: var(--ember); } .brand-sub { color: var(--muted); font-size: 9px; letter-spacing: .12em; }
+    .nav-links { display: flex; gap: 20px; color: var(--muted); font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .nav-links a:hover { color: var(--cobalt); }
+    .nav-links a:last-child { color: var(--ember); }
+    .scene { position: relative; overflow: hidden; }
+    .scene-img { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; user-select: none; }
+    .scene-wash { position: absolute; z-index: 1; inset: 0; pointer-events: none; }
+    .scene-content { position: relative; z-index: 2; max-width: 1240px; margin: auto; padding-left: 28px; padding-right: 28px; }
+    .kicker { margin: 0 0 17px; color: var(--ember); font: 500 10px var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+    .kicker::before { content: "// "; color: currentColor; }
+
+    .hero { min-height: 100svh; display: grid; align-items: end; background: var(--paper-deep); }
+    .hero .scene-img { object-position: center; }
+    .hero .scene-wash { background: linear-gradient(90deg, rgba(243,246,250,.97) 0%, rgba(243,246,250,.84) 37%, rgba(243,246,250,.16) 72%, rgba(243,246,250,.02) 100%), linear-gradient(0deg, rgba(19,59,120,.38), transparent 45%); }
+    .hero .scene-content { width: 100%; padding-bottom: clamp(58px, 9vh, 112px); }
+    .hero-copy { max-width: 680px; }
+    .hero h1 { max-width: 650px; margin: 0; font: 600 clamp(38px,5.4vw,76px)/1.12 var(--serif); letter-spacing: -.075em; }
+    .hero h1 em { color: var(--cobalt); font-style: normal; }
+    .hero-lede { max-width: 520px; margin: 26px 0 0; color: #455772; font-size: 15px; line-height: 1.85; }
+    .hero-meta { margin-top: 33px; display: flex; flex-wrap: wrap; gap: 9px; }
+    .meta-pill { padding: 8px 10px; border: 1px solid rgba(25,59,120,.17); border-radius: 999px; background: rgba(255,255,255,.5); color: var(--cobalt); font: 500 9px var(--mono); letter-spacing: .08em; }
+    .meta-pill.hot { border-color: rgba(232,103,68,.3); color: var(--ember); }
+    .trail { position: absolute; z-index: 2; right: 9vw; bottom: 20%; width: min(460px, 42vw); height: 1px; background: linear-gradient(90deg, transparent, var(--ember), transparent); transform: rotate(-6deg); opacity: .8; }
+    .motion-ok .hero.is-visible .trail { animation: race-trail 5s var(--ease) infinite alternate; }
+    .hero-corner { position: absolute; z-index: 3; right: 28px; bottom: 29px; color: #f6f8fb; text-align: right; font: 500 9px/1.8 var(--mono); letter-spacing: .07em; }
+    .hero-corner strong { display: block; color: #fff; font: 800 26px/.8 "Barlow Condensed", sans-serif; letter-spacing: .06em; }
+
+    .section-head { max-width: 1240px; margin: auto; padding: 112px 28px 25px; display: flex; align-items: end; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .section-head h2 { margin: 0; font: 600 clamp(24px,3vw,40px)/1.18 var(--serif); letter-spacing: -.06em; }
+    .section-head p { max-width: 345px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+
+    .feature { min-height: 690px; background: #dce8f4; display: grid; align-items: center; }
+    .feature .scene-img { object-position: center; }
+    .feature .scene-wash { background: linear-gradient(90deg, rgba(244,248,252,.98) 0%, rgba(244,248,252,.86) 41%, rgba(244,248,252,.23) 73%, rgba(244,248,252,.04) 100%); }
+    .feature .scene-content { width: 100%; padding-top: 90px; padding-bottom: 90px; }
+    .feature-copy { max-width: 560px; }
+    .feature-number { margin-bottom: 16px; color: var(--gold); font: 800 70px/.7 "Barlow Condensed", sans-serif; letter-spacing: -.04em; }
+    .feature h2 { margin: 0; font: 600 clamp(32px,4.4vw,62px)/1.14 var(--serif); letter-spacing: -.075em; }
+    .feature p { max-width: 500px; margin: 22px 0; color: #495c75; font-size: 15px; line-height: 1.85; }
+    .feature-link { display: inline-flex; gap: 9px; align-items: center; padding-bottom: 5px; border-bottom: 1px solid var(--cobalt); color: var(--cobalt); font: 500 11px var(--mono); letter-spacing: .08em; }
+    .arc { position: absolute; z-index: 2; left: 50%; top: 16%; width: min(630px, 53vw); height: 280px; overflow: visible; pointer-events: none; }
+    .arc path { fill: none; stroke: var(--gold); stroke-width: 2; stroke-dasharray: 610; stroke-dashoffset: 610; opacity: .65; }
+    .motion-ok .feature.is-visible .arc path { animation: draw-arc 1.4s .2s var(--ease) forwards; }
+
+    .posts { max-width: 1240px; margin: auto; padding: 0 28px 114px; }
+    .post-link { position: relative; display: grid; grid-template-columns: 145px minmax(0,1fr) auto; gap: 28px; align-items: center; min-height: 108px; border-bottom: 1px solid var(--line); overflow: hidden; transition: padding .35s var(--ease), color .35s var(--ease); }
+    .post-link:hover { padding-left: 13px; color: var(--cobalt); }
+    .post-meta { color: var(--muted); font: 500 10px/1.9 var(--mono); letter-spacing: .05em; }
+    .post-meta b { display: block; color: var(--ember); font-weight: 500; }
+    .post-title { margin: 0; font: 600 clamp(19px,2.1vw,27px)/1.32 var(--serif); letter-spacing: -.055em; }
+    .post-tag { justify-self: end; color: var(--muted); font: 500 10px var(--mono); letter-spacing: .05em; }
+    .crosshair { position: absolute; right: -18px; top: 50%; width: 40px; height: 40px; border: 1px solid var(--radar); border-radius: 50%; opacity: 0; transform: translateY(-50%) scale(.6); transition: opacity .3s var(--ease), transform .3s var(--ease); }
+    .crosshair::before,.crosshair::after { content: ""; position: absolute; background: var(--radar); }
+    .crosshair::before { left: 19px; top: -8px; width: 1px; height: 54px; }
+    .crosshair::after { left: -8px; top: 19px; width: 54px; height: 1px; }
+    .post-link:hover .crosshair,.post-link:focus-visible .crosshair { opacity: 1; transform: translateY(-50%) scale(1); }
+
+    .archive { min-height: 670px; display: grid; align-items: center; background: var(--cobalt); color: #f7f9fc; }
+    .archive .scene-img { object-position: center; opacity: .87; }
+    .archive .scene-wash { background: linear-gradient(90deg, rgba(10,35,79,.98) 0%, rgba(10,35,79,.89) 42%, rgba(10,35,79,.28) 75%, rgba(10,35,79,.1) 100%); }
+    .archive .scene-content { width: 100%; padding-top: 95px; padding-bottom: 95px; }
+    .archive-copy { max-width: 585px; }
+    .archive .kicker { color: var(--radar); }
+    .archive h2 { margin: 0; font: 600 clamp(32px,4.4vw,60px)/1.14 var(--serif); letter-spacing: -.075em; }
+    .archive p { max-width: 500px; margin: 23px 0 31px; color: #c4d4ea; font-size: 15px; line-height: 1.85; }
+    .rifler { display: flex; align-items: center; gap: 13px; color: #dbe8f8; font: 500 10px var(--mono); letter-spacing: .08em; }
+    .rifler i { width: 45px; height: 1px; background: var(--radar); }
+    .archive-index { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; max-width: 1240px; margin: auto; background: rgba(255,255,255,.12); }
+    .index-cell { min-height: 120px; padding: 21px 28px; background: #102f68; }
+    .index-cell span { display: block; color: var(--radar); font: 500 9px var(--mono); letter-spacing: .12em; }
+    .index-cell strong { display: block; margin-top: 12px; font: 700 20px "Barlow Condensed",sans-serif; letter-spacing: .04em; }
+
+    .footer { max-width: 1240px; margin: auto; padding: 45px 28px 50px; display: flex; justify-content: space-between; gap: 24px; color: var(--muted); font: 500 10px/1.7 var(--mono); letter-spacing: .05em; }
+    .footer b { color: var(--cobalt); }
+
+    @keyframes race-trail { to { transform: translateX(42px) rotate(-6deg); opacity: .2; } }
+    @keyframes draw-arc { to { stroke-dashoffset: 0; } }
+    @media (max-width: 760px) {
+      .nav-inner,.scene-content,.section-head,.posts,.footer { padding-left: 18px; padding-right: 18px; }
+      .nav-links { gap: 12px; font-size: 8px; } .nav-links a:nth-child(2) { display: none; }
+      .hero { min-height: 780px; align-items: start; padding-top: 150px; } .hero .scene-img { top: 42%; height: 58%; object-position: 66% center; }
+      .hero .scene-wash { background: linear-gradient(180deg, rgba(243,246,250,1) 0%, rgba(243,246,250,.96) 42%, rgba(243,246,250,.14) 69%, rgba(19,59,120,.22) 100%); }
+      .hero h1 { font-size: clamp(39px,11vw,55px); } .hero-corner { right: 18px; bottom: 22px; }
+      .section-head { display: block; padding-top: 75px; } .section-head p { margin-top: 15px; }
+      .feature,.archive { min-height: 730px; align-items: start; padding-top: 77px; } .feature .scene-img,.archive .scene-img { top: 45%; height: 55%; object-position: 67% center; }
+      .feature .scene-wash { background: linear-gradient(180deg, rgba(244,248,252,1) 0%, rgba(244,248,252,.92) 43%, rgba(244,248,252,.12) 72%, rgba(244,248,252,.03) 100%); }
+      .archive .scene-wash { background: linear-gradient(180deg, rgba(10,35,79,1) 0%, rgba(10,35,79,.91) 44%, rgba(10,35,79,.26) 76%, rgba(10,35,79,.08) 100%); }
+      .arc { left: 37%; top: 47%; width: 78vw; } .post-link { grid-template-columns: 1fr; gap: 7px; padding: 23px 0; } .post-tag { justify-self: start; }
+      .archive-index { grid-template-columns: 1fr 1fr; } .index-cell { min-height: 95px; padding: 17px 18px; } .footer { display: block; } .footer span { display: block; margin-top: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
+      .trail { opacity: .45; } .arc path { stroke-dashoffset: 0; } .crosshair { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="主导航"><div class="nav-inner"><a class="brand" href="#top"><span class="brand-mark">~/</span>lancer.log <span class="brand-sub">APEX &amp; CLUTCH</span></a><div class="nav-links"><a href="#notes">notes</a><a href="#archive">archive</a><a href="#off-clock">off-clock</a></div></div></nav>
+  <main id="top">
+    <section class="hero scene scene-f1 is-visible" data-scene="f1"><img class="scene-img" src="apex-clutch-assets/f1-verstappen.png" alt="雨雾中的 F1 赛车驶过赛道弯角"><div class="scene-wash"></div><div class="trail" aria-hidden="true"></div><div class="scene-content"><div class="hero-copy"><p class="kicker">private documentary / 01</p><h1>把<em>关键回合</em><br>之外的事，写下来。</h1><p class="hero-lede">白天写系统，夜里记录还没整理好的念头。这里有工程、生活，以及我在速度、弧线与瞄准之间学会的耐心。</p><div class="hero-meta"><span class="meta-pill hot">33 / MAX</span><span class="meta-pill">30 / CURRY</span><span class="meta-pill">RIFLER / NIKO</span></div></div></div><div class="hero-corner"><strong>APEX</strong>WET TRACK / QUIET MIND</div></section>
+    <section id="notes" class="feature scene scene-basketball" data-scene="basketball"><img class="scene-img" src="apex-clutch-assets/basketball-curry.png" alt="库里在球场上完成三分出手"><div class="scene-wash"></div><svg class="arc" viewBox="0 0 630 280" aria-hidden="true"><path d="M 20 250 Q 310 -30 610 190"></path></svg><div class="scene-content"><div class="feature-copy"><div class="feature-number">30</div><p class="kicker" style="color:var(--gold)">featured note / release</p><h2>不是每一次出手，<br>都要立刻知道答案。</h2><p>有些文章像库里的出手：看起来轻，却来自无数次不被观看的练习。写作也是——先把动作做完整，再把结果交给时间。</p><a class="feature-link" href="#post-1">READ FEATURED NOTE <span>→</span></a></div></div></section>
+    <div class="section-head"><h2>recent notes</h2><p>工程里的慢思考，和不写进 commit message 的部分。</p></div>
+    <section class="posts" aria-label="最近文章"><a id="post-1" class="post-link" href="#off-clock"><span class="post-meta"><b>2026.07.05</b>8 MIN READ</span><h3 class="post-title">关于“够用就好”这件事，我用了七年才真正学会</h3><span class="post-tag">#生活方式</span><span class="crosshair" aria-hidden="true"></span></a><a class="post-link" href="#archive"><span class="post-meta"><b>2026.06.21</b>6 MIN READ</span><h3 class="post-title">为什么我开始觉得，留白本身就是一种信息</h3><span class="post-tag">#设计</span><span class="crosshair" aria-hidden="true"></span></a><a class="post-link" href="#archive"><span class="post-meta"><b>2026.06.02</b>9 MIN READ</span><h3 class="post-title">把整套笔记系统换成了一个 txt 文件和一支铅笔</h3><span class="post-tag">#工具</span><span class="crosshair" aria-hidden="true"></span></a></section>
+    <section id="archive" class="archive scene scene-cs" data-scene="cs"><img class="scene-img" src="apex-clutch-assets/cs-niko.png" alt="NiKo 在 CS 赛事舞台上专注比赛"><div class="scene-wash"></div><div class="scene-content"><div class="archive-copy"><p class="kicker">archive / hold the angle</p><h2>有些判断，<br>需要先站稳位置。</h2><p>我偏爱步枪手的耐心：不追求每一秒的高光，先把该守的角度守好。文章归档也一样，先回看，再决定下一步要写什么。</p><div class="rifler"><i></i> NIKO / M0NESY / FOCUS MODE</div></div></div></section>
+    <section id="off-clock" class="archive-index" aria-label="我的场外索引"><div class="index-cell"><span>F1 / 33</span><strong>MAX VERSTAPPEN</strong></div><div class="index-cell"><span>NBA / 30</span><strong>STEPHEN CURRY</strong></div><div class="index-cell"><span>CS / RIFLER</span><strong>NIKO</strong></div><div class="index-cell"><span>CS / AWP</span><strong>M0NESY</strong></div></section>
+  </main>
+  <footer class="footer"><b>lancer.log / 2026</b><span>BUILT QUIETLY · READ SLOWLY · PLAY THE NEXT POSSESSION</span></footer>
+  <script>
+    const nav = document.querySelector('.nav');
+    addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 18), { passive: true });
+    const scenes = document.querySelectorAll('.scene');
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('motion-ok');
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) if (entry.isIntersecting) entry.target.classList.add('is-visible');
+      }, { threshold: .25 });
+      scenes.forEach((scene) => observer.observe(scene));
+    }
+  </script>
+</body>
+</html>

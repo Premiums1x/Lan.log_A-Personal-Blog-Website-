@@ -144,12 +144,26 @@ type IndexData struct {
 	PostCount int
 }
 
+type HeatmapCell struct {
+	Date  string
+	Count int
+	Level int
+}
+
+type HeatmapData struct {
+	Username string
+	URL      string
+	Total    int
+	Weeks    [][]HeatmapCell
+}
+
 type PostData struct {
 	Site       SiteData
 	Page       string
 	Post       model.Post
 	Prev, Next *model.Post
 	AuthorName string
+	Heatmap    *HeatmapData
 }
 
 type AboutPageData struct {

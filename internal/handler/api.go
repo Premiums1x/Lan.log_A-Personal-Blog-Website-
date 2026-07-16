@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"strings"
@@ -11,7 +13,9 @@ import (
 	"github.com/lancer/log/internal/auth"
 	"github.com/lancer/log/internal/config"
 	"github.com/lancer/log/internal/db"
+	"github.com/lancer/log/internal/llm"
 	"github.com/lancer/log/internal/markdown"
+	"github.com/lancer/log/internal/model"
 	"github.com/lancer/log/internal/repo"
 )
 
@@ -19,10 +23,15 @@ type APIHandler struct {
 	DB     *db.DB
 	Auth   *auth.Manager
 	Config config.Config
+	LLM    *llm.Client
 }
 
 func NewAPIHandler(d *db.DB, m *auth.Manager, cfg config.Config) *APIHandler {
-	return &APIHandler{DB: d, Auth: m, Config: cfg}
+	h := &APIHandler{DB: d, Auth: m, Config: cfg}
+	if cfg.LLM.Ready() {
+		h.LLM = llm.NewClient(cfg.LLM)
+	}
+	return h
 }
 
 func ok(c *gin.Context, v any)                  { c.JSON(200, v) }
@@ -114,23 +123,57 @@ func (h *APIHandler) GetPost(c *gin.Context) {
 		fail(c, 500, err.Error())
 		return
 	}
-	ok(c, p)
+	ok(c, decorateExcerptState(p))
 }
 
 type postReq struct {
-	Slug     string   `json:"slug"`
-	Title    string   `json:"title"`
-	Excerpt  string   `json:"excerpt"`
-	BodyMD   string   `json:"body_md"`
-	CoverURL string   `json:"cover_url"`
-	Section  string   `json:"section"`
-	Status   string   `json:"status"`
-	Pinned   bool     `json:"pinned"`
-	TagNames []string `json:"tag_names"`
+	Slug            string   `json:"slug"`
+	Title           string   `json:"title"`
+	Excerpt         string   `json:"excerpt"`
+	ExcerptSource   string   `json:"excerpt_source"`
+	ExcerptReviewed bool     `json:"excerpt_reviewed"`
+	BodyMD          string   `json:"body_md"`
+	CoverURL        string   `json:"cover_url"`
+	Section         string   `json:"section"`
+	Status          string   `json:"status"`
+	Pinned          bool     `json:"pinned"`
+	TagNames        []string `json:"tag_names"`
 }
 
 func optionalExcerpt(excerpt string) string {
 	return strings.TrimSpace(excerpt)
+}
+
+func normalizeExcerptState(excerpt, source string) (string, string) {
+	excerpt = optionalExcerpt(excerpt)
+	if excerpt == "" {
+		return "", "empty"
+	}
+	if source == "ai" {
+		return excerpt, "ai"
+	}
+	return excerpt, "manual"
+}
+
+func bodyContentHash(body string) string {
+	sum := sha256.Sum256([]byte(body))
+	return hex.EncodeToString(sum[:])
+}
+
+func excerptIsStale(reviewedHash, body string) bool {
+	return reviewedHash == "" || reviewedHash != bodyContentHash(body)
+}
+
+func reviewedExcerptHash(existingHash, previousExcerpt, nextExcerpt, body string, explicitlyReviewed bool) string {
+	if explicitlyReviewed || optionalExcerpt(previousExcerpt) != optionalExcerpt(nextExcerpt) {
+		return bodyContentHash(body)
+	}
+	return existingHash
+}
+
+func decorateExcerptState(p model.Post) model.Post {
+	p.ExcerptStale = excerptIsStale(p.ExcerptReviewedBodyHash, p.BodyMD)
+	return p
 }
 
 func (h *APIHandler) CreatePost(c *gin.Context) {
@@ -146,23 +189,27 @@ func (h *APIHandler) CreatePost(c *gin.Context) {
 	bodyHTML := markdown.Render(r.BodyMD)
 	words := markdown.WordCount(r.BodyMD)
 	readMin := markdown.ReadMinutes(r.BodyMD)
-	excerpt := optionalExcerpt(r.Excerpt)
+	excerpt, excerptSource := normalizeExcerptState(r.Excerpt, r.ExcerptSource)
+	reviewedHash := ""
+	if r.ExcerptReviewed || excerpt != "" {
+		reviewedHash = bodyContentHash(r.BodyMD)
+	}
 	commit := newCommitHash(r.Slug)
 	section := strings.TrimSpace(r.Section)
 	if section == "" {
 		section = "posts"
 	}
 	p, err := repo.CreatePost(c.Request.Context(), h.DB.Pool, repo.PostInput{
-		Slug: r.Slug, Title: r.Title, Excerpt: excerpt, BodyMD: r.BodyMD, BodyHTML: bodyHTML,
+		Slug: r.Slug, Title: r.Title, Excerpt: excerpt, ExcerptSource: excerptSource,
+		ExcerptReviewedBodyHash: reviewedHash, BodyMD: r.BodyMD, BodyHTML: bodyHTML,
 		CoverURL: r.CoverURL, Section: section, Status: r.Status, Pinned: r.Pinned, TagNames: r.TagNames,
 	}, commit, readMin, words)
 	if err != nil {
 		fail(c, 400, err.Error())
 		return
 	}
-	ok(c, p)
+	ok(c, decorateExcerptState(p))
 }
-
 func (h *APIHandler) UpdatePost(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -178,17 +225,30 @@ func (h *APIHandler) UpdatePost(c *gin.Context) {
 		fail(c, 400, err.Error())
 		return
 	}
+	existing, err := repo.GetPostByID(c.Request.Context(), h.DB.Pool, id)
+	if errors.Is(err, repo.ErrNotFound) {
+		fail(c, 404, "not found")
+		return
+	}
+	if err != nil {
+		fail(c, 500, err.Error())
+		return
+	}
 	bodyHTML := markdown.Render(r.BodyMD)
 	words := markdown.WordCount(r.BodyMD)
 	readMin := markdown.ReadMinutes(r.BodyMD)
-	excerpt := optionalExcerpt(r.Excerpt)
+	excerpt, excerptSource := normalizeExcerptState(r.Excerpt, r.ExcerptSource)
+	reviewedHash := reviewedExcerptHash(
+		existing.ExcerptReviewedBodyHash, existing.Excerpt, excerpt, r.BodyMD, r.ExcerptReviewed,
+	)
 	commit := newCommitHash(r.Slug)
 	section := strings.TrimSpace(r.Section)
 	if section == "" {
 		section = "posts"
 	}
 	p, err := repo.UpdatePost(c.Request.Context(), h.DB.Pool, id, repo.PostInput{
-		Slug: r.Slug, Title: r.Title, Excerpt: excerpt, BodyMD: r.BodyMD, BodyHTML: bodyHTML,
+		Slug: r.Slug, Title: r.Title, Excerpt: excerpt, ExcerptSource: excerptSource,
+		ExcerptReviewedBodyHash: reviewedHash, BodyMD: r.BodyMD, BodyHTML: bodyHTML,
 		CoverURL: r.CoverURL, Section: section, Status: r.Status, Pinned: r.Pinned, TagNames: r.TagNames,
 	}, commit, readMin, words)
 	if errors.Is(err, repo.ErrNotFound) {
@@ -199,9 +259,8 @@ func (h *APIHandler) UpdatePost(c *gin.Context) {
 		fail(c, 400, err.Error())
 		return
 	}
-	ok(c, p)
+	ok(c, decorateExcerptState(p))
 }
-
 func (h *APIHandler) DeletePost(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -228,6 +287,33 @@ func validatePost(r postReq) error {
 		return errors.New("status must be draft or published")
 	}
 	return nil
+}
+
+type generateExcerptReq struct {
+	Title  string `json:"title"`
+	BodyMD string `json:"body_md"`
+}
+
+func (h *APIHandler) GenerateExcerpt(c *gin.Context) {
+	if h.LLM == nil {
+		fail(c, 503, "AI 摘要服务尚未配置")
+		return
+	}
+	var r generateExcerptReq
+	if err := c.ShouldBindJSON(&r); err != nil {
+		fail(c, 400, "请求格式不正确")
+		return
+	}
+	if strings.TrimSpace(r.BodyMD) == "" {
+		fail(c, 400, "正文不能为空")
+		return
+	}
+	excerpt, err := h.LLM.GenerateExcerpt(c.Request.Context(), r.Title, r.BodyMD)
+	if err != nil {
+		fail(c, 502, "AI 摘要生成失败，请稍后重试")
+		return
+	}
+	ok(c, gin.H{"excerpt": excerpt})
 }
 
 // ---------- Settings ----------

@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lancer/log/internal/db"
+	"github.com/lancer/log/internal/github"
 	"github.com/lancer/log/internal/markdown"
 	"github.com/lancer/log/internal/model"
 	"github.com/lancer/log/internal/repo"
@@ -20,13 +21,15 @@ type PublicHandler struct {
 	DB       *db.DB
 	Tmpl     *Templates
 	Settings []string
+	GitHub   *github.Client
 }
 
-func NewPublicHandler(d *db.DB, t *Templates) *PublicHandler {
+func NewPublicHandler(d *db.DB, t *Templates, gh *github.Client) *PublicHandler {
 	return &PublicHandler{
 		DB:       d,
 		Tmpl:     t,
 		Settings: []string{"branding", "nav", "footer", "hero", "stack", "about", "now", "archive", "shelf"},
+		GitHub:   gh,
 	}
 }
 
@@ -134,6 +137,15 @@ func (h *PublicHandler) Post(c *gin.Context) {
 	site, _ := h.siteData(c)
 	data := PostData{Site: site, Page: "", Post: p, AuthorName: "Lan"}
 	data.Post.BodyHTML = body
+	if h.GitHub != nil && h.GitHub.Enabled() {
+		if cal, err := h.GitHub.FetchContributions(c.Request.Context()); err == nil {
+			data.Heatmap = calToHeatmap(cal)
+		} else {
+			fmt.Printf("github heatmap error: %v\n", err)
+		}
+	} else {
+		fmt.Println("github heatmap: token not configured or disabled")
+	}
 	h.render(c, "post", data)
 }
 
@@ -360,3 +372,38 @@ func (h *PublicHandler) Static(r *gin.Engine) {
 }
 
 func ensureNoAdminLeak(s string) bool { return strings.HasPrefix(s, "/admin") }
+
+func calToHeatmap(cal *github.Calendar) *HeatmapData {
+	hd := &HeatmapData{
+		Username: cal.Login,
+		URL:      cal.URL,
+		Total:    cal.Total,
+	}
+	for _, week := range cal.Weeks {
+		cells := make([]HeatmapCell, 0, len(week))
+		for _, d := range week {
+			cells = append(cells, HeatmapCell{
+				Date:  d.Date,
+				Count: d.Count,
+				Level: heatmapLevel(d.Count),
+			})
+		}
+		hd.Weeks = append(hd.Weeks, cells)
+	}
+	return hd
+}
+
+func heatmapLevel(n int) int {
+	switch {
+	case n == 0:
+		return 0
+	case n <= 2:
+		return 1
+	case n <= 5:
+		return 2
+	case n <= 8:
+		return 3
+	default:
+		return 4
+	}
+}
