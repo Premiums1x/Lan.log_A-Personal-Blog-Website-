@@ -9,7 +9,7 @@
 
     <div class="lancer-hero-copy reveal">
       <div class="lancer-kicker"><span>PERSONAL LOG</span><i></i><span>SEASON 26</span></div>
-      <p class="lancer-role"><span>lancer@field-notes:~$</span> ./continue --mode=build</p>
+      <p class="lancer-role"><span>lancer@field-notes:~$</span> ./continue</p>
       <h1>
         <span class="lancer-wordmark">LANCER</span>
         <span class="lancer-thesis">{{.Hero.Title}}{{if .Hero.TitleAccent}}<em>{{.Hero.TitleAccent}}</em>{{end}}{{.Hero.TitleTail}}</span>
@@ -26,24 +26,24 @@
       <ol class="dev-code">
         <li><span>const</span> lancer = <b>{</b></li>
         <li>&nbsp;&nbsp;role: <em>'programmer'</em>,</li>
-        <li>&nbsp;&nbsp;instinct: <em>'break_the_line'</em>,</li>
-        <li>&nbsp;&nbsp;mental: <em>'hold_the_clutch'</em>,</li>
-        <li>&nbsp;&nbsp;next: <strong>await</strong> buildTomorrow()</li>
+        <li>&nbsp;&nbsp;stack: <em>['frontend', 'go', 'agents']</em>,</li>
+        <li>&nbsp;&nbsp;status: <em>'building'</em>,</li>
+        <li>&nbsp;&nbsp;next: <strong>await</strong> nextPost()</li>
         <li><b>}</b></li>
       </ol>
       <div class="terminal-stream">
         <div><span>lancer@field-notes</span><b>terminal</b></div>
-        <p><i>$</i> go run ./cmd/life --keep-moving</p>
-        <p class="terminal-ok">✓ route compiled&nbsp;&nbsp; ✓ doubt handled&nbsp;&nbsp; ✓ next round ready</p>
+        <p><i>$</i> go run ./cmd/life</p>
+        <p class="terminal-ok">✓ build ok&nbsp;&nbsp; ✓ tests pass&nbsp;&nbsp; ✓ ready</p>
       </div>
       <div class="console-route">
         <svg class="lancer-line" viewBox="0 0 620 180" aria-hidden="true">
-          <path class="lancer-line-grid" d="M44 138 C140 138 148 88 238 92 S356 30 446 70 S520 118 580 26"/>
-          <path class="lancer-line-live" d="M44 138 C140 138 148 88 238 92 S356 30 446 70 S520 118 580 26"/>
-          <g class="lancer-node node-explore"><circle cx="44" cy="138" r="6"/><text x="44" y="170">EXPLORE</text></g>
-          <g class="lancer-node node-break"><circle cx="238" cy="92" r="6"/><text x="238" y="124">BREAK</text></g>
-          <g class="lancer-node node-clutch"><circle cx="446" cy="70" r="6"/><text x="446" y="102">CLUTCH</text></g>
-          <g class="lancer-node node-next"><circle cx="580" cy="26" r="6"/><text x="580" y="58">NEXT</text></g>
+          <path class="lancer-line-grid" pathLength="1212" d="M 292.8 150.3 C 305.4 150.3, 324.9 148.8, 334.8 144.6 C 341.4 141.6, 343.8 132.6, 347.4 125.7 C 352.5 116.4, 362.4 112.8, 371.4 114.6 C 385.5 117.6, 394.8 125.4, 410.4 127.2 C 423.0 128.4, 444.6 127.8, 466.2 127.8 C 472.5 127.8, 475.8 125.4, 475.2 121.8 C 474.6 119.1, 472.2 117.6, 468.9 116.1 L 275.7 21.0 C 271.8 19.2, 269.7 20.4, 269.4 24.0 L 269.1 29.4 C 268.8 32.1, 267.3 33.3, 264.3 33.3 C 246.9 33.3, 231.9 38.4, 218.7 49.2 C 203.4 62.1, 187.8 79.5, 173.1 97.5 L 142.5 135.9 C 137.1 142.8, 138.6 151.8, 145.8 156.9 C 151.5 161.1, 158.7 161.4, 163.5 157.8 C 166.5 155.7, 167.7 153.0, 168.6 148.8 L 174.3 121.8 C 175.5 115.5, 178.2 110.4, 182.4 105.3 L 191.7 93.9 C 195.3 89.4, 200.1 87.3, 206.1 87.3 L 218.4 87.3 C 221.7 87.3, 223.2 88.8, 223.2 92.1 L 223.2 101.1 C 223.2 105.3, 225.3 107.7, 229.8 109.2 C 234.6 111.0, 240.9 113.1, 244.5 110.7 C 248.4 108.0, 249.3 104.4, 249.3 99.0 L 249.3 63.3 C 249.3 57.0, 252.6 53.4, 258.3 50.7 L 276.6 43.5 C 284.1 40.8, 291.3 42.0, 291.3 48.6 L 291.3 141.0 C 291.3 146.1, 291.6 148.8, 292.8 150.3"/>
+          <path class="lancer-line-live" pathLength="1212" d="M 292.8 150.3 C 305.4 150.3, 324.9 148.8, 334.8 144.6 C 341.4 141.6, 343.8 132.6, 347.4 125.7 C 352.5 116.4, 362.4 112.8, 371.4 114.6 C 385.5 117.6, 394.8 125.4, 410.4 127.2 C 423.0 128.4, 444.6 127.8, 466.2 127.8 C 472.5 127.8, 475.8 125.4, 475.2 121.8 C 474.6 119.1, 472.2 117.6, 468.9 116.1 L 275.7 21.0 C 271.8 19.2, 269.7 20.4, 269.4 24.0 L 269.1 29.4 C 268.8 32.1, 267.3 33.3, 264.3 33.3 C 246.9 33.3, 231.9 38.4, 218.7 49.2 C 203.4 62.1, 187.8 79.5, 173.1 97.5 L 142.5 135.9 C 137.1 142.8, 138.6 151.8, 145.8 156.9 C 151.5 161.1, 158.7 161.4, 163.5 157.8 C 166.5 155.7, 167.7 153.0, 168.6 148.8 L 174.3 121.8 C 175.5 115.5, 178.2 110.4, 182.4 105.3 L 191.7 93.9 C 195.3 89.4, 200.1 87.3, 206.1 87.3 L 218.4 87.3 C 221.7 87.3, 223.2 88.8, 223.2 92.1 L 223.2 101.1 C 223.2 105.3, 225.3 107.7, 229.8 109.2 C 234.6 111.0, 240.9 113.1, 244.5 110.7 C 248.4 108.0, 249.3 104.4, 249.3 99.0 L 249.3 63.3 C 249.3 57.0, 252.6 53.4, 258.3 50.7 L 276.6 43.5 C 284.1 40.8, 291.3 42.0, 291.3 48.6 L 291.3 141.0 C 291.3 146.1, 291.6 148.8, 292.8 150.3"/>
+          <g class="lancer-node node-explore"><circle cx="291.3" cy="90.9" r="6"/><text x="291.3" y="122">EXPLORE</text></g>
+          <g class="lancer-node node-break"><circle cx="475.2" cy="121.8" r="6"/><text x="475.2" y="152">BREAK</text></g>
+          <g class="lancer-node node-clutch"><circle cx="145.8" cy="156.9" r="6"/><text x="145.8" y="132">CLUTCH</text></g>
+          <g class="lancer-node node-next"><circle cx="291.3" cy="48.6" r="6"/><text x="291.3" y="28">NEXT</text></g>
         </svg>
       </div>
     </div>
@@ -52,14 +52,77 @@
       {{range .Hero.Meta}}
       <div><span>{{.K}}</span><strong>{{.V}}</strong></div>
       {{end}}
-      <div><span>STATUS</span><strong class="live-dot">ROUND ACTIVE</strong></div>
+      <div><span>STATUS</span><strong class="live-dot">ONLINE</strong></div>
     </div>
     <a class="drawer-cue" href="#home-drawer" data-drawer-target="home-drawer" aria-label="继续向下浏览">
-      <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
+      <span></span><b aria-hidden="true">↓</b>
     </a>
   </header>
   <div class="page-drawer" id="home-drawer">
     <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
+  <section class="live-node-card" data-system-status aria-labelledby="live-node-title" aria-busy="true">
+    <header>
+      <span class="live-dot" aria-hidden="true"></span>
+      <div>
+        <p>LIVE NODE / PIT WALL</p>
+        <h2 id="live-node-title">Server Running Situation:</h2>
+      </div>
+      <output data-status aria-live="polite">CONNECTING</output>
+    </header>
+    <div class="live-node-rail lancer-line" aria-hidden="true">
+      <svg class="lancer-line-track" viewBox="0 0 960 28" preserveAspectRatio="none">
+        <polyline class="lancer-line-stroke" points="0,14 196,14 232,5 472,5 508,21 748,21 784,7 960,7" />
+        <circle class="lancer-line-node" cx="40" cy="14" r="3.5" />
+        <circle class="lancer-line-node" cx="280" cy="5" r="3.5" />
+        <circle class="lancer-line-node" cx="520" cy="21" r="3.5" />
+        <circle class="lancer-line-node" cx="760" cy="7" r="3.5" />
+      </svg>
+      <span class="live-node-rail-tag">LAP TRACE</span>
+    </div>
+    <div class="live-node-grid">
+      <article data-telemetry="cpu">
+        <div class="telemetry-metric-head"><span>S1 · CPU LOAD</span><strong data-metric="cpu" aria-label="CPU 使用率">--%</strong></div>
+        <svg class="telemetry-chart" data-chart="cpu" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>15S SAMPLE</span><b data-chart-samples="cpu">00 / 40</b></div>
+      </article>
+      <article data-telemetry="frequency">
+        <div class="telemetry-metric-head"><span>S2 · CPU CLOCK</span><strong data-metric="frequency" aria-label="CPU 当前频率">-- MHz</strong></div>
+        <svg class="telemetry-chart" data-chart="frequency" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>0–5 GHZ SCALE</span><b data-chart-samples="frequency">00 / 40</b></div>
+      </article>
+      <article data-telemetry="memory">
+        <div class="telemetry-metric-head"><span>S3 · MEMORY</span><strong data-metric="memory" aria-label="内存使用率">--%</strong></div>
+        <svg class="telemetry-chart" data-chart="memory" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><small data-memory-detail aria-label="已用内存和总内存">-- / --</small><b data-chart-samples="memory">00 / 40</b></div>
+      </article>
+      <article data-telemetry="uptime">
+        <div class="telemetry-metric-head"><span>S4 · UPTIME</span><strong data-metric="uptime" aria-label="服务器持续运行时间">--</strong></div>
+        <svg class="telemetry-chart" data-chart="uptime" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>ONLINE TRACE</span><b data-chart-samples="uptime">00 / 40</b></div>
+      </article>
+    </div>
+  </section>
+
   {{if .Pinned}}
   <section class="lancer-current reveal" aria-labelledby="current-play-title">
     <div class="lancer-section-index"><span>01</span><p>CURRENT PLAY</p></div>
@@ -78,76 +141,23 @@
   </section>
   {{end}}
 
-  <section class="live-node-card" data-system-status aria-labelledby="live-node-title" aria-busy="true">
-    <header>
-      <span class="live-dot" aria-hidden="true"></span>
-      <div>
-        <p>LIVE NODE</p>
-        <h2 id="live-node-title">这台博客服务器，此刻正在运行。</h2>
-      </div>
-      <output data-status aria-live="polite">CONNECTING</output>
-    </header>
-    <div class="live-node-grid">
-      <article data-telemetry="cpu">
-        <div class="telemetry-metric-head"><span>CPU LOAD</span><strong data-metric="cpu" aria-label="CPU 使用率">--%</strong></div>
-        <svg class="telemetry-chart" data-chart="cpu" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
-          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
-          <path class="telemetry-chart-area" data-chart-area d="" />
-          <path class="telemetry-chart-line" data-chart-line d="" />
-          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
-        </svg>
-        <div class="telemetry-metric-foot"><span>15S SAMPLE</span><b data-chart-samples="cpu">00 / 40</b></div>
-      </article>
-      <article data-telemetry="frequency">
-        <div class="telemetry-metric-head"><span>CPU CLOCK</span><strong data-metric="frequency" aria-label="CPU 当前频率">-- MHz</strong></div>
-        <svg class="telemetry-chart" data-chart="frequency" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
-          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
-          <path class="telemetry-chart-area" data-chart-area d="" />
-          <path class="telemetry-chart-line" data-chart-line d="" />
-          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
-        </svg>
-        <div class="telemetry-metric-foot"><span>0–5 GHZ SCALE</span><b data-chart-samples="frequency">00 / 40</b></div>
-      </article>
-      <article data-telemetry="memory">
-        <div class="telemetry-metric-head"><span>MEMORY</span><strong data-metric="memory" aria-label="内存使用率">--%</strong></div>
-        <svg class="telemetry-chart" data-chart="memory" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
-          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
-          <path class="telemetry-chart-area" data-chart-area d="" />
-          <path class="telemetry-chart-line" data-chart-line d="" />
-          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
-        </svg>
-        <div class="telemetry-metric-foot"><small data-memory-detail aria-label="已用内存和总内存">-- / --</small><b data-chart-samples="memory">00 / 40</b></div>
-      </article>
-      <article data-telemetry="uptime">
-        <div class="telemetry-metric-head"><span>UPTIME</span><strong data-metric="uptime" aria-label="服务器持续运行时间">--</strong></div>
-        <svg class="telemetry-chart" data-chart="uptime" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
-          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
-          <path class="telemetry-chart-area" data-chart-area d="" />
-          <path class="telemetry-chart-line" data-chart-line d="" />
-          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
-        </svg>
-        <div class="telemetry-metric-foot"><span>ONLINE TRACE</span><b data-chart-samples="uptime">00 / 40</b></div>
-      </article>
-    </div>
-  </section>
-
   <section class="world-deck" aria-labelledby="world-deck-title">
     <header class="chapter-image-band world-deck-heading" style="--chapter-image:url('/static/media/interests/niko-trophy-user.jpg'); --chapter-position:10% center">
       <div class="chapter-band-meta"><span>02 / WORLD DECK</span><b>INPUT / DRIVE</b></div>
       <div class="chapter-band-copy">
-        <p>influence.route → keep_attacking</p>
-        <h2 id="world-deck-title">让我保持进攻的东西。</h2>
+        <p>influence.route → /interests</p>
+        <h2 id="world-deck-title">我所热爱的东西</h2>
       </div>
     </header>
     <div class="world-card-grid" aria-label="Lancer 的兴趣世界">
       <article class="world-card" data-world="counter-strike" style="--world-image:url('/static/media/interests/niko-user.jpg'); --world-position:66% 26%" tabindex="0">
-        <span>ENTRY / CLUTCH</span><h3>Counter-Strike</h3><p>突破时敢于撕开防线，残局里相信判断。</p>
+        <span>ENTRY / CLUTCH</span><h3>Counter-Strike</h3><p>CS2</p>
       </article>
       <article class="world-card" data-world="f1" style="--world-image:url('/static/media/interests/verstappen-user.jpg'); --world-position:52% 32%" tabindex="0">
-        <span>RACE / PRECISION</span><h3>F1</h3><p>把速度变成一条可以重复走对的线。</p>
+        <span>RACE / PRECISION</span><h3>F1</h3><p>Formular 1</p>
       </article>
       <article class="world-card" data-world="basketball" style="--world-image:url('/static/media/interests/curry-new-user.jpg'); --world-position:50% 64%" tabindex="0">
-        <span>COURT / RANGE</span><h3>Basketball</h3><p>用训练换来出手空间，在压力里保持手感。</p>
+        <span>COURT / RANGE</span><h3>Basketball</h3><p>NBA</p>
       </article>
     </div>
   </section>
@@ -156,12 +166,12 @@
     <div class="lancer-section-head reveal">
       <div class="lancer-section-index"><span>03</span><p>FIELD NOTES</p></div>
       <div>
-        <h2 id="field-notes-title">每一篇，都是这一阶段留下的回合记录。</h2>
-        <a href="/archive">完整赛季记录 <span>({{.PostCount}})</span> →</a>
+        <h2 id="field-notes-title">想写下自己每一刻的思考</h2>
+        <a href="/archive">完整回顾 <span>({{.PostCount}})</span> →</a>
       </div>
     </div>
 
-    <div class="field-grid" id="field-notes-list" data-expand-list data-expand-initial="6">
+    <div class="field-grid" id="field-notes-list" data-expand-list data-expand-initial="5">
       {{if .Posts}}
       {{range $i, $post := .Posts}}
       <a class="field-card reveal field-card-{{$i}}" href="/posts/{{$post.Slug}}" data-expand-item>
@@ -180,9 +190,9 @@
         </div>
       </a>
       {{end}}
-      {{if gt (len .Posts) 6}}<button class="article-expand" type="button" data-expand-trigger hidden aria-expanded="false" aria-controls="field-notes-list"><span>展开余下文章</span><b aria-hidden="true">↓</b></button>{{end}}
+      {{if gt (len .Posts) 5}}<button class="article-expand" type="button" data-expand-trigger hidden aria-expanded="false" aria-controls="field-notes-list"><span>展开余下文章</span><b aria-hidden="true">↓</b></button>{{end}}
       {{else}}
-      <p class="lancer-empty">NO FIELD NOTES YET / 下一回合正在准备。</p>
+      <p class="lancer-empty">NO FIELD NOTES YET / 还没有文章。</p>
       {{end}}
     </div>
   </section>
@@ -191,7 +201,7 @@
     <div class="lancer-section-head reveal">
       <div class="lancer-section-index"><span>04</span><p>INFLUENCE DECK</p></div>
       <div>
-        <h2 id="influence-title">技术之外，真正让我保持热血的东西。</h2>
+        <h2 id="influence-title">生活不止代码，还有：</h2>
         <p>PADDOCK / COURT / SERVER / PLAYLIST</p>
       </div>
     </div>

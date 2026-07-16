@@ -191,6 +191,13 @@ func CountPublished(ctx context.Context, q db.Conn) (int, error) {
 	err := q.QueryRow(ctx, `SELECT COUNT(*) FROM posts WHERE status='published'`).Scan(&count)
 	return count, err
 }
+
+// SumPublishedWords returns the total word count across all published posts.
+func SumPublishedWords(ctx context.Context, q db.Conn) (int, error) {
+	var sum int
+	err := q.QueryRow(ctx, `SELECT COALESCE(SUM(words), 0) FROM posts WHERE status='published'`).Scan(&sum)
+	return sum, err
+}
 func ListAll(ctx context.Context, q db.Conn) ([]model.Post, error) {
 	rows, err := q.Query(ctx,
 		`SELECT `+postCols+` FROM posts ORDER BY created_at DESC`,

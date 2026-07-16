@@ -1,28 +1,94 @@
-document.querySelectorAll('[data-expand-list]').forEach((root) => {
-  const items = [...root.querySelectorAll('[data-expand-item]')];
-  const trigger = root.querySelector('[data-expand-trigger]');
-  const initialCount = Math.max(1, Number.parseInt(root.dataset.expandInitial || '6', 10) || 6);
-  const collapsedItems = items.slice(initialCount);
-  if (!trigger || collapsedItems.length === 0) return;
+function initExpandLists(scope) {
+  (scope || document).querySelectorAll('[data-expand-list]').forEach((root) => {
+    if (root.dataset.expandReady === 'true') return;
+    root.dataset.expandReady = 'true';
+    const items = [...root.querySelectorAll('[data-expand-item]')];
+    const trigger = root.querySelector('[data-expand-trigger]');
+    const initialCount = Math.max(1, Number.parseInt(root.dataset.expandInitial || '6', 10) || 6);
+    const collapsedItems = items.slice(initialCount);
+    if (!trigger || collapsedItems.length === 0) return;
 
-  collapsedItems.forEach((item) => { item.hidden = true; });
-  trigger.hidden = false;
-  trigger.setAttribute('aria-expanded', 'false');
+    collapsedItems.forEach((item) => { item.hidden = true; });
+    trigger.hidden = false;
+    trigger.setAttribute('aria-expanded', 'false');
 
-  trigger.addEventListener('click', () => {
-    const hiddenItems = items.filter((item) => item.hidden);
-    hiddenItems.forEach((item, index) => {
-      item.hidden = false;
-      requestAnimationFrame(() => {
-        item.style.transitionDelay = `${Math.min(index * 45, 225)}ms`;
-        item.classList.add('is-in');
+    trigger.addEventListener('click', () => {
+      const hiddenItems = items.filter((item) => item.hidden);
+      hiddenItems.forEach((item, index) => {
+        item.hidden = false;
+        requestAnimationFrame(() => {
+          item.style.transitionDelay = `${Math.min(index * 45, 225)}ms`;
+          item.classList.add('is-in');
+        });
       });
+      root.dataset.expanded = 'true';
+      trigger.setAttribute('aria-expanded', 'true');
+      trigger.hidden = true;
+    }, { once: true });
+  });
+}
+initExpandLists(document);
+
+(function initArchiveNav() {
+  const archive = document.querySelector('.lancer-archive');
+  if (!archive) return;
+  const cockpit = archive.querySelector('.archive-cockpit .page-hero-copy');
+  const fallbackH1 = '所有文章，<br><em>按时间排。</em>';
+
+  const setActive = (href) => {
+    archive.querySelectorAll('[data-archive-nav]').forEach((a) => {
+      a.classList.toggle('active', a.getAttribute('href') === href);
     });
-    root.dataset.expanded = 'true';
-    trigger.setAttribute('aria-expanded', 'true');
-    trigger.hidden = true;
-  }, { once: true });
-});
+  };
+
+  const applyDoc = (doc, href) => {
+    const newMain = doc.querySelector('.season-main');
+    const oldMain = archive.querySelector('.season-main');
+    if (!newMain || !oldMain) return false;
+    oldMain.replaceWith(newMain);
+
+    if (cockpit) {
+      const newH1 = doc.querySelector('.archive-cockpit .page-hero-copy h1');
+      const newIntro = doc.querySelector('.archive-cockpit .page-hero-copy p:not(.page-command):not(.lancer-kicker)');
+      const oldH1 = cockpit.querySelector('h1');
+      const oldIntro = cockpit.querySelector('p:not(.page-command):not(.lancer-kicker)');
+      if (newH1 && oldH1) oldH1.innerHTML = newH1.innerHTML;
+      if (newIntro && oldIntro) oldIntro.innerHTML = newIntro.innerHTML;
+      else if (oldH1) oldH1.innerHTML = fallbackH1;
+    }
+
+    initExpandLists(newMain);
+    newMain.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
+    setActive(href);
+    return true;
+  };
+
+  const navigate = async (href) => {
+    try {
+      const res = await fetch(href, { headers: { Accept: 'text/html' }, credentials: 'same-origin' });
+      if (!res.ok) throw new Error(String(res.status));
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      if (!applyDoc(doc, href)) throw new Error('swap failed');
+      history.pushState({ archiveNav: true }, '', href);
+    } catch {
+      window.location.href = href;
+    }
+  };
+
+  archive.addEventListener('click', (event) => {
+    const link = event.target.closest('[data-archive-nav]');
+    if (!link) return;
+    event.preventDefault();
+    navigate(link.getAttribute('href'));
+  });
+
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.archiveNav) {
+      navigate(window.location.pathname);
+    }
+  });
+})();
 document.querySelectorAll('[data-archive-sort]').forEach((control) => {
   const archive = control.closest('.lancer-archive');
   const seasonLine = archive?.querySelector('.season-line');

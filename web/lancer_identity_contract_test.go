@@ -188,7 +188,7 @@ func TestShelfDisclosuresWorkWithKeyboardAndWithoutLinks(t *testing.T) {
 func TestArticleListsCollapseAfterSixAndKeepTruePublishedCount(t *testing.T) {
 	index := readIdentitySource(t, "templates/index.tmpl")
 	requireIdentityStrings(t, index, "home article expansion",
-		`data-expand-list data-expand-initial="6"`,
+		`data-expand-list data-expand-initial="5"`,
 		`data-expand-item`,
 		`data-expand-trigger hidden`,
 		`aria-expanded="false"`,
@@ -460,10 +460,12 @@ func TestArchiveTerminalHeaderAndOrderControlStayUsable(t *testing.T) {
 
 	css := readIdentitySource(t, "static/lancer.css")
 	requireIdentityStrings(t, css, "archive terminal header repair",
+		`.archive-terminal > .dev-editor-head`,
+		`height: 52px`,
 		`.archive-terminal > .dev-editor-head > span`,
 		`align-self: center`,
 		`.archive-terminal > .dev-editor-head > strong`,
-		`font: 700 clamp(20px, 2vw, 28px)/1 var(--display)`,
+		`font: 700 clamp(20px, 2vw, 28px)/1.2 var(--display)`,
 		`.archive-order-control`,
 		`.archive-order-control:focus-visible`,
 	)
@@ -476,6 +478,25 @@ func TestArchiveTerminalHeaderAndOrderControlStayUsable(t *testing.T) {
 		`OLDEST`,
 		`NEWEST`,
 		`aria-label`,
+	)
+}
+
+func TestArchiveRaceControlSupportsPartialNav(t *testing.T) {
+	templateSource := readIdentitySource(t, "templates/archive.tmpl")
+	requireIdentityStrings(t, templateSource, "archive race-control partial nav",
+		`href="/archive" data-archive-nav`,
+		`href="/section/{{.Slug}}" data-archive-nav`,
+		`href="/tags/{{.Slug}}" data-archive-nav`,
+	)
+
+	script := readIdentitySource(t, "static/lancer.js")
+	requireIdentityStrings(t, script, "archive partial nav client",
+		`[data-archive-nav]`,
+		`DOMParser`,
+		`parseFromString`,
+		`history.pushState`,
+		`popstate`,
+		`initExpandLists`,
 	)
 }
 func TestLancerIdentityMigrationUpdatesExistingSettings(t *testing.T) {

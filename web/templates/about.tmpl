@@ -8,7 +8,7 @@
     <div class="cinematic-image" aria-hidden="true"></div>
     <div class="page-poster-word" aria-hidden="true">PROFILE</div>
     <div class="page-hero-copy reveal">
-      <div class="lancer-kicker"><span>PLAYER PROFILE</span><i></i><span>CALLSIGN / LANCER</span></div>
+<div class="lancer-kicker"><span>PLAYER PROFILE</span><i></i><span>CALLSIGN / LANCER</span></div>
       <p class="page-command"><span>lancer@field-notes:~$</span> cat ./identity/profile.manifest</p>
       <h1>{{if .About.TitleAccent}}{{SplitAccent .About.Title .About.TitleAccent}}{{else}}{{RenderInline .About.Title}}{{end}}</h1>
       <div class="profile-intro">{{range .About.Intro}}<p>{{.}}</p>{{end}}</div>
@@ -24,10 +24,10 @@
         <p><i>03</i><span>stack.current</span> = [</p>
         <p><i>04</i>&nbsp;&nbsp;<em>"frontend"</em>, <em>"go"</em>, <em>"agents"</em></p>
         <p><i>05</i>]</p>
-        <p><i>06</i><span>mental</span> = <strong>hold_the_clutch</strong></p>
+<p><i>06</i><span>status</span> = <strong>"building"</strong></p>
         <p><i>07</i><span>privacy</span> = <strong>true</strong></p>
       </div>
-      <div class="manifest-status"><span>PROCESS</span><strong>ROUND_ACTIVE</strong><i></i></div>
+      <div class="manifest-status"><span>PROCESS</span><strong>RUNNING</strong><i></i></div>
     </aside>
     <a class="drawer-cue" href="#about-drawer" data-drawer-target="about-drawer" aria-label="继续向下浏览">
       <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
@@ -37,15 +37,15 @@
     <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
   <section class="profile-lanes">
     <article class="profile-lane on-track reveal">
-      <div class="lane-label"><span>01</span><strong>ON TRACK</strong></div>
-      <h2>把问题拆开，把今天推进一点。</h2>
-      <p>技术是我的赛道。前端、Go、Agent 和后端不是简历标签，而是一圈一圈跑出来的判断力。</p>
+<div class="lane-label"><span>01</span><strong>ON TRACK</strong></div>
+      <h2>学会直面难题，而不是逃避</h2>
+      <p>前端、Go、Agent 和后端....我不希望把自己局限在一个领域</p>
       <div class="lane-route" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     </article>
     <article class="profile-lane off-track reveal">
-      <div class="lane-label"><span>02</span><strong>OFF TRACK</strong></div>
-      <h2>热爱不是休息区，它是继续进攻的燃料。</h2>
-      <p>比赛、音乐和那些传奇时刻，让不顺利的日子仍然保留一点期待。</p>
+<div class="lane-label"><span>02</span><strong>OFF TRACK</strong></div>
+      <h2>不打代码的时候，我在看这些。</h2>
+      <p>比赛、音乐，那些厉害的人，让我的生活多了几分色彩</p>
       <div class="lane-signal">PADDOCK / COURT / SERVER / PLAYLIST</div>
     </article>
   </section>
@@ -53,7 +53,7 @@
   <section class="influence-board interactive-influences" data-active="f1" aria-labelledby="profile-influences">
     <div class="lancer-section-head reveal">
       <div class="lancer-section-index"><span>03</span><p>INFLUENCES</p></div>
-      <div><h2 id="profile-influences">把鼠标放上去。每一种热爱，都在训练同一个我。</h2></div>
+      <div><h2 id="profile-influences">我关注的东西？把鼠标放上去你就知道</h2></div>
     </div>
     <div class="influence-interactive-shell reveal">
       <aside class="influence-preview" aria-live="polite">
@@ -61,26 +61,26 @@
           <i class="influence-preview-image is-active" style="--influence-image:url('/static/media/interests/verstappen-user.jpg')"></i><i class="influence-preview-image"></i>
         </div>
         <div class="influence-preview-top"><span>influence.current</span><b>POINTER / FOCUS</b></div>
-        <div class="influence-preview-code"><i>const</i> drive = <strong>resolve(activeInfluence)</strong>;</div>
+        <div class="influence-preview-code"><i>const</i> current = <strong>influences[active]</strong>;</div>
         <div class="influence-preview-copy">
           <span id="influence-preview-index">01 / PADDOCK</span>
           <h3 id="influence-preview-title">VERSTAPPEN / LECLERC</h3>
-          <p id="influence-preview-copy">速度、进攻、精密，以及下一圈仍然敢于压上。</p>
+          <p id="influence-preview-copy">手术刀般的精准</p>
         </div>
         <div class="influence-preview-line"><i></i><span>INPUT DETECTED</span></div>
       </aside>
       <div class="influence-board-grid" role="group" aria-label="Lancer influences">
         <button type="button" class="influence-board-card" data-influence="f1" data-image="/static/media/interests/verstappen-user.jpg" data-position="62% 32%" data-index="01 / PADDOCK" aria-pressed="true">
-          <span>F1 / 01</span><h3>VERSTAPPEN / LECLERC</h3><p>速度、进攻、精密，以及下一圈仍然敢于压上。</p><b>↗</b>
+          <span>F1 / 01</span><h3>VERSTAPPEN / LECLERC</h3><p>直面极限。</p><b>↗</b>
         </button>
         <button type="button" class="influence-board-card" data-influence="sport" data-image="/static/media/interests/curry-new-user.jpg" data-position="50% 58%" data-size="cover" data-index="02 / COURT + PITCH" aria-pressed="false">
-          <span>SPORT / 02</span><h3>CURRY / MESSI</h3><p>把千万次训练藏进本能，在看似没有空间的位置完成突破。</p><b>↗</b>
+          <span>SPORT / 02</span><h3>CURRY / MESSI</h3><p>永不言弃。</p><b>↗</b>
         </button>
         <button type="button" class="influence-board-card" data-influence="server" data-image="/static/media/interests/niko-user.jpg" data-position="66% 24%" data-index="03 / SERVER" aria-pressed="false">
-          <span>SERVER / 03</span><h3>NiKo / TheShy</h3><p>十年饮冰，难凉热血。进入战场时敢于撕开第一道防线。</p><b>↗</b>
+          <span>SERVER / 03</span><h3>NiKo / TheShy</h3><p>挺身而出。</p><b>↗</b>
         </button>
         <button type="button" class="influence-board-card" data-influence="music" data-image="/static/media/interests/gem-user.jpg" data-position="50% 42%" data-size="cover" data-index="04 / SOUNDTRACK" aria-pressed="false">
-          <span>MIX / 04</span><h3>MANDOPOP / PHONK / EDM</h3><p>周杰伦、邓紫棋与新的节拍，组成每一个高光时刻的声音。</p><b>↗</b>
+          <span>MIX / 04</span><h3>MANDOPOP / PHONK / EDM</h3><p>Lyrics</p><b>↗</b>
         </button>
       </div>
     </div>
@@ -89,14 +89,14 @@
   <section class="profile-story reveal">
     <div class="story-label"><span>04</span><p>LONG FORM</p></div>
     <div class="about-body lancer-about-body">
-      {{if .About.BodyMarkdown}}{{.About.BodyHTML}}{{else}}<h2>关于这个博客</h2><p>这里记录每一次探索、失误、修正和继续向前。</p>{{end}}
+      {{if .About.BodyMarkdown}}{{.About.BodyHTML}}{{else}}<h2>关于这个博客</h2><p>这里记录一些探索、失误、修正和继续推进的过程。</p>{{end}}
     </div>
   </section>
 
   <section class="current-round reveal">
     <div class="current-round-head"><span>CURRENT ROUND</span><strong>LIVE</strong></div>
     <div class="current-round-grid">
-      <div><p>NOW PLAYING</p><h2>还在学习，<br>还在进攻。</h2></div>
+      <div><p>NOW PLAYING</p><h2>还在学习，<br>还在写。</h2></div>
       <div class="now-term lancer-now-term">
         <div class="head"><span class="name">lancer@field-notes / now.txt</span></div>
         <div class="body">

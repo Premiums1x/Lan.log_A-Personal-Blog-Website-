@@ -10,12 +10,12 @@
     <div class="page-hero-copy reveal">
       <div class="lancer-kicker"><span>SEASON LOG</span><i></i><span>ALL ROUNDS / RECORDED</span></div>
       <p class="page-command"><span>lancer@field-notes:~$</span> git log --all --oneline --stat</p>
-      <h1>{{if .FilterLabel}}{{.FilterLabel}}{{else}}走过的路线，<br><em>不会白费。</em>{{end}}</h1>
+      <h1>{{if .FilterLabel}}{{.FilterLabel}}{{else}}所有文章，<br><em>所有记录：</em>{{end}}</h1>
       <p>{{.Archive.Intro}}</p>
     </div>
     <div class="archive-scoreboard archive-terminal reveal">
       <div class="dev-editor-head"><span><i></i><i></i><i></i></span><strong>git log --all</strong><b>main</b></div>
-      <p class="archive-terminal-line"><i>HEAD → main</i> chore: keep moving when the route is unclear</p>
+      <p class="archive-terminal-line"><i>HEAD → main</i> chore: keep writing notes</p>
       <div><span>FIELD NOTES</span><strong>{{.TotalPosts}}</strong></div>
       <div><span>WORDS LOGGED</span><strong>{{.TotalWords}}</strong></div>
       <button class="archive-order-control" type="button" data-archive-sort data-order="newest" aria-label="切换文章排序，当前从新到旧"><span>ORDER</span><strong data-archive-order-label>NEWEST ↓</strong></button>
@@ -31,8 +31,8 @@
     <div class="archive-chapter-media archive-chapter-portrait" aria-hidden="true"></div>
     <div class="chapter-band-meta"><span>RACING LINE / 02</span><b>PACE → CONTROL</b></div>
     <div class="chapter-band-copy">
-      <p>lap.delta / setbacks are still data</p>
-      <h2 id="archive-chapter-title">速度会留下轨迹，失误也会。</h2>
+<p>lap.delta / everything counts</p>
+      <h2 id="archive-chapter-title">重要的是不能安于现状、止步不前</h2>
     </div>
   </section>
   <section class="season-layout">
@@ -40,12 +40,12 @@
       <div class="race-control-head"><span>RACE CONTROL</span><i>LIVE</i></div>
       <div class="control-block">
         <h2>SECTIONS</h2>
-        <a href="/archive"><span>ALL FIELD NOTES</span><b>{{.TotalPosts}}</b></a>
-        {{range .Sections}}<a href="/section/{{.Slug}}"><span>{{.Name}}</span><b>{{.Count}}</b></a>{{end}}
+        <a href="/archive" data-archive-nav><span>ALL FIELD NOTES</span><b>{{.TotalPosts}}</b></a>
+        {{range .Sections}}<a href="/section/{{.Slug}}" data-archive-nav><span>{{.Name}}</span><b>{{.Count}}</b></a>{{end}}
       </div>
       <div class="control-block">
         <h2>TAGS</h2>
-        <div class="control-tags">{{range .Tags}}<a href="/tags/{{.Slug}}">#{{.Name}} <b>{{.Count}}</b></a>{{end}}</div>
+        <div class="control-tags">{{range .Tags}}<a href="/tags/{{.Slug}}" data-archive-nav>#{{.Name}} <b>{{.Count}}</b></a>{{end}}</div>
       </div>
     </aside>
 

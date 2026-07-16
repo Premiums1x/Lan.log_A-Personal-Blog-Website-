@@ -244,10 +244,12 @@ func (h *PublicHandler) renderArchive(c *gin.Context, posts []model.Post, filter
 	}
 	tags, _ := repo.TagCounts(c.Request.Context(), h.DB.Pool)
 	sections, _ := repo.SectionCounts(c.Request.Context(), h.DB.Pool)
+	totalPosts, _ := repo.CountPublished(c.Request.Context(), h.DB.Pool)
+	totalWordsAll, _ := repo.SumPublishedWords(c.Request.Context(), h.DB.Pool)
 	data := ArchivePageData{
 		Site: site, Page: page, Archive: intro, Years: groupPostsByYear(posts), Posts: posts,
-		Tags: toCountItems(tags), Sections: toCountItems(sections), TotalPosts: len(posts),
-		TotalWords: totalWords(posts), FilterKind: filterKind, FilterLabel: filterLabel, EmptyText: empty,
+		Tags: toCountItems(tags), Sections: toCountItems(sections), TotalPosts: totalPosts,
+		TotalWords: totalWordsAll, FilterKind: filterKind, FilterLabel: filterLabel, EmptyText: empty,
 	}
 	h.render(c, "archive", data)
 }
@@ -270,14 +272,6 @@ func groupPostsByYear(posts []model.Post) []ArchiveYear {
 	}
 	sort.SliceStable(years, func(i, j int) bool { return years[i].Year > years[j].Year })
 	return years
-}
-
-func totalWords(posts []model.Post) int {
-	total := 0
-	for _, post := range posts {
-		total += post.Words
-	}
-	return total
 }
 
 func toCountItems[T interface {
