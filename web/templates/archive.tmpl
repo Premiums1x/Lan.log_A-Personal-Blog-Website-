@@ -1,83 +1,75 @@
-﻿{{template "layout" .}}
+{{template "layout" .}}
 
-{{define "title"}}{{if .FilterLabel}}{{.FilterLabel}} - {{end}}archive - {{$.Site.Brand.Brand}}{{end}}
+{{define "title"}}{{if .FilterLabel}}{{.FilterLabel}} - {{end}}season log - {{$.Site.Brand.Brand}}{{end}}
 
 {{define "content"}}
-<header class="page-hero archive-hero">
-  <div class="page-aurora page-aurora-archive" aria-hidden="true">
-    <span class="page-glow page-glow-a"></span>
-    <span class="page-glow page-glow-b"></span>
-    <span class="page-grid"></span>
-    <span class="page-code pc1">git log --graph</span>
-    <span class="page-code pc2">filter(tags)</span>
-    <span class="page-code pc3">groupBy(year)</span>
-    <span class="page-code pc4">commit(reading)</span>
-  </div>
-  <div class="reveal">
-    <div class="hero-eyebrow">
-      <span class="prompt">$</span>
-      <span class="cmd">{{.Archive.EyebrowCmd}}</span>
-      <span class="blink"></span>
+<main class="lancer-page lancer-archive">
+  <header class="lancer-page-hero archive-cockpit cinematic-stage runway-stage archive-stage page-opening" style="--opening-image:url('/static/media/interests/leclerc-user.jpg'); --opening-position:65% 30%">
+    <div class="cinematic-image" aria-hidden="true"></div>
+    <div class="page-poster-word" aria-hidden="true">SEASONS</div>
+    <div class="page-hero-copy reveal">
+      <div class="lancer-kicker"><span>SEASON LOG</span><i></i><span>ALL ROUNDS / RECORDED</span></div>
+      <p class="page-command"><span>lancer@field-notes:~$</span> git log --all --oneline --stat</p>
+      <h1>{{if .FilterLabel}}{{.FilterLabel}}{{else}}所有文章，<br><em>所有记录：</em>{{end}}</h1>
+      <p>{{.Archive.Intro}}</p>
     </div>
-    <h1>{{if .Archive.TitleAccent}}{{SplitAccent .Archive.Title .Archive.TitleAccent}}{{else}}{{.Archive.Title}}{{end}}</h1>
-    <p>{{.Archive.Intro}}</p>
-    <div class="hero-meta">
-      {{range .Archive.Meta}}<span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>{{end}}
-      <span class="stat"><span class="k">posts</span><span class="v">{{.TotalPosts}}</span></span>
-      <span class="stat"><span class="k">words</span><span class="v">{{.TotalWords}}</span></span>
+    <div class="archive-scoreboard archive-terminal reveal">
+      <div class="dev-editor-head"><span><i></i><i></i><i></i></span><strong>git log --all</strong><b>main</b></div>
+      <p class="archive-terminal-line"><i>HEAD → main</i> chore: keep writing notes</p>
+      <div><span>FIELD NOTES</span><strong>{{.TotalPosts}}</strong></div>
+      <div><span>WORDS LOGGED</span><strong>{{.TotalWords}}</strong></div>
+      <button class="archive-order-control" type="button" data-archive-sort data-order="newest" aria-label="切换文章排序，当前从新到旧"><span>ORDER</span><strong data-archive-order-label>NEWEST ↓</strong></button>
     </div>
-  </div>
-</header>
+    <a class="drawer-cue" href="#archive-drawer" data-drawer-target="archive-drawer" aria-label="继续向下浏览">
+      <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
+    </a>
+  </header>
+  <div class="page-drawer" id="archive-drawer">
+    <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
+  <section class="chapter-image-band archive-chapter reveal" style="--chapter-image:url('/static/media/interests/leclerc-user.jpg'); --chapter-position:54% 31%" aria-labelledby="archive-chapter-title">
+    <div class="archive-chapter-media archive-chapter-backdrop" aria-hidden="true"></div>
+    <div class="archive-chapter-media archive-chapter-portrait" aria-hidden="true"></div>
+    <div class="chapter-band-meta"><span>RACING LINE / 02</span><b>PACE → CONTROL</b></div>
+    <div class="chapter-band-copy">
+<p>lap.delta / everything counts</p>
+      <h2 id="archive-chapter-title">重要的是不能安于现状、止步不前</h2>
+    </div>
+  </section>
+  <section class="season-layout">
+    <aside class="race-control reveal">
+      <div class="race-control-head"><span>RACE CONTROL</span><i>LIVE</i></div>
+      <div class="control-block">
+        <h2>SECTIONS</h2>
+        <a href="/archive" data-archive-nav><span>ALL FIELD NOTES</span><b>{{.TotalPosts}}</b></a>
+        {{range .Sections}}<a href="/section/{{.Slug}}" data-archive-nav><span>{{.Name}}</span><b>{{.Count}}</b></a>{{end}}
+      </div>
+      <div class="control-block">
+        <h2>TAGS</h2>
+        <div class="control-tags">{{range .Tags}}<a href="/tags/{{.Slug}}" data-archive-nav>#{{.Name}} <b>{{.Count}}</b></a>{{end}}</div>
+      </div>
+    </aside>
 
-<section class="archive-layout reveal">
-  <aside class="archive-side">
-    <div class="side-block">
-      <h3>sections</h3>
-      <a class="side-link" href="/archive"><span>all posts</span><span>{{.TotalPosts}}</span></a>
-      {{range .Sections}}
-      <a class="side-link" href="/section/{{.Slug}}"><span>{{.Name}}</span><span>{{.Count}}</span></a>
-      {{end}}
-    </div>
-    <div class="side-block">
-      <h3>tags</h3>
-      <div class="tag-cloud">
-        {{range .Tags}}<a href="/tags/{{.Slug}}">#{{.Name}} <span>{{.Count}}</span></a>{{end}}
+    <div class="season-main reveal">
+      {{if .FilterLabel}}<div class="season-filter"><span>{{.FilterKind}}</span><strong>{{.FilterLabel}}</strong><a href="/archive">CLEAR FILTER ×</a></div>{{end}}
+      <div class="season-line">
+        {{range .Years}}
+        <section class="season-year" data-expand-list data-expand-initial="6" data-archive-year="{{.Year}}">
+          <header><span>SEASON</span><h2>{{.Year}}</h2><i></i></header>
+          <div class="season-notes" id="season-notes-{{.Year}}">
+            {{range .Posts}}
+            <a class="season-note" href="/posts/{{.Slug}}" data-published="{{FormatDate .PublishedAt}}" data-expand-item>
+              <div class="season-note-meta"><span>{{FormatDate .PublishedAt}}</span><span>{{CommitShort .CommitHash}}</span></div>
+              <div class="season-note-copy"><h3>{{.Title}}</h3>{{if .Excerpt}}<p>{{.Excerpt}}</p>{{end}}<div>{{range .Tags}}<span>#{{.Name}}</span>{{end}}</div></div>
+              <div class="season-note-read"><span>{{.ReadMinutes}} MIN</span><b>↗</b></div>
+            </a>
+            {{end}}
+          </div>
+          {{if gt (len .Posts) 6}}<button class="article-expand" type="button" data-expand-trigger hidden aria-expanded="false" aria-controls="season-notes-{{.Year}}"><span>展开余下文章</span><b aria-hidden="true">↓</b></button>{{end}}
+        </section>
+        {{else}}<p class="lancer-empty">{{.EmptyText}}</p>{{end}}
       </div>
     </div>
-  </aside>
-
-  <div class="archive-main">
-    {{if .FilterLabel}}
-    <div class="filter-note">
-      <span>{{.FilterKind}}</span>
-      <strong>{{.FilterLabel}}</strong>
-      <a href="/archive">clear filter</a>
-    </div>
-    {{end}}
-
-    {{range .Years}}
-    <section class="year-group">
-      <div class="year-label">{{.Year}}</div>
-      <div class="year-posts">
-        {{range .Posts}}
-        <a class="post-row archive-row" href="/posts/{{.Slug}}">
-          <div class="post-meta">
-            <span class="hash">{{CommitShort .CommitHash}}</span>
-            <span class="date">{{FormatDate .PublishedAt}}</span>
-          </div>
-          <div class="post-body">
-            <h3 class="post-title">{{.Title}}</h3>
-            <p class="post-excerpt">{{.Excerpt}}</p>
-            <div class="post-tags">{{range .Tags}}<span class="post-tag">{{.Name}}</span>{{end}}</div>
-          </div>
-          <div class="post-read">{{.ReadMinutes}} min</div>
-        </a>
-        {{end}}
-      </div>
-    </section>
-    {{else}}
-    <p class="empty-line">// {{.EmptyText}}</p>
-    {{end}}
+  </section>
   </div>
-</section>
+</main>
 {{end}}

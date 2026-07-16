@@ -5,8 +5,8 @@ import {
   Form, Input, Button, Switch, Tag, Space, Card, Typography, Row, Col,
   App as AntdApp, Breadcrumb, Modal, Alert,
 } from 'antd'
-import { EyeOutlined, EditOutlined } from '@ant-design/icons'
 import { api, type Post } from '../api/client'
+import MDEditor from '@uiw/react-md-editor'
 
 type ExcerptSource = 'manual' | 'ai' | 'empty'
 
@@ -40,7 +40,7 @@ export default function PostEdit() {
     section: 'posts', status: 'draft', pinned: false, tag_names: [],
   })
   const [tagInput, setTagInput] = useState('')
-  const [showPreview, setShowPreview] = useState(false)
+
   const [excerptModalOpen, setExcerptModalOpen] = useState(false)
   const [generatedExcerpt, setGeneratedExcerpt] = useState<string | null>(null)
   const [aiLoading, setAILoading] = useState(false)
@@ -130,10 +130,12 @@ export default function PostEdit() {
     ? (f.excerpt_source === 'ai' ? 'ai' : 'manual')
     : 'empty'
 
-  const wordCount = useMemo(
-    () => f.body_md.replace(/\s+/g, ' ').split(' ').filter(Boolean).length,
-    [f.body_md]
-  )
+  const wordCount = useMemo(() => {
+    const text = f.body_md || ''
+    const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || []
+    const englishWords = text.replace(/[\u4e00-\u9fa5]/g, ' ').split(/\s+/).filter(Boolean)
+    return chineseChars.length + englishWords.length
+  }, [f.body_md])
 
   const isBodyReview = isEdit && (!!data?.excerpt_stale || f.body_md !== data?.body_md)
 
@@ -149,12 +151,6 @@ export default function PostEdit() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <Typography.Title level={3} style={{ margin: 0 }}>{isEdit ? '编辑文章' : '新建文章'}</Typography.Title>
         <Space>
-          <Button
-            icon={showPreview ? <EditOutlined /> : <EyeOutlined />}
-            onClick={() => setShowPreview(s => !s)}
-          >
-            {showPreview ? '编辑' : '预览'}
-          </Button>
           <Button onClick={() => save.mutate({ publish: false })} loading={save.isPending}>存为草稿</Button>
           <Button type="primary" onClick={startPublish} loading={save.isPending}>
             {f.status === 'published' ? '更新并发布' : '发布'}
@@ -181,19 +177,13 @@ export default function PostEdit() {
         </Form.Item>
 
         <Form.Item label={`正文 (Markdown) · 约 ${wordCount} 字`}>
-          {showPreview ? (
-            <Card style={{ minHeight: 420 }}>
-              <div className="prose-content" dangerouslySetInnerHTML={{ __html: previewHtml(f.body_md) }} />
-            </Card>
-          ) : (
-            <Input.TextArea
-              rows={18}
+          <div data-color-mode="light">
+            <MDEditor
               value={f.body_md}
-              onChange={e => set('body_md', e.target.value)}
-              placeholder={'# 标题\n\n正文。支持 **粗体**、`code`、列表、> 引用、```代码块```。'}
-              style={{ fontFamily: '"Geist Mono", ui-monospace, Menlo, Consolas, monospace', fontSize: 13 }}
+              onChange={val => set('body_md', val || '')}
+              height={500}
             />
-          )}
+          </div>
         </Form.Item>
 
         <Form.Item label="封面 URL（可选）">
@@ -286,18 +276,4 @@ function slugify(s: string) {
     .replace(/[^\w\u4e00-\u9fff]+/g, '-')
     .replace(/^-+|-+$/g, '') || 'untitled'
 }
-
-function previewHtml(md: string): string {
-  let h = md
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/```([\s\S]*?)```/g, (_, c) => `<pre><code>${c}</code></pre>`)
-    .replace(/^### (.*)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.*)$/gm, '<h1>$1</h1>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/^> (.*)$/gm, '<blockquote>$1</blockquote>')
-    .replace(/^---$/gm, '<hr/>')
-    .replace(/\n\n/g, '</p><p>')
-  return `<p>${h}</p>`
-}
+

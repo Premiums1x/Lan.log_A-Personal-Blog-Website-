@@ -1,111 +1,220 @@
 {{template "layout" .}}
 
 {{define "content"}}
-<!-- ============ HERO ============ -->
-<header class="hero">
-  <div class="code-aurora" aria-hidden="true">
-    <div class="aurora-glow aurora-glow-a"></div>
-    <div class="aurora-glow aurora-glow-b"></div>
-    <div class="aurora-glow aurora-glow-c"></div>
-    <div class="aurora-grid"></div>
-    <div class="aurora-scan"></div>
-    <div class="aurora-code">
-      <span class="code-line l1"><span class="code-k">const</span> notes = render("today")</span>
-      <span class="code-line l2">commit(thought, "quiet detail")</span>
-      <span class="code-line l3"><span class="code-c">// drafts breathe before they ship</span></span>
-      <span class="code-line l4">await coffee.then(write)</span>
-      <span class="code-line l5">branch("main").merge(memory)</span>
-      <span class="code-line l6">publish(post).with(tags)</span>
-      <span class="code-line l7"><span class="code-k">return</span> small_steps<span class="code-cursor"></span></span>
+<main class="lancer-home">
+  <header class="lancer-hero cinematic-stage dev-stage page-opening" style="--opening-image:url('/static/media/interests/niko-user.jpg'); --opening-position:center 22%; --opening-position-mobile:54% 20%">
+    <div class="cinematic-image" aria-hidden="true"></div>
+    <div class="lancer-hero-noise" aria-hidden="true"></div>
+    <div class="lancer-hero-ghost" aria-hidden="true">LANCER</div>
+
+    <div class="lancer-hero-copy reveal">
+      <div class="lancer-kicker"><span>PERSONAL LOG</span><i></i><span>SEASON 26</span></div>
+      <p class="lancer-role"><span>lancer@field-notes:~$</span> ./continue</p>
+      <h1>
+        <span class="lancer-wordmark">LANCER</span>
+        <span class="lancer-thesis">{{.Hero.Title}}{{if .Hero.TitleAccent}}<em>{{.Hero.TitleAccent}}</em>{{end}}{{.Hero.TitleTail}}</span>
+      </h1>
+      <p class="lancer-hero-sub">{{.Hero.Sub}}</p>
+      <div class="lancer-actions">
+        <a class="lancer-action primary" href="#field-notes"><span>进入日志</span><b>↘</b></a>
+        <a class="lancer-action secondary" href="/about"><span>查看 profile</span><b>→</b></a>
+      </div>
     </div>
-  </div>
-  <div class="reveal">
-    <div class="hero-eyebrow">
-      <span class="prompt">$</span>
-      <span class="cmd">{{.Hero.EyebrowCmd}}</span>
-      <span class="blink"></span>
+
+    <div class="dev-console reveal" aria-label="Developer cockpit: source code and terminal output">
+      <div class="dev-editor-head"><span><i></i><i></i><i></i></span><strong>entry.route.ts</strong><b>UTF-8&nbsp;&nbsp;main*</b></div>
+      <ol class="dev-code">
+        <li><span>const</span> lancer = <b>{</b></li>
+        <li>&nbsp;&nbsp;role: <em>'programmer'</em>,</li>
+        <li>&nbsp;&nbsp;stack: <em>['frontend', 'go', 'agents']</em>,</li>
+        <li>&nbsp;&nbsp;status: <em>'building'</em>,</li>
+        <li>&nbsp;&nbsp;next: <strong>await</strong> nextPost()</li>
+        <li><b>}</b></li>
+      </ol>
+      <div class="terminal-stream">
+        <div><span>lancer@field-notes</span><b>terminal</b></div>
+        <p><i>$</i> go run ./cmd/life</p>
+        <p class="terminal-ok">✓ build ok&nbsp;&nbsp; ✓ tests pass&nbsp;&nbsp; ✓ ready</p>
+      </div>
+      <div class="console-route">
+        <svg class="lancer-line" viewBox="0 0 620 180" aria-hidden="true">
+          <path class="lancer-line-grid" pathLength="1212" d="M 292.8 150.3 C 305.4 150.3, 324.9 148.8, 334.8 144.6 C 341.4 141.6, 343.8 132.6, 347.4 125.7 C 352.5 116.4, 362.4 112.8, 371.4 114.6 C 385.5 117.6, 394.8 125.4, 410.4 127.2 C 423.0 128.4, 444.6 127.8, 466.2 127.8 C 472.5 127.8, 475.8 125.4, 475.2 121.8 C 474.6 119.1, 472.2 117.6, 468.9 116.1 L 275.7 21.0 C 271.8 19.2, 269.7 20.4, 269.4 24.0 L 269.1 29.4 C 268.8 32.1, 267.3 33.3, 264.3 33.3 C 246.9 33.3, 231.9 38.4, 218.7 49.2 C 203.4 62.1, 187.8 79.5, 173.1 97.5 L 142.5 135.9 C 137.1 142.8, 138.6 151.8, 145.8 156.9 C 151.5 161.1, 158.7 161.4, 163.5 157.8 C 166.5 155.7, 167.7 153.0, 168.6 148.8 L 174.3 121.8 C 175.5 115.5, 178.2 110.4, 182.4 105.3 L 191.7 93.9 C 195.3 89.4, 200.1 87.3, 206.1 87.3 L 218.4 87.3 C 221.7 87.3, 223.2 88.8, 223.2 92.1 L 223.2 101.1 C 223.2 105.3, 225.3 107.7, 229.8 109.2 C 234.6 111.0, 240.9 113.1, 244.5 110.7 C 248.4 108.0, 249.3 104.4, 249.3 99.0 L 249.3 63.3 C 249.3 57.0, 252.6 53.4, 258.3 50.7 L 276.6 43.5 C 284.1 40.8, 291.3 42.0, 291.3 48.6 L 291.3 141.0 C 291.3 146.1, 291.6 148.8, 292.8 150.3"/>
+          <path class="lancer-line-live" pathLength="1212" d="M 292.8 150.3 C 305.4 150.3, 324.9 148.8, 334.8 144.6 C 341.4 141.6, 343.8 132.6, 347.4 125.7 C 352.5 116.4, 362.4 112.8, 371.4 114.6 C 385.5 117.6, 394.8 125.4, 410.4 127.2 C 423.0 128.4, 444.6 127.8, 466.2 127.8 C 472.5 127.8, 475.8 125.4, 475.2 121.8 C 474.6 119.1, 472.2 117.6, 468.9 116.1 L 275.7 21.0 C 271.8 19.2, 269.7 20.4, 269.4 24.0 L 269.1 29.4 C 268.8 32.1, 267.3 33.3, 264.3 33.3 C 246.9 33.3, 231.9 38.4, 218.7 49.2 C 203.4 62.1, 187.8 79.5, 173.1 97.5 L 142.5 135.9 C 137.1 142.8, 138.6 151.8, 145.8 156.9 C 151.5 161.1, 158.7 161.4, 163.5 157.8 C 166.5 155.7, 167.7 153.0, 168.6 148.8 L 174.3 121.8 C 175.5 115.5, 178.2 110.4, 182.4 105.3 L 191.7 93.9 C 195.3 89.4, 200.1 87.3, 206.1 87.3 L 218.4 87.3 C 221.7 87.3, 223.2 88.8, 223.2 92.1 L 223.2 101.1 C 223.2 105.3, 225.3 107.7, 229.8 109.2 C 234.6 111.0, 240.9 113.1, 244.5 110.7 C 248.4 108.0, 249.3 104.4, 249.3 99.0 L 249.3 63.3 C 249.3 57.0, 252.6 53.4, 258.3 50.7 L 276.6 43.5 C 284.1 40.8, 291.3 42.0, 291.3 48.6 L 291.3 141.0 C 291.3 146.1, 291.6 148.8, 292.8 150.3"/>
+          <g class="lancer-node node-explore"><circle cx="291.3" cy="90.9" r="6"/><text x="291.3" y="122">EXPLORE</text></g>
+          <g class="lancer-node node-break"><circle cx="475.2" cy="121.8" r="6"/><text x="475.2" y="152">BREAK</text></g>
+          <g class="lancer-node node-clutch"><circle cx="145.8" cy="156.9" r="6"/><text x="145.8" y="132">CLUTCH</text></g>
+          <g class="lancer-node node-next"><circle cx="291.3" cy="48.6" r="6"/><text x="291.3" y="28">NEXT</text></g>
+        </svg>
+      </div>
     </div>
-    <h1 class="hero-title">
-      {{.Hero.Title}}<br>
-      {{if .Hero.TitleAccent}}记录那些<span class="accent">{{.Hero.TitleAccent}}</span>{{end}}{{.Hero.TitleTail}}
-    </h1>
-    <p class="hero-sub">{{.Hero.Sub}}</p>
-    <div class="hero-meta">
+
+    <div class="lancer-telemetry reveal">
       {{range .Hero.Meta}}
-      <span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>
+      <div><span>{{.K}}</span><strong>{{.V}}</strong></div>
       {{end}}
+      <div><span>STATUS</span><strong class="live-dot">ONLINE</strong></div>
     </div>
-  </div>
+    <a class="drawer-cue" href="#home-drawer" data-drawer-target="home-drawer" aria-label="继续向下浏览">
+      <span></span><b aria-hidden="true">↓</b>
+    </a>
+  </header>
+  <div class="page-drawer" id="home-drawer">
+    <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
+  <section class="live-node-card" data-system-status aria-labelledby="live-node-title" aria-busy="true">
+    <header>
+      <span class="live-dot" aria-hidden="true"></span>
+      <div>
+        <p>LIVE NODE / PIT WALL</p>
+        <h2 id="live-node-title">Server Running Situation:</h2>
+      </div>
+      <output data-status aria-live="polite">CONNECTING</output>
+    </header>
+    <div class="live-node-rail lancer-line" aria-hidden="true">
+      <svg class="lancer-line-track" viewBox="0 0 960 28" preserveAspectRatio="none">
+        <polyline class="lancer-line-stroke" points="0,14 196,14 232,5 472,5 508,21 748,21 784,7 960,7" />
+        <circle class="lancer-line-node" cx="40" cy="14" r="3.5" />
+        <circle class="lancer-line-node" cx="280" cy="5" r="3.5" />
+        <circle class="lancer-line-node" cx="520" cy="21" r="3.5" />
+        <circle class="lancer-line-node" cx="760" cy="7" r="3.5" />
+      </svg>
+      <span class="live-node-rail-tag">LAP TRACE</span>
+    </div>
+    <div class="live-node-grid">
+      <article data-telemetry="cpu">
+        <div class="telemetry-metric-head"><span>S1 · CPU LOAD</span><strong data-metric="cpu" aria-label="CPU 使用率">--%</strong></div>
+        <svg class="telemetry-chart" data-chart="cpu" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>15S SAMPLE</span><b data-chart-samples="cpu">00 / 40</b></div>
+      </article>
+      <article data-telemetry="frequency">
+        <div class="telemetry-metric-head"><span>S2 · CPU CLOCK</span><strong data-metric="frequency" aria-label="CPU 当前频率">-- MHz</strong></div>
+        <svg class="telemetry-chart" data-chart="frequency" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>0–5 GHZ SCALE</span><b data-chart-samples="frequency">00 / 40</b></div>
+      </article>
+      <article data-telemetry="memory">
+        <div class="telemetry-metric-head"><span>S3 · MEMORY</span><strong data-metric="memory" aria-label="内存使用率">--%</strong></div>
+        <svg class="telemetry-chart" data-chart="memory" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><small data-memory-detail aria-label="已用内存和总内存">-- / --</small><b data-chart-samples="memory">00 / 40</b></div>
+      </article>
+      <article data-telemetry="uptime">
+        <div class="telemetry-metric-head"><span>S4 · UPTIME</span><strong data-metric="uptime" aria-label="服务器持续运行时间">--</strong></div>
+        <svg class="telemetry-chart" data-chart="uptime" viewBox="0 0 240 92" preserveAspectRatio="none" aria-hidden="true">
+          <path class="telemetry-chart-grid" d="M0 23H240M0 46H240M0 69H240" />
+          <path class="telemetry-chart-area" data-chart-area d="" />
+          <path class="telemetry-chart-line" data-chart-line d="" />
+          <circle class="telemetry-chart-point" data-chart-point cx="234" cy="86" r="3" />
+        </svg>
+        <div class="telemetry-metric-foot"><span>ONLINE TRACE</span><b data-chart-samples="uptime">00 / 40</b></div>
+      </article>
+    </div>
+  </section>
 
-  <div class="hero-corner">
-    {{range .Hero.Corner}}
-    <div class="row"><span class="label">{{.Label}}</span><span class="val">{{.Val}}</span></div>
-    {{end}}
-  </div>
-</header>
-
-{{if .Pinned}}
-<!-- ============ PINNED ============ -->
-<section class="pinned reveal">
-  <article class="pinned-card">
-    <a href="/posts/{{.Pinned.Slug}}" style="display:contents;">
-      <div class="pin-label">PINNED</div>
-      <h3>{{.Pinned.Title}}</h3>
-      <p class="lede">{{.Pinned.Excerpt}}</p>
-      <div class="pin-foot">
-        <span>{{FormatDate .Pinned.PublishedAt}}</span>
-        <span>·</span>
-        <span>{{range .Pinned.Tags}}#{{.Name}} {{end}}</span>
-        <span class="arrow">→</span>
+  {{if .Pinned}}
+  <section class="lancer-current reveal" aria-labelledby="current-play-title">
+    <div class="lancer-section-index"><span>01</span><p>CURRENT PLAY</p></div>
+    <a class="current-card" href="/posts/{{.Pinned.Slug}}">
+      <div class="current-main">
+        <p class="current-meta"><span>{{CommitShort .Pinned.CommitHash}}</span><span>{{FormatDate .Pinned.PublishedAt}}</span></p>
+        <h2 id="current-play-title">{{.Pinned.Title}}</h2>
+        {{if .Pinned.Excerpt}}<p>{{.Pinned.Excerpt}}</p>{{end}}
+      </div>
+      <div class="current-drawer">
+        <span>OPEN FIELD NOTE</span>
+        <strong>{{.Pinned.ReadMinutes}} MIN</strong>
+        <b>↗</b>
       </div>
     </a>
-  </article>
-</section>
-{{end}}
+  </section>
+  {{end}}
 
-<!-- ============ POSTS LIST ============ -->
-<section class="section" style="padding-top: 0;">
-  <div class="section-head reveal">
-    <h2>recent posts</h2>
-    <a class="view-all" href="/archive">view all ({{.PostCount}}) →</a>
-  </div>
-
-  <div class="posts">
-    {{range .Posts}}
-    <a class="post-row reveal" href="/posts/{{.Slug}}">
-      <div class="post-meta">
-        <span class="hash">{{CommitShort .CommitHash}}</span>
-        <span class="date">{{FormatDate .PublishedAt}}</span>
+  <section class="world-deck" aria-labelledby="world-deck-title">
+    <header class="chapter-image-band world-deck-heading" style="--chapter-image:url('/static/media/interests/niko-trophy-user.jpg'); --chapter-position:10% center">
+      <div class="chapter-band-meta"><span>02 / WORLD DECK</span><b>INPUT / DRIVE</b></div>
+      <div class="chapter-band-copy">
+        <p>influence.route → /interests</p>
+        <h2 id="world-deck-title">我所热爱的东西</h2>
       </div>
-      <div class="post-body">
-        <h3 class="post-title">{{.Title}}</h3>
-        <div class="post-tags">
-          {{range .Tags}}<span class="post-tag">{{.Name}}</span>{{end}}
+    </header>
+    <div class="world-card-grid" aria-label="Lancer 的兴趣世界">
+      <article class="world-card" data-world="counter-strike" style="--world-image:url('/static/media/interests/niko-user.jpg'); --world-position:66% 26%" tabindex="0">
+        <span>ENTRY / CLUTCH</span><h3>Counter-Strike</h3><p>CS2</p>
+      </article>
+      <article class="world-card" data-world="f1" style="--world-image:url('/static/media/interests/verstappen-user.jpg'); --world-position:52% 32%" tabindex="0">
+        <span>RACE / PRECISION</span><h3>F1</h3><p>Formular 1</p>
+      </article>
+      <article class="world-card" data-world="basketball" style="--world-image:url('/static/media/interests/curry-new-user.jpg'); --world-position:50% 64%" tabindex="0">
+        <span>COURT / RANGE</span><h3>Basketball</h3><p>NBA</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="lancer-notes" id="field-notes" aria-labelledby="field-notes-title">
+    <div class="lancer-section-head reveal">
+      <div class="lancer-section-index"><span>03</span><p>FIELD NOTES</p></div>
+      <div>
+        <h2 id="field-notes-title">想写下自己每一刻的思考</h2>
+        <a href="/archive">完整回顾 <span>({{.PostCount}})</span> →</a>
+      </div>
+    </div>
+
+    <div class="field-grid" id="field-notes-list" data-expand-list data-expand-initial="5">
+      {{if .Posts}}
+      {{range $i, $post := .Posts}}
+      <a class="field-card reveal field-card-{{$i}}" href="/posts/{{$post.Slug}}" data-expand-item>
+        <div class="field-top">
+          <span class="field-number">NOTE / 0{{$i}}</span>
+          <span>{{$post.ReadMinutes}} MIN READ</span>
         </div>
-      </div>
-      <div class="post-read">{{.ReadMinutes}} min read</div>
-    </a>
-    {{else}}
-    <p style="font-family:var(--font-mono);color:var(--muted);padding:2rem 0;">// 还没有发布的文章。去 /admin 写第一篇吧。</p>
-    {{end}}
-  </div>
-</section>
-
-<!-- ============ STACK ============ -->
-<section class="section" style="padding-top: 3rem;">
-  <div class="section-head reveal">
-    <h2>this site is built with</h2>
-  </div>
-  <div class="container">
-    <div class="stack reveal">
-      {{range .Stack.Cells}}
-      <div class="stack-cell">
-        <div class="ic">{{.Ic}}</div>
-        <h4>{{.Title}}</h4>
-        <p>{{.Desc}}</p>
-      </div>
+        <div class="field-content">
+          <p>{{FormatDate $post.PublishedAt}} / {{$post.Section}}</p>
+          <h3>{{$post.Title}}</h3>
+          {{if $post.Excerpt}}<div class="field-drawer"><p>{{$post.Excerpt}}</p></div>{{end}}
+        </div>
+        <div class="field-foot">
+          <div>{{range $post.Tags}}<span>#{{.Name}}</span>{{end}}</div>
+          <b>↗</b>
+        </div>
+      </a>
+      {{end}}
+      {{if gt (len .Posts) 5}}<button class="article-expand" type="button" data-expand-trigger hidden aria-expanded="false" aria-controls="field-notes-list"><span>展开余下文章</span><b aria-hidden="true">↓</b></button>{{end}}
+      {{else}}
+      <p class="lancer-empty">NO FIELD NOTES YET / 还没有文章。</p>
       {{end}}
     </div>
+  </section>
+
+  <section class="lancer-influences" aria-labelledby="influence-title">
+    <div class="lancer-section-head reveal">
+      <div class="lancer-section-index"><span>04</span><p>INFLUENCE DECK</p></div>
+      <div>
+        <h2 id="influence-title">生活不止代码，还有：</h2>
+        <p>PADDOCK / COURT / SERVER / PLAYLIST</p>
+      </div>
+    </div>
+    <div class="influence-grid">
+      {{range $i, $cell := .Stack.Cells}}
+      <article class="influence-card reveal influence-{{$i}}" tabindex="0">
+        <div class="influence-code">{{$cell.Ic}}</div>
+        <div class="influence-copy"><h3>{{$cell.Title}}</h3><p>{{$cell.Desc}}</p></div>
+        <span class="influence-arrow">↗</span>
+      </article>
+      {{end}}
+    </div>
+  </section>
   </div>
-</section>
+</main>
 {{end}}

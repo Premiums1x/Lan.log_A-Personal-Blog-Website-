@@ -1,20 +1,22 @@
 {{template "layout" .}}
 
-{{define "title"}}404 — {{$.Site.Brand.Brand}}{{end}}
+{{define "title"}}off route — {{$.Site.Brand.Brand}}{{end}}
 
 {{define "content"}}
-<header class="hero" style="min-height:72dvh;">
-  <div class="reveal">
-    <div class="hero-eyebrow">
-      <span class="prompt">$</span>
-      <span class="cmd">cd {{.Path}}</span>
-      <span class="blink"></span>
+<header class="off-route-wrap">
+  <section class="off-route-panel">
+    <div class="off-route-copy">
+      <p class="off-route-kicker"><span>OFF ROUTE</span><i></i> POSITION / UNKNOWN</p>
+      <h1>这条路线<br><em>不存在。</em></h1>
+      <p>地址可能从未存在，或者已经被移走。回到首页继续看。</p>
+      <a class="lancer-primary off-route-action" href="/">回到首页 <b>↗</b></a>
     </div>
-    <h1 class="hero-title">没有这个路径。<br><span class="muted">// 404 · not found</span></h1>
-    <p class="hero-sub">这个地址要么从未存在，要么像被 rewrite 掉的 commit 一样消失在历史里。回首页继续读吧。</p>
-    <div class="hero-meta" style="margin-top:2.25rem;">
-      <a href="/" class="stat" style="gap:0.4rem;"><span class="dot"></span><span class="k">cd</span><span class="v">~/</span></a>
+    <div class="off-route-code" aria-hidden="true">
+      <span>ROUTE ERROR</span>
+      <strong>404</strong>
+      <div><i></i><b>RECALCULATING</b><i></i></div>
+      <small>{{.Path}}</small>
     </div>
-  </div>
+  </section>
 </header>
 {{end}}

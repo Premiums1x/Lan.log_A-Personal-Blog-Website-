@@ -3,8 +3,10 @@
 {{define "title"}}{{.Post.Title}} — {{$.Site.Brand.Brand}}{{end}}
 
 {{define "content"}}
-<header class="art-hero">
+<header class="art-hero article-cockpit">
+  <div class="article-cockpit-word" aria-hidden="true">ROUND</div>
   <div class="art-hero-inner reveal">
+    <div class="article-round-label"><span>ROUND NOTES</span><i></i><strong>FIELD / {{.Post.Section}}</strong></div>
     <div class="art-crumbs">
       <a href="/">~/posts</a>
       <span class="sep">/</span>
@@ -14,6 +16,15 @@
     </div>
     <h1 class="art-h1">{{RenderInline .Post.Title}}</h1>
     {{if .Post.Excerpt}}<p class="art-lede">{{.Post.Excerpt}}</p>{{end}}
+    <!-- art-meta moved to article-paper -->
+  </div>
+</header>
+
+<main class="article-page">
+  <article class="article-paper" id="article-paper" aria-label="{{.Post.Title}}">
+  <svg class="art-trace" id="art-trace-svg" aria-hidden="true" preserveAspectRatio="none">
+    <path id="trace-path" class="trace-path" d=""/>
+  </svg>
     <div class="art-meta">
       <span class="avatar">{{FirstChar .AuthorName}}</span>
       <span class="v">{{.AuthorName}}</span>
@@ -26,14 +37,6 @@
       <span class="sep">·</span>
       <span class="k">commit</span><span class="v">{{CommitShort .Post.CommitHash}}</span>
     </div>
-  </div>
-</header>
-
-<main class="article-page">
-  <article class="article-paper reveal" id="article-paper" aria-label="{{.Post.Title}}">
-  <svg class="art-trace" id="art-trace-svg" aria-hidden="true" preserveAspectRatio="none">
-    <path id="trace-path" class="trace-path" d=""/>
-  </svg>
     {{if .Post.CoverURL}}
     <div class="art-cover">
       <img src="{{.Post.CoverURL}}" alt="{{.Post.Title}}">

@@ -1,79 +1,114 @@
-﻿{{template "layout" .}}
+{{template "layout" .}}
 
-{{define "title"}}whoami - {{$.Site.Brand.Brand}}{{end}}
+{{define "title"}}player profile - {{$.Site.Brand.Brand}}{{end}}
 
 {{define "content"}}
-<header class="about-hero">
-  <div class="page-aurora page-aurora-about" aria-hidden="true">
-    <span class="page-glow page-glow-a"></span>
-    <span class="page-glow page-glow-b"></span>
-    <span class="page-grid"></span>
-    <span class="page-code pc1">whoami()</span>
-    <span class="page-code pc2">cat direction.md</span>
-    <span class="page-code pc3">learn(in_public)</span>
-    <span class="page-code pc4">return small_steps</span>
+<main class="lancer-page lancer-profile">
+  <header class="lancer-page-hero profile-hero cinematic-stage runway-stage about-stage page-opening" style="--opening-image:url('/static/media/interests/verstappen-user.jpg'); --opening-position:68% 35%">
+    <div class="cinematic-image" aria-hidden="true"></div>
+    <div class="page-poster-word" aria-hidden="true">PROFILE</div>
+    <div class="page-hero-copy reveal">
+<div class="lancer-kicker"><span>PLAYER PROFILE</span><i></i><span>CALLSIGN / LANCER</span></div>
+      <p class="page-command"><span>lancer@field-notes:~$</span> cat ./identity/profile.manifest</p>
+      <h1>{{if .About.TitleAccent}}{{SplitAccent .About.Title .About.TitleAccent}}{{else}}{{RenderInline .About.Title}}{{end}}</h1>
+      <div class="profile-intro">{{range .About.Intro}}<p>{{.}}</p>{{end}}</div>
+      <div class="profile-meta">
+        {{range .About.Meta}}<div><span>{{.K}}</span><strong>{{.V}}</strong></div>{{end}}
+      </div>
+    </div>
+    <aside class="profile-card dev-manifest reveal">
+      <div class="dev-editor-head"><span><i></i><i></i><i></i></span><strong>profile.manifest</strong><b>READ ONLY</b></div>
+      <div class="manifest-code">
+        <p><i>01</i><span>callsign</span> = <b>"Lancer"</b></p>
+        <p><i>02</i><span>role</span> = <b>"programmer"</b></p>
+        <p><i>03</i><span>stack.current</span> = [</p>
+        <p><i>04</i>&nbsp;&nbsp;<em>"frontend"</em>, <em>"go"</em>, <em>"agents"</em></p>
+        <p><i>05</i>]</p>
+<p><i>06</i><span>status</span> = <strong>"building"</strong></p>
+        <p><i>07</i><span>privacy</span> = <strong>true</strong></p>
+      </div>
+      <div class="manifest-status"><span>PROCESS</span><strong>RUNNING</strong><i></i></div>
+    </aside>
+    <a class="drawer-cue" href="#about-drawer" data-drawer-target="about-drawer" aria-label="继续向下浏览">
+      <span>SCROLL TO OPEN</span><b aria-hidden="true">↓</b>
+    </a>
+  </header>
+  <div class="page-drawer" id="about-drawer">
+    <button class="drawer-handle" type="button" data-drawer-handle aria-label="按住拖动打开页面内容，或点击继续浏览"><span aria-hidden="true"></span></button>
+  <section class="profile-lanes">
+    <article class="profile-lane on-track reveal">
+<div class="lane-label"><span>01</span><strong>ON TRACK</strong></div>
+      <h2>学会直面难题，而不是逃避</h2>
+      <p>前端、Go、Agent 和后端....我不希望把自己局限在一个领域</p>
+      <div class="lane-route" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </article>
+    <article class="profile-lane off-track reveal">
+<div class="lane-label"><span>02</span><strong>OFF TRACK</strong></div>
+      <h2>不打代码的时候，我在看这些。</h2>
+      <p>比赛、音乐，那些厉害的人，让我的生活多了几分色彩</p>
+      <div class="lane-signal">PADDOCK / COURT / SERVER / PLAYLIST</div>
+    </article>
+  </section>
+
+  <section class="influence-board interactive-influences" data-active="f1" aria-labelledby="profile-influences">
+    <div class="lancer-section-head reveal">
+      <div class="lancer-section-index"><span>03</span><p>INFLUENCES</p></div>
+      <div><h2 id="profile-influences">我关注的东西？把鼠标放上去你就知道</h2></div>
+    </div>
+    <div class="influence-interactive-shell reveal">
+      <aside class="influence-preview" aria-live="polite">
+        <div class="influence-preview-media" aria-hidden="true">
+          <i class="influence-preview-image is-active" style="--influence-image:url('/static/media/interests/verstappen-user.jpg')"></i><i class="influence-preview-image"></i>
+        </div>
+        <div class="influence-preview-top"><span>influence.current</span><b>POINTER / FOCUS</b></div>
+        <div class="influence-preview-code"><i>const</i> current = <strong>influences[active]</strong>;</div>
+        <div class="influence-preview-copy">
+          <span id="influence-preview-index">01 / PADDOCK</span>
+          <h3 id="influence-preview-title">VERSTAPPEN / LECLERC</h3>
+          <p id="influence-preview-copy">手术刀般的精准</p>
+        </div>
+        <div class="influence-preview-line"><i></i><span>INPUT DETECTED</span></div>
+      </aside>
+      <div class="influence-board-grid" role="group" aria-label="Lancer influences">
+        <button type="button" class="influence-board-card" data-influence="f1" data-image="/static/media/interests/verstappen-user.jpg" data-position="62% 32%" data-index="01 / PADDOCK" aria-pressed="true">
+          <span>F1 / 01</span><h3>VERSTAPPEN / LECLERC</h3><p>直面极限。</p><b>↗</b>
+        </button>
+        <button type="button" class="influence-board-card" data-influence="sport" data-image="/static/media/interests/curry-new-user.jpg" data-position="50% 58%" data-size="cover" data-index="02 / COURT + PITCH" aria-pressed="false">
+          <span>SPORT / 02</span><h3>CURRY / MESSI</h3><p>永不言弃。</p><b>↗</b>
+        </button>
+        <button type="button" class="influence-board-card" data-influence="server" data-image="/static/media/interests/niko-user.jpg" data-position="66% 24%" data-index="03 / SERVER" aria-pressed="false">
+          <span>SERVER / 03</span><h3>NiKo / TheShy</h3><p>挺身而出。</p><b>↗</b>
+        </button>
+        <button type="button" class="influence-board-card" data-influence="music" data-image="/static/media/interests/gem-user.jpg" data-position="50% 42%" data-size="cover" data-index="04 / SOUNDTRACK" aria-pressed="false">
+          <span>MIX / 04</span><h3>MANDOPOP / PHONK / EDM</h3><p>Lyrics</p><b>↗</b>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile-story reveal">
+    <div class="story-label"><span>04</span><p>LONG FORM</p></div>
+    <div class="about-body lancer-about-body">
+      {{if .About.BodyMarkdown}}{{.About.BodyHTML}}{{else}}<h2>关于这个博客</h2><p>这里记录一些探索、失误、修正和继续推进的过程。</p>{{end}}
+    </div>
+  </section>
+
+  <section class="current-round reveal">
+    <div class="current-round-head"><span>CURRENT ROUND</span><strong>LIVE</strong></div>
+    <div class="current-round-grid">
+      <div><p>NOW PLAYING</p><h2>还在学习，<br>还在写。</h2></div>
+      <div class="now-term lancer-now-term">
+        <div class="head"><span class="name">lancer@field-notes / now.txt</span></div>
+        <div class="body">
+          {{range $l := .Now.Lines}}
+          {{if $l.IsCmd}}<div class="ln"><span class="p">$</span> {{if $l.F}}<span class="f">{{$l.F}}</span> {{end}}{{$l.Args}}{{if $l.C}} <span class="c">{{$l.C}}</span>{{end}}</div>{{end}}
+          {{if not $l.IsCmd}}<div class="ln">{{$l.Arrow}} <span class="k">{{$l.K}}</span>{{if $l.IsString}} <span class="s">{{$l.V}}</span>{{else}} <span class="v">{{$l.V}}</span>{{end}}</div>{{end}}
+          {{end}}
+          <div class="ln"><span class="p">$</span> <span class="c">_</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
   </div>
-  <div class="about-intro reveal">
-    <div class="hero-eyebrow">
-      <span class="prompt">$</span>
-      <span class="cmd">whoami && cat direction.md</span>
-      <span class="blink"></span>
-    </div>
-    <h1>{{if .About.TitleAccent}}{{SplitAccent .About.Title .About.TitleAccent}}{{else}}{{RenderInline .About.Title}}{{end}}</h1>
-    {{range .About.Intro}}<p>{{.}}</p>{{end}}
-    <div class="hero-meta" style="margin-top: 2.25rem;">
-      {{range .About.Meta}}
-      <span class="stat"><span class="k">{{.K}}</span><span class="v">{{.V}}</span></span>
-      {{end}}
-    </div>
-  </div>
-
-  <aside class="about-side reveal">
-    <div class="term-head">
-      <span class="d"></span><span class="d"></span><span class="d"></span>
-      <span class="title">lan@blog: ~ / zsh</span>
-    </div>
-    <div class="line"><span class="p">$</span> <span class="k">whoami</span></div>
-    <div class="line">-&gt; <span class="v">{{.About.BioYml.Name}}</span> <span class="c">// learning in public</span></div>
-    <div class="line" style="margin-top:0.6rem;"><span class="p">$</span> <span class="k">cat</span> bio.yml</div>
-    <div class="line"><span class="k">name</span>: <span class="v">{{.About.BioYml.Name}}</span></div>
-    <div class="line"><span class="k">role</span>: <span class="v">{{.About.BioYml.Role}}</span></div>
-    <div class="line"><span class="k">stack</span>: <span class="v">{{.About.BioYml.Stack}}</span></div>
-    <div class="line"><span class="k">writes</span>: <span class="v">{{.About.BioYml.Writes}}</span></div>
-    <div class="line"><span class="k">based</span>: <span class="v">{{.About.BioYml.Based}}</span></div>
-    <div class="line"><span class="k">hosting</span>: <span class="v">{{.About.BioYml.Hosting}}</span></div>
-    <div class="line" style="margin-top:0.6rem;"><span class="p">$</span> <span class="k">status</span></div>
-    <div class="line">-&gt; <span class="v">{{.About.Uptime}}</span> <span class="c">// still building</span></div>
-  </aside>
-</header>
-
-<section class="about-body reveal">
-  {{if .About.BodyMarkdown}}
-    {{.About.BodyHTML}}
-  {{else}}
-    <h2>关于这个博客</h2>
-    <p>「{{.Site.Brand.Brand}}」是一份个人工程日志，记录前端实习、React 练习、后端补课、agent 探索，以及那些只有真正动手后才会冒出来的问题。</p>
-    <h2>关于学习方式</h2>
-    <p>我会把小项目、读文档、踩坑和复盘都写下来。这里不追求一次写成教程，更像不断追加 commit 的学习现场。</p>
-  {{end}}
-</section>
-
-<section class="now reveal">
-  <h2>now</h2>
-  <div class="now-term">
-    <div class="head">
-      <span class="d"></span><span class="d"></span><span class="d"></span>
-      <span class="name">what-im-doing.txt</span>
-    </div>
-    <div class="body">
-      {{range $l := .Now.Lines}}
-      {{if $l.IsCmd}}<div class="ln"><span class="p">$</span> {{if $l.F}}<span class="f">{{$l.F}}</span> {{end}}{{$l.Args}}{{if $l.C}} <span class="c">{{$l.C}}</span>{{end}}</div>{{end}}
-      {{if not $l.IsCmd}}<div class="ln">{{$l.Arrow}} <span class="k">{{$l.K}}</span>{{if $l.C}} <span class="c">{{$l.C}}</span>{{end}}{{if $l.IsString}} <span class="s">{{$l.V}}</span>{{else}} <span class="v">{{$l.V}}</span>{{end}}</div>{{end}}
-      {{end}}
-      <div class="ln" style="margin-top:0.5rem;"><span class="p">$</span> <span class="c">_</span></div>
-    </div>
-  </div>
-</section>
-
+</main>
 {{end}}
-

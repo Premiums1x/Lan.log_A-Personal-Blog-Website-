@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lancer/log/internal/auth"
@@ -12,6 +13,7 @@ import (
 	"github.com/lancer/log/internal/db"
 	"github.com/lancer/log/internal/github"
 	"github.com/lancer/log/internal/handler"
+	"github.com/lancer/log/internal/telemetry"
 	"github.com/lancer/log/web"
 )
 
@@ -42,6 +44,10 @@ type Server struct {
 	Gin *gin.Engine
 }
 
+func registerSystemStatusRoute(routes gin.IRoutes, show gin.HandlerFunc) {
+	routes.GET("/api/system-status", show)
+}
+
 func New(ctx context.Context, cfg config.Config) (*Server, error) {
 	d, err := db.New(ctx, cfg.DatabaseURL)
 	if err != nil {
@@ -67,6 +73,8 @@ func New(ctx context.Context, cfg config.Config) (*Server, error) {
 
 	pub := handler.NewPublicHandler(d, tmpl, gh)
 	api := handler.NewAPIHandler(d, mgr, cfg)
+	status := handler.NewSystemStatusHandler(telemetry.NewProcFSProvider("/proc", 5*time.Second))
+	registerSystemStatusRoute(r, status.Show)
 
 	r.GET("/", pub.Index)
 	r.GET("/posts/:slug", pub.Post)
