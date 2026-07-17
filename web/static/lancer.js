@@ -61,6 +61,7 @@ initExpandLists(document);
     newMain.classList.add('is-in');
     newMain.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
     setActive(href);
+    return true;
   };
 
   const navigate = async (href) => {
